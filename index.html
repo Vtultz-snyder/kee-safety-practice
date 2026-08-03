@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Ads — KEE Safety (Interview Practice)</title>
+<style>
+  :root{
+    --blue:#1a73e8; --blue-dark:#174ea6; --red:#d93025; --green:#188038;
+    --amber:#e37400; --ink:#202124; --ink2:#5f6368; --line:#dadce0;
+    --bg:#fff; --bg2:#f8f9fa;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{font-family:'Google Sans',Roboto,'Segoe UI',Arial,sans-serif; color:var(--ink); background:var(--bg); font-size:14px;}
+  /* ---------- top app bar ---------- */
+  .appbar{display:flex; align-items:center; gap:14px; height:48px; background:#1f1f1f; color:#e8eaed; padding:0 16px; position:sticky; top:0; z-index:50;}
+  .appbar .logo{display:flex; align-items:center; gap:8px; font-size:17px;}
+  .logo-mark{width:22px; height:22px; border-radius:50%; background:conic-gradient(#4285F4 0 25%, #34A853 25% 50%, #FBBC05 50% 75%, #EA4335 75% 100%);}
+  .appbar .acct{margin-left:auto; text-align:right; line-height:1.25; font-size:12px; color:#bdc1c6;}
+  .appbar .acct b{display:block; color:#e8eaed; font-weight:500; font-size:13px;}
+  .practice-chip{background:#fdd663; color:#1f1f1f; font-size:11px; font-weight:600; padding:3px 10px; border-radius:12px; letter-spacing:.3px;}
+  .hintbtn{background:none; border:1px solid #5f6368; color:#e8eaed; border-radius:14px; padding:3px 12px; font-size:11.5px; cursor:pointer; font-family:inherit;}
+  .hintbtn:hover{border-color:#e8eaed;}
+  body.nohints .hint{display:none;}
+  /* ---------- layout ---------- */
+  .layout{display:flex; min-height:calc(100vh - 48px);}
+  .rail{width:64px; background:var(--bg); border-right:1px solid var(--line); display:flex; flex-direction:column; align-items:center; padding-top:12px; gap:4px; flex-shrink:0;}
+  .rail .ric{width:48px; text-align:center; font-size:10px; color:var(--ink2); padding:6px 0; border-radius:8px; cursor:default;}
+  .rail .ric .i{font-size:18px; display:block; margin-bottom:2px;}
+  .rail .ric.active{color:var(--blue-dark);}
+  .rail .ric.active .i{background:#e8f0fe; border-radius:14px; padding:2px 10px; display:inline-block;}
+  .nav{width:212px; border-right:1px solid var(--line); padding:16px 0; flex-shrink:0; background:var(--bg);}
+  .nav a{display:block; padding:9px 24px; color:var(--ink); text-decoration:none; font-size:14px; border-radius:0 20px 20px 0; cursor:pointer;}
+  .nav a:hover{background:var(--bg2);}
+  .nav a.sub{padding-left:36px; font-size:13.5px;}
+  .nav a.sel{background:#e8f0fe; color:var(--blue-dark); font-weight:600;}
+  .nav .grp{color:var(--ink2); font-size:11px; letter-spacing:.8px; text-transform:uppercase; padding:16px 24px 6px;}
+  .main{flex:1; min-width:0; padding:0 28px 60px;}
+  .view{display:none;}
+  .view.on{display:block;}
+  .pagehead{display:flex; align-items:center; gap:14px; padding:18px 0 8px; flex-wrap:wrap;}
+  .pagehead h1{font-size:20px; font-weight:400;}
+  .viewchip{border:1px solid var(--line); border-radius:8px; padding:5px 12px; font-size:12.5px; color:var(--ink2); background:var(--bg2);}
+  .daterange{margin-left:auto; display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink2);}
+  .datebox{border:1px solid var(--blue); color:var(--ink); border-radius:6px; padding:6px 12px; font-size:13px; display:flex; gap:8px; align-items:center;}
+  .datebox .cmp{color:var(--ink2); font-size:11.5px;}
+  /* hint bar */
+  .hint{background:#fef7e0; border:1px solid #fdd663; border-radius:8px; padding:10px 14px; margin:6px 0 12px; font-size:12.5px; line-height:1.6; color:#3c4043;}
+  .hint b{color:#b06000;}
+  /* chart card */
+  .chartcard{border:1px solid var(--line); border-radius:8px; margin-top:10px; overflow:hidden;}
+  .metric-chips{display:flex; gap:0; border-bottom:1px solid var(--line);}
+  .mchip{flex:0 0 190px; padding:12px 18px; border-right:1px solid var(--line); cursor:default;}
+  .mchip .lbl{font-size:12px; color:var(--ink2); display:flex; align-items:center; gap:7px;}
+  .mchip .dot{width:10px; height:10px; border-radius:2px; display:inline-block;}
+  .mchip .val{font-size:22px; margin-top:2px; font-weight:400;}
+  .mchip .delta{font-size:11.5px; margin-top:1px;}
+  .down{color:var(--red);} .up{color:var(--green);}
+  .chartwrap{padding:8px 10px 2px;}
+  .chart-foot{display:flex; justify-content:space-between; color:var(--ink2); font-size:11.5px; padding:0 24px 10px;}
+  /* toolbar */
+  .toolbar{display:flex; align-items:center; margin-top:18px; border:1px solid var(--line); border-bottom:none; border-radius:8px 8px 0 0; padding:6px 8px 6px 16px; gap:18px;}
+  .toolbar .filter{color:var(--ink2); font-size:13.5px; display:flex; gap:10px; align-items:center;}
+  .toolbar .spacer{flex:1;}
+  .tbtn{color:var(--ink2); font-size:11px; text-align:center; padding:4px 10px; cursor:default;}
+  .tbtn .i{display:block; font-size:16px; margin-bottom:1px;}
+  /* tables */
+  table.gt{width:100%; border-collapse:collapse; border:1px solid var(--line); font-size:13.5px; background:#fff;}
+  table.gt thead th{color:var(--ink2); font-weight:500; font-size:12.5px; text-align:right; padding:12px 14px; border-bottom:1px solid var(--line); white-space:nowrap; background:var(--bg);}
+  table.gt thead th.l{text-align:left;}
+  table.gt tbody td{padding:12px 14px; border-bottom:1px solid #ebebeb; text-align:right; white-space:nowrap;}
+  table.gt tbody td.l{text-align:left; white-space:normal;}
+  table.gt tr.rrow:hover{background:#f8f9fa;}
+  table.gt tr.total td{font-weight:500; background:var(--bg2); border-top:1px solid var(--line);}
+  .cname{color:var(--blue); cursor:pointer; text-decoration:none;}
+  .cname:hover{text-decoration:underline;}
+  .status-dot{width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:2px;}
+  .st-on{background:var(--green);} .st-lim{background:var(--amber);} .st-off{background:#9aa0a6;}
+  .stxt{font-size:12.5px; color:var(--ink2);}
+  .stxt.warn{color:var(--amber);}
+  .badge-note{display:inline-block; font-size:10.5px; color:var(--ink2); background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:1px 8px; margin-top:4px;}
+  .badge-alert{display:inline-block; font-size:10.5px; color:var(--red); background:#fce8e6; border:1px solid #f6c7c3; border-radius:10px; padding:1px 8px; margin-top:4px;}
+  .foot-note{color:var(--ink2); font-size:11.5px; line-height:1.7; margin-top:18px;}
+  .foot-note a{color:var(--blue); text-decoration:none;}
+  tr.hl{background:#fef7e0 !important; transition:background .3s;}
+  /* cards / overview */
+  .cardrow{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; margin-top:14px;}
+  .ocard{border:1px solid var(--line); border-radius:8px; padding:16px 18px;}
+  .ocard h4{font-size:14px; font-weight:600; margin-bottom:4px;}
+  .ocard .sub{font-size:11.5px; color:var(--ink2); margin-bottom:10px;}
+  .ocard .row{display:flex; justify-content:space-between; font-size:13px; padding:7px 0; border-bottom:1px solid #f1f3f4;}
+  .ocard .row:last-child{border-bottom:none;}
+  .ocard .row .nm{color:var(--ink); max-width:64%;}
+  .ocard .lk{color:var(--blue); font-size:12.5px; margin-top:10px; display:inline-block; cursor:pointer;}
+  /* opt score */
+  .score{display:flex; align-items:center; gap:20px;}
+  .ring{width:84px; height:84px; border-radius:50%; background:conic-gradient(var(--blue) 0 292deg, #e8eaed 292deg 360deg); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .ring>div{width:64px; height:64px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:600; color:var(--blue-dark);}
+  /* recommendation cards */
+  .rec{border:1px solid var(--line); border-radius:8px; padding:16px 18px; margin-top:12px; display:flex; gap:16px; align-items:flex-start;}
+  .rec .uplift{flex-shrink:0; text-align:center; background:#e8f0fe; border-radius:8px; padding:10px 12px; min-width:74px;}
+  .rec .uplift b{display:block; font-size:16px; color:var(--blue-dark);}
+  .rec .uplift span{font-size:10px; color:var(--ink2);}
+  .rec .body{flex:1;}
+  .rec .cat{font-size:11px; letter-spacing:.6px; text-transform:uppercase; color:var(--ink2); margin-bottom:3px;}
+  .rec h4{font-size:14.5px; font-weight:600; margin-bottom:5px;}
+  .rec p{font-size:13px; color:#3c4043; line-height:1.6;}
+  .rec .btns{display:flex; gap:8px; margin-top:10px;}
+  .btn{border:1px solid var(--line); background:#fff; color:var(--blue); font-weight:600; font-size:13px; border-radius:6px; padding:7px 16px; cursor:pointer; font-family:inherit;}
+  .btn.pri{background:var(--blue); color:#fff; border-color:var(--blue);}
+  .btn:hover{filter:brightness(.96);}
+  /* ad previews */
+  .adprev{max-width:520px; white-space:normal;}
+  .adprev .sp{font-size:11px; color:var(--ink);}
+  .adprev .sp b{border:1px solid var(--ink2); border-radius:3px; padding:0 4px; font-size:9.5px; font-weight:600; margin-right:5px;}
+  .adprev .h{color:#1a0dab; font-size:14.5px; line-height:1.35; margin:2px 0;}
+  .adprev .u{color:#006621; font-size:12px;}
+  .adprev .d{color:#545454; font-size:12px; line-height:1.45; margin-top:2px;}
+  .strength{font-size:12px; font-weight:600;}
+  .strength.ex{color:var(--green);} .strength.gd{color:#33691e;}
+  .strength.av{color:var(--amber);} .strength.pr{color:var(--red);}
+  /* subtabs */
+  .subtabs{display:flex; gap:4px; border-bottom:1px solid var(--line); margin-top:14px;}
+  .stab{padding:10px 16px; font-size:13px; color:var(--ink2); cursor:pointer; border-bottom:3px solid transparent; font-weight:500;}
+  .stab.on{color:var(--blue-dark); border-bottom-color:var(--blue);}
+  .subpane{display:none; margin-top:0;}
+  .subpane.on{display:block;}
+  /* experiment */
+  .expgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  .qs{display:inline-block; min-width:34px; text-align:center; border-radius:10px; font-size:11.5px; font-weight:600; padding:2px 8px;}
+  .qs.hi{background:#e6f4ea; color:var(--green);} .qs.md{background:#fef7e0; color:var(--amber);} .qs.lo{background:#fce8e6; color:var(--red);}
+  /* toast */
+  #toast{position:fixed; bottom:88px; left:50%; transform:translateX(-50%); background:#323232; color:#fff; font-size:13px; border-radius:6px; padding:11px 20px; opacity:0; transition:opacity .25s; z-index:400; pointer-events:none;}
+  #toast.show{opacity:1;}
+  /* coach (unchanged) */
+  .coach-fab{position:fixed; right:24px; bottom:24px; z-index:100; background:var(--blue); color:#fff; border:none; border-radius:24px; padding:14px 22px; font-size:14px; font-weight:600; font-family:inherit; box-shadow:0 4px 14px rgba(26,115,232,.4); cursor:pointer;}
+  .coach-fab:hover{background:var(--blue-dark);}
+  .drawer{position:fixed; top:0; right:0; height:100%; width:440px; max-width:95vw; background:#fff; z-index:200; box-shadow:-6px 0 24px rgba(0,0,0,.18); transform:translateX(102%); transition:transform .25s ease; display:flex; flex-direction:column;}
+  .drawer.open{transform:translateX(0);}
+  .drawer-head{display:flex; align-items:center; gap:10px; padding:14px 18px; border-bottom:1px solid var(--line); background:#1f1f1f; color:#fff;}
+  .drawer-head h2{font-size:15px; font-weight:600;}
+  .drawer-head .x{margin-left:auto; background:none; border:none; color:#fff; font-size:20px; cursor:pointer;}
+  .tabs{display:flex; border-bottom:1px solid var(--line); background:var(--bg2); overflow-x:auto;}
+  .tab{flex-shrink:0; padding:11px 9px; font-size:12px; color:var(--ink2); cursor:pointer; border-bottom:3px solid transparent; font-weight:500;}
+  .tab.on{color:var(--blue-dark); border-bottom-color:var(--blue);}
+  .drawer-body{flex:1; overflow-y:auto; padding:18px 20px 40px;}
+  .pane{display:none;} .pane.on{display:block;}
+  .pane h3{font-size:14px; margin:18px 0 8px; color:var(--ink);}
+  .pane h3:first-child{margin-top:0;}
+  .pane p, .pane li{font-size:13px; line-height:1.65; color:#3c4043;}
+  .pane ul, .pane ol{padding-left:20px; margin:6px 0 12px;}
+  .pane li{margin-bottom:7px;}
+  .say{background:#e8f0fe; border-left:3px solid var(--blue); border-radius:0 6px 6px 0; padding:10px 14px; margin:10px 0; font-size:13px; line-height:1.6; color:#174ea6; font-style:italic;}
+  .card{border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-bottom:12px; cursor:pointer;}
+  .card:hover{border-color:var(--blue);}
+  .card .t{font-size:13px; font-weight:600; display:flex; align-items:center; gap:8px;}
+  .card .t .pill{font-size:10.5px; font-weight:600; padding:2px 8px; border-radius:10px;}
+  .pill.good{background:#e6f4ea; color:var(--green);}
+  .pill.bad{background:#fce8e6; color:var(--red);}
+  .pill.warn{background:#fef7e0; color:var(--amber);}
+  .card .d{font-size:12.5px; color:#3c4043; line-height:1.6; margin-top:6px;}
+  .minibar{display:flex; align-items:flex-end; gap:18px; height:110px; margin:14px 0 4px; padding:0 8px;}
+  .mb{flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; height:100%; justify-content:flex-end;}
+  .mb .bar{width:56px; background:var(--blue); border-radius:4px 4px 0 0;}
+  .mb.dropped .bar{background:var(--red);}
+  .mb .n{font-size:15px; font-weight:600;}
+  .mb .m{font-size:11px; color:var(--ink2);}
+  .kv{font-size:12.5px; color:#3c4043; border-bottom:1px dashed var(--line); padding:7px 0; display:flex; gap:10px;}
+  .kv b{min-width:110px; color:var(--ink); font-weight:600;}
+  .checklist li{list-style:none; position:relative; padding-left:24px;}
+  .checklist li:before{content:"☐"; position:absolute; left:0; color:var(--blue); font-size:14px;}
+  /* practice scenarios */
+  .scen{border:1px solid var(--line); border-radius:10px; margin-top:16px; overflow:hidden;}
+  .scen-head{padding:14px 18px; display:flex; align-items:center; gap:12px; background:var(--bg2); border-bottom:1px solid var(--line);}
+  .scen-head .lv{font-size:10.5px; font-weight:700; letter-spacing:.5px; padding:3px 9px; border-radius:10px; flex-shrink:0;}
+  .lv.core{background:#e8f0fe; color:var(--blue-dark);} .lv.adv{background:#fef7e0; color:#b06000;} .lv.exp{background:#fce8e6; color:var(--red);}
+  .scen-head h4{font-size:14.5px; font-weight:600;}
+  .scen-body{padding:14px 18px;}
+  .scen-body p, .scen-body li{font-size:13px; line-height:1.65; color:#3c4043;}
+  .scen-body ul, .scen-body ol{padding-left:20px; margin:6px 0 10px;}
+  .scen-body li{margin-bottom:6px;}
+  .ivq{background:#f1f3f4; border-radius:8px; padding:11px 14px; font-size:13.5px; font-style:italic; color:var(--ink); margin-bottom:10px;}
+  .ivq b{font-style:normal; font-size:11px; letter-spacing:.5px; color:var(--ink2); display:block; margin-bottom:3px;}
+  .task{font-size:12.5px; color:var(--ink2); margin:8px 0;}
+  .task b{color:#b06000;}
+  details.model{border:1px solid var(--line); border-radius:8px; margin-top:10px; background:#fff;}
+  details.model summary{cursor:pointer; padding:10px 14px; font-size:13px; font-weight:600; color:var(--blue); list-style:none;}
+  details.model summary::-webkit-details-marker{display:none;}
+  details.model summary:before{content:"▸ "; }
+  details.model[open] summary:before{content:"▾ ";}
+  details.model .inner{padding:2px 16px 14px; border-top:1px solid #f1f3f4;}
+  .flourish{background:#e6f4ea; border-left:3px solid var(--green); border-radius:0 6px 6px 0; padding:9px 13px; margin:10px 0; font-size:12.5px; line-height:1.6; color:#0d652d;}
+  .flourish b{color:#0d652d;}
+  .drill{border:1px dashed var(--line); border-radius:8px; padding:12px 14px; margin-top:10px; font-size:13px; line-height:1.6; color:#3c4043;}
+  .drill b{color:var(--ink);}
+  @media (max-width:1100px){ .rail{display:none;} .nav{width:180px;} }
+</style>
+</head>
+<body>
+
+<!-- ================= APP BAR ================= -->
+<div class="appbar">
+  <div class="logo"><span class="logo-mark"></span> Google Ads</div>
+  <span class="practice-chip">INTERVIEW PRACTICE MODE — mock data</span>
+  <button class="hintbtn" onclick="document.body.classList.toggle('nohints')">💡 Hints on/off</button>
+  <div class="acct"><b>KEE Safety, Inc.</b>734-215-8890 · Demo account</div>
+</div>
+
+<div class="layout">
+  <!-- ============ ICON RAIL ============ -->
+  <div class="rail">
+    <div class="ric"><span class="i">＋</span>Create</div>
+    <div class="ric active"><span class="i">📣</span>Campaigns</div>
+    <div class="ric"><span class="i">🎯</span>Goals</div>
+    <div class="ric"><span class="i">🛠</span>Tools</div>
+    <div class="ric"><span class="i">💳</span>Billing</div>
+    <div class="ric"><span class="i">⚙️</span>Admin</div>
+  </div>
+
+  <!-- ============ NAV ============ -->
+  <nav class="nav" id="nav">
+    <a data-view="overview" onclick="showView('overview')">Overview</a>
+    <a data-view="recommendations" onclick="showView('recommendations')">Recommendations</a>
+    <a data-view="insights" onclick="showView('insights')">Insights and reports</a>
+    <a data-view="campaigns" class="sel" onclick="showView('campaigns')">Campaigns</a>
+    <a data-view="adgroups" class="sub" onclick="showView('adgroups')">Ad groups</a>
+    <a data-view="ads" class="sub" onclick="showView('ads')">Ads</a>
+    <a data-view="assetgroups" class="sub" onclick="showView('assetgroups')">Asset groups</a>
+    <a data-view="experiments" class="sub" onclick="showView('experiments')">Experiments</a>
+    <a data-view="campaigngroups" class="sub" onclick="showView('campaigngroups')">Campaign groups</a>
+    <div class="grp">More</div>
+    <a data-view="assets" onclick="showView('assets')">Assets</a>
+    <a data-view="audiences" onclick="showView('audiences')">Audiences, keywords, and content</a>
+    <a data-view="changehistory" onclick="showView('changehistory')">Change history</a>
+    <div class="grp practice-only" style="color:#b06000;">Practice mode</div>
+    <a data-view="scenarios" class="practice-only" onclick="showView('scenarios')" style="color:#b06000; font-weight:600;">🎯 Practice scenarios</a>
+  </nav>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- ═══════════════ CAMPAIGNS ═══════════════ -->
+    <section class="view on" id="v-campaigns">
+      <div class="pagehead">
+        <h1>Campaigns</h1>
+        <span class="viewchip">View (2 filters) · 🏠 All campaigns</span>
+        <div class="daterange">Last 3 months
+          <span class="datebox">May 1 – Jul 31, 2026 ▾ <span class="cmp">vs. Feb 1 – Apr 30</span></span>
+        </div>
+      </div>
+      <div class="hint">💡 <b>Start here in the interview.</b> Orient (what screen, what period, what conversion action), give the account totals (763 leads @ $105.75, −15% leads / +22% CPA), then contrast best (Kee Klamp $55) vs. worst (Fall Protection $192). The 🎓 coach has a full script.</div>
+
+      <div class="chartcard">
+        <div class="metric-chips">
+          <div class="mchip">
+            <div class="lbl"><span class="dot" style="background:var(--blue)"></span>Conversions (Leads)</div>
+            <div class="val">763</div>
+            <div class="delta down">▼ 14.9% vs. prev. period</div>
+          </div>
+          <div class="mchip">
+            <div class="lbl"><span class="dot" style="background:var(--red)"></span>Cost / conv.</div>
+            <div class="val">$105.75</div>
+            <div class="delta down">▲ 22.3% vs. prev. period</div>
+          </div>
+          <div class="mchip">
+            <div class="lbl"><span class="dot" style="background:#9aa0a6"></span>Cost</div>
+            <div class="val">$80,690</div>
+            <div class="delta" style="color:var(--ink2)">▲ 4.1% vs. prev. period</div>
+          </div>
+        </div>
+        <div class="chartwrap"><svg id="chart" width="100%" height="230"></svg></div>
+        <div class="chart-foot"><span>May 1, 2026</span><span>Weekly</span><span>Jul 31, 2026</span></div>
+      </div>
+
+      <div class="toolbar">
+        <span class="filter">▽&nbsp; Add filter</span><span class="spacer"></span>
+        <span class="tbtn"><span class="i">🔍</span>Search</span><span class="tbtn"><span class="i">☰</span>Segment</span>
+        <span class="tbtn"><span class="i">▦</span>Columns</span><span class="tbtn"><span class="i">📊</span>Reports</span>
+        <span class="tbtn"><span class="i">⭳</span>Download</span><span class="tbtn"><span class="i">⛶</span>Expand</span>
+        <span class="tbtn"><span class="i">⋮</span>More</span>
+      </div>
+
+      <table class="gt" style="border-radius:0 0 8px 8px;">
+        <thead>
+          <tr>
+            <th class="l" style="width:34px"><input type="checkbox" disabled></th>
+            <th class="l" style="width:20px"></th>
+            <th class="l">Campaign</th>
+            <th class="l">Status</th>
+            <th>Budget/day</th><th>↓ Cost</th><th>Cost / conv.</th><th>Conversions</th>
+            <th>Conv. rate</th><th>CTR</th><th>Avg. CPC</th><th>Clicks</th><th>Impr.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="l"></td><td class="l"></td><td class="l" colspan="11" style="color:var(--ink2)">▾ &nbsp;📁 Drafts in progress: 0</td></tr>
+          <tr class="rrow" id="row-fps">
+            <td class="l"><input type="checkbox"></td>
+            <td class="l"><span class="status-dot st-on"></span></td>
+            <td class="l"><a class="cname" onclick="coachTo('fps')">Search | Fall Protection Systems</a><br>
+              <span class="badge-note">⚠ Broad match + Max. conversions applied Jun 14</span></td>
+            <td class="l"><span class="stxt">Eligible</span></td>
+            <td>$360.00</td><td>$32,248</td><td>$191.95</td><td>168.00</td><td>4.12%</td><td>2.70%</td><td>$7.90</td><td>4,082</td><td>151,200</td>
+          </tr>
+          <tr class="rrow" id="row-keeguard">
+            <td class="l"><input type="checkbox"></td>
+            <td class="l"><span class="status-dot st-lim"></span></td>
+            <td class="l"><a class="cname" onclick="coachTo('keeguard')">Search | KeeGuard Rooftop Guardrails</a></td>
+            <td class="l"><span class="stxt warn">Limited by budget</span><br><span class="badge-note">Lost IS (budget): 38%</span></td>
+            <td>$220.00</td><td>$20,708</td><td>$72.92</td><td>284.00</td><td>8.50%</td><td>5.00%</td><td>$6.20</td><td>3,340</td><td>66,800</td>
+          </tr>
+          <tr class="rrow" id="row-keeklamp">
+            <td class="l"><input type="checkbox"></td>
+            <td class="l"><span class="status-dot st-on"></span></td>
+            <td class="l"><a class="cname" onclick="coachTo('keeklamp')">Search | Kee Klamp Fittings &amp; Railings</a></td>
+            <td class="l"><span class="stxt">Eligible</span></td>
+            <td>$120.00</td><td>$10,541</td><td>$54.90</td><td>192.00</td><td>7.56%</td><td>6.21%</td><td>$4.15</td><td>2,540</td><td>40,900</td>
+          </tr>
+          <tr class="rrow" id="row-gates">
+            <td class="l"><input type="checkbox"></td>
+            <td class="l"><span class="status-dot st-on"></span></td>
+            <td class="l"><a class="cname" onclick="coachTo('gates')">Search | Safety Gates &amp; Roof Walkways</a></td>
+            <td class="l"><span class="stxt">Eligible</span></td>
+            <td>$115.00</td><td>$10,436</td><td>$144.94</td><td>72.00</td><td>5.83%</td><td>4.20%</td><td>$8.45</td><td>1,235</td><td>29,400</td>
+          </tr>
+          <tr class="rrow" id="row-pmax">
+            <td class="l"><input type="checkbox"></td>
+            <td class="l"><span class="status-dot st-on"></span></td>
+            <td class="l"><a class="cname" onclick="coachTo('pmax')">Performance Max | Lead Gen — US</a></td>
+            <td class="l"><span class="stxt">Eligible</span></td>
+            <td>$75.00</td><td>$6,757</td><td>$143.77</td><td>47.00</td><td>2.50%</td><td>0.90%</td><td>$3.60</td><td>1,877</td><td>208,600</td>
+          </tr>
+          <tr class="total">
+            <td class="l"></td><td class="l"></td>
+            <td class="l" colspan="2">Total: All enabled campaigns ⓘ</td>
+            <td>$890.00</td><td>$80,690</td><td>$105.75</td><td>763.00</td><td>5.84%</td><td>2.63%</td><td>$6.17</td><td>13,074</td><td>496,900</td>
+          </tr>
+          <tr class="total">
+            <td class="l"></td><td class="l"></td>
+            <td class="l" colspan="2">▾ &nbsp;Total: Account ⓘ</td>
+            <td>—</td><td>$80,690</td><td>$105.75</td><td>763.00</td><td>5.84%</td><td>2.63%</td><td>$6.17</td><td>13,074</td><td>496,900</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="foot-note">
+        <a>Reporting is not real-time.</a> Time zone for all dates and times: (GMT-05:00) Eastern Time. <a>Learn more</a><br>
+        Conversion action: "Lead — quote request form + calls from ads". Some inventory may be provided through third party intermediaries.<br>
+        1 – 5 of 5 &nbsp;·&nbsp; © Google 2026 &nbsp;·&nbsp; <b>This is a practice replica with fictional data for interview preparation — not a real Google Ads account.</b>
+      </p>
+    </section>
+
+    <!-- ═══════════════ OVERVIEW ═══════════════ -->
+    <section class="view" id="v-overview">
+      <div class="pagehead">
+        <h1>Overview</h1>
+        <div class="daterange">Last 3 months <span class="datebox">May 1 – Jul 31, 2026 ▾</span></div>
+      </div>
+      <div class="hint">💡 <b>If they open here:</b> this is Google's summary page. Use it for your 15-second orientation, point at the declining conversions curve, then say "let me go to the Campaigns tab to see which campaign is driving this." Interviewers love a candidate who navigates with intent.</div>
+
+      <div class="cardrow">
+        <div class="ocard" style="grid-column:1/-1;">
+          <h4>Conversions (Leads) &nbsp;<span style="color:var(--red); font-size:12.5px; font-weight:400;">▼ 302 → 203 per month</span></h4>
+          <div class="sub">May 1 – Jul 31, 2026 · weekly · vs. cost/conv. (red, right axis)</div>
+          <svg id="chart2" width="100%" height="190"></svg>
+        </div>
+      </div>
+
+      <div class="cardrow">
+        <div class="ocard">
+          <h4>Optimization score</h4>
+          <div class="sub">Your account is performing below its potential</div>
+          <div class="score">
+            <div class="ring"><div>81.2%</div></div>
+            <div style="font-size:12.5px; color:#3c4043; line-height:1.6;">5 recommendations available.<br>Applying them all could raise your score by <b>18.8%</b>.</div>
+          </div>
+          <span class="lk" onclick="showView('recommendations')">View recommendations →</span>
+        </div>
+        <div class="ocard">
+          <h4>Biggest changes</h4>
+          <div class="sub">Conversions, Jul vs. May (monthly)</div>
+          <div class="row"><span class="nm">Search | Fall Protection Systems</span><span class="down">−46% (75 → 40)</span></div>
+          <div class="row"><span class="nm">Search | KeeGuard Rooftop Guardrails</span><span class="down">−19% (104 → 84)</span></div>
+          <div class="row"><span class="nm">Search | Safety Gates &amp; Roof Walkways</span><span class="down">−38% (29 → 18)</span></div>
+          <div class="row"><span class="nm">Performance Max | Lead Gen — US</span><span class="down">−35% (20 → 13)</span></div>
+          <div class="row"><span class="nm">Search | Kee Klamp Fittings &amp; Railings</span><span class="up">+3% (68 → 70)</span></div>
+          <span class="lk" onclick="showView('campaigns')">View campaigns →</span>
+        </div>
+        <div class="ocard">
+          <h4>Auction insights</h4>
+          <div class="sub">Search impression share · you vs. top competitors</div>
+          <div class="row"><span class="nm"><b>You (KEE Safety)</b></span><span>42.1%</span></div>
+          <div class="row"><span class="nm">simplifiedsafety.com</span><span>31.4%</span></div>
+          <div class="row"><span class="nm">diversifiedfallprotection.com</span><span>24.8%</span></div>
+          <div class="row"><span class="nm">guardianfall.com</span><span>19.2%</span></div>
+          <span class="lk" onclick="showView('insights')">View insights →</span>
+        </div>
+        <div class="ocard">
+          <h4>Searches</h4>
+          <div class="sub">Trending search themes reaching your ads</div>
+          <div class="row"><span class="nm">osha rooftop railing requirements</span><span class="up">+140%</span></div>
+          <div class="row"><span class="nm">roof safety audit checklist</span><span class="up">+58%</span></div>
+          <div class="row"><span class="nm">non penetrating guardrail</span><span class="up">+32%</span></div>
+          <div class="row"><span class="nm">fall protection jobs</span><span style="color:var(--ink2)">+91% ⚠ irrelevant</span></div>
+          <span class="lk" onclick="showView('audiences')">View search terms →</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ RECOMMENDATIONS ═══════════════ -->
+    <section class="view" id="v-recommendations">
+      <div class="pagehead">
+        <h1>Recommendations</h1>
+        <div class="daterange"><span class="datebox">Optimization score: 81.2%</span></div>
+      </div>
+      <div class="hint">💡 <b>Interview gold:</b> notice these mirror what you'd recommend yourself — but say that you review Google's recommendations critically instead of auto-applying (some, like "switch to broad match", serve Google's revenue more than the advertiser). That one sentence signals real-world experience.</div>
+
+      <div class="score" style="margin-top:8px;">
+        <div class="ring"><div>81.2%</div></div>
+        <div style="font-size:13px; color:#3c4043; line-height:1.65;">Applying all 5 recommendations could improve your optimization score by <b>+18.8%</b>.<br><span style="color:var(--ink2); font-size:12px;">Categories: Bidding (1) · Budget (1) · Keywords (1) · Ads &amp; assets (1) · Measurement (1)</span></div>
+      </div>
+
+      <div class="rec"><div class="uplift"><b>+8.4%</b><span>score uplift</span></div>
+        <div class="body"><div class="cat">Bidding</div>
+          <h4>Set a target CPA for "Search | Fall Protection Systems"</h4>
+          <p>This campaign switched to Maximize conversions without a CPA guardrail on Jun 14. Its cost per lead is $191.95 vs. an account average of $105.75. Setting a target CPA of ~$95 constrains Smart Bidding to profitable auctions.</p>
+          <div class="btns"><button class="btn pri" onclick="toast()">Apply</button><button class="btn" onclick="toast()">Dismiss</button></div>
+        </div>
+      </div>
+      <div class="rec"><div class="uplift"><b>+6.1%</b><span>score uplift</span></div>
+        <div class="body"><div class="cat">Budget</div>
+          <h4>Raise the budget on "Search | KeeGuard Rooftop Guardrails"</h4>
+          <p>This campaign is limited by budget and lost 38% of available impressions. It converts at 8.5% with a $72.92 CPA — your second-best. An extra ~$100/day (reallocated from Fall Protection Systems) could add ~30 leads/month.</p>
+          <div class="btns"><button class="btn pri" onclick="toast()">Apply</button><button class="btn" onclick="toast()">Dismiss</button></div>
+        </div>
+      </div>
+      <div class="rec"><div class="uplift"><b>+3.2%</b><span>score uplift</span></div>
+        <div class="body"><div class="cat">Keywords</div>
+          <h4>Add negative keywords to "Search | Fall Protection Systems"</h4>
+          <p>Broad match is pulling in irrelevant queries: "fall protection jobs", "free fall protection training", "osha fine amounts". These consumed ~$2,900 with 0 conversions this period. Add job/training/informational negatives.</p>
+          <div class="btns"><button class="btn pri" onclick="toast()">Apply</button><button class="btn" onclick="toast()">Dismiss</button></div>
+        </div>
+      </div>
+      <div class="rec"><div class="uplift"><b>+1.9%</b><span>score uplift</span></div>
+        <div class="body"><div class="cat">Ads &amp; assets</div>
+          <h4>Refresh assets in "Performance Max | Lead Gen — US"</h4>
+          <p>Asset groups have not been updated in 92 days and ad strength has dropped to "Good". Add new images, video, and headlines; strengthen audience signals with your customer list.</p>
+          <div class="btns"><button class="btn pri" onclick="toast()">Apply</button><button class="btn" onclick="toast()">Dismiss</button></div>
+        </div>
+      </div>
+      <div class="rec"><div class="uplift"><b>+0.6%</b><span>score uplift</span></div>
+        <div class="body"><div class="cat">Measurement</div>
+          <h4>Import offline conversions</h4>
+          <p>Your account tracks form fills and calls but no downstream lead quality or revenue (Conv. value = $0). Importing CRM stages (MQL → SQL → Closed won) lets Smart Bidding optimize toward real pipeline, not just submissions.</p>
+          <div class="btns"><button class="btn pri" onclick="toast()">Apply</button><button class="btn" onclick="toast()">Dismiss</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ INSIGHTS AND REPORTS ═══════════════ -->
+    <section class="view" id="v-insights">
+      <div class="pagehead">
+        <h1>Insights and reports</h1>
+        <div class="daterange">Last 3 months <span class="datebox">May 1 – Jul 31, 2026 ▾</span></div>
+      </div>
+      <div class="hint">💡 <b>Use this page to show diagnostic instinct:</b> the performance insight below literally names the Jun 14 match-type change, and Auction insights explains rising CPCs (new competitor pressure). Mention you'd export the Search terms report weekly while broad match is live.</div>
+
+      <div class="cardrow">
+        <div class="ocard" style="grid-column:1/-1; border-left:4px solid var(--amber);">
+          <h4>⚡ Performance insight — Conversions declined</h4>
+          <div class="sub">Detected Jun 15 – Jul 31 · Search | Fall Protection Systems</div>
+          <p style="font-size:13px; line-height:1.65; color:#3c4043;">Your conversions decreased by ~46% in this campaign compared to the prior period. <b>Likely explanation:</b> keyword match types were changed to broad match and the bid strategy changed to Maximize conversions on Jun 14, which shifted traffic toward lower-converting queries. Auction competition also increased CPCs by ~11% account-wide.</p>
+          <span class="lk" onclick="showView('changehistory')">View change history →</span>
+        </div>
+      </div>
+
+      <div class="cardrow">
+        <div class="ocard">
+          <h4>Search terms insight</h4>
+          <div class="sub">Top emerging themes · your ads matched</div>
+          <div class="row"><span class="nm">OSHA rooftop compliance <i style="color:var(--ink2)">(regulatory refresh)</i></span><span class="up">+140%</span></div>
+          <div class="row"><span class="nm">Non-penetrating guardrail systems</span><span class="up">+32%</span></div>
+          <div class="row"><span class="nm">Roof safety audits</span><span class="up">+58%</span></div>
+          <div class="row"><span class="nm">Careers / training queries <b style="color:var(--red)">(waste)</b></span><span class="up">+91%</span></div>
+        </div>
+        <div class="ocard">
+          <h4>Auction insights — Search</h4>
+          <div class="sub">Impression share · overlap rate in parentheses</div>
+          <div class="row"><span class="nm"><b>You (KEE Safety)</b></span><span>42.1%</span></div>
+          <div class="row"><span class="nm">simplifiedsafety.com (48%)</span><span>31.4%</span></div>
+          <div class="row"><span class="nm">diversifiedfallprotection.com (39%)</span><span>24.8%</span></div>
+          <div class="row"><span class="nm">guardianfall.com (31%)</span><span>19.2%</span></div>
+          <div class="row"><span class="nm">bluewatermfg.com (24%) <b style="color:var(--amber)">new ↑</b></span><span>15.6%</span></div>
+          <div class="row"><span class="nm">safetyrail.com (18%)</span><span>12.9%</span></div>
+        </div>
+        <div class="ocard">
+          <h4>Reports</h4>
+          <div class="sub">Predefined reports you'd actually pull</div>
+          <div class="row"><span class="nm cname">Search terms report</span><span>→</span></div>
+          <div class="row"><span class="nm cname">Impression share &amp; lost IS (budget/rank)</span><span>→</span></div>
+          <div class="row"><span class="nm cname">Day of week / hour of day</span><span>→</span></div>
+          <div class="row"><span class="nm cname">Landing pages</span><span>→</span></div>
+          <div class="row"><span class="nm cname">Conversion lag (days to convert)</span><span>→</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ AD GROUPS ═══════════════ -->
+    <section class="view" id="v-adgroups">
+      <div class="pagehead">
+        <h1>Ad groups</h1>
+        <span class="viewchip">🏠 All campaigns</span>
+        <div class="daterange">Last 3 months <span class="datebox">May 1 – Jul 31, 2026 ▾</span></div>
+      </div>
+      <div class="hint">💡 <b>The drill-down move:</b> "Fall Protection – General" is where the damage is concentrated — $296 per lead and a 2.25% CTR after the broad-match switch, while its sibling ad groups are near $130. Saying "the campaign isn't broken, one ad group is" shows you segment before you conclude.</div>
+      <div class="toolbar"><span class="filter">▽&nbsp; Add filter</span><span class="spacer"></span><span class="tbtn"><span class="i">▦</span>Columns</span><span class="tbtn"><span class="i">⭳</span>Download</span></div>
+      <table class="gt" style="border-radius:0 0 8px 8px;">
+        <thead><tr>
+          <th class="l" style="width:34px"><input type="checkbox" disabled></th><th class="l" style="width:20px"></th>
+          <th class="l">Ad group</th><th class="l">Campaign</th><th class="l">Status</th>
+          <th>↓ Cost</th><th>Cost / conv.</th><th>Conversions</th><th>Conv. rate</th><th>CTR</th><th>Avg. CPC</th><th>Clicks</th><th>Impr.</th>
+        </tr></thead>
+        <tbody id="tb-adgroups"></tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════════ ADS ═══════════════ -->
+    <section class="view" id="v-ads">
+      <div class="pagehead">
+        <h1>Ads</h1>
+        <span class="viewchip">🏠 All campaigns · Responsive search ads</span>
+        <div class="daterange">Last 3 months <span class="datebox">May 1 – Jul 31, 2026 ▾</span></div>
+      </div>
+      <div class="hint">💡 <b>What to say here:</b> each ad group runs one responsive search ad — best practice is one strong RSA per ad group with pinned compliance messaging. Note the "Average" ad strength in the problem ad group, and that generic copy + broad match compounds the relevance problem (low CTR → lower Quality Score → higher CPC).</div>
+      <div class="toolbar"><span class="filter">▽&nbsp; Add filter</span><span class="spacer"></span><span class="tbtn"><span class="i">▦</span>Columns</span><span class="tbtn"><span class="i">⭳</span>Download</span></div>
+      <table class="gt" style="border-radius:0 0 8px 8px;">
+        <thead><tr>
+          <th class="l" style="width:34px"><input type="checkbox" disabled></th>
+          <th class="l">Ad</th><th class="l">Ad group</th><th class="l">Ad strength</th><th class="l">Status</th>
+          <th>Cost</th><th>Cost / conv.</th><th>Conversions</th><th>CTR</th><th>Clicks</th><th>Impr.</th>
+        </tr></thead>
+        <tbody id="tb-ads"></tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════════ ASSET GROUPS ═══════════════ -->
+    <section class="view" id="v-assetgroups">
+      <div class="pagehead">
+        <h1>Asset groups</h1>
+        <span class="viewchip">Performance Max | Lead Gen — US</span>
+        <div class="daterange">Last 3 months <span class="datebox">May 1 – Jul 31, 2026 ▾</span></div>
+      </div>
+      <div class="hint">💡 <b>PMax talking point:</b> asset groups replace ad groups in Performance Max — each is a theme + audience signal + creative bundle. Both here have stale assets (92 days old) and thin audience signals. Don't judge PMax by CTR; judge by CPA and lead quality.</div>
+      <div class="toolbar"><span class="filter">▽&nbsp; Add filter</span><span class="spacer"></span><span class="tbtn"><span class="i">▦</span>Columns</span></div>
+      <table class="gt" style="border-radius:0 0 8px 8px;">
+        <thead><tr>
+          <th class="l" style="width:34px"><input type="checkbox" disabled></th><th class="l" style="width:20px"></th>
+          <th class="l">Asset group</th><th class="l">Ad strength</th><th class="l">Status</th>
+          <th>↓ Cost</th><th>Cost / conv.</th><th>Conversions</th><th>CTR</th><th>Avg. CPC</th><th>Clicks</th><th>Impr.</th>
+        </tr></thead>
+        <tbody id="tb-assetgroups"></tbody>
+      </table>
+      <p class="foot-note">Audience signals: "Rooftop Safety — Facilities Managers" uses in-market Building &amp; Site Safety + customer list (2,140 contacts). "Fall Protection — Contractors" uses custom segment from competitor site visitors. Assets last updated Apr 30, 2026.</p>
+    </section>
+
+    <!-- ═══════════════ EXPERIMENTS ═══════════════ -->
+    <section class="view" id="v-experiments">
+      <div class="pagehead">
+        <h1>Experiments</h1>
+        <div class="daterange"><span class="datebox">All experiments ▾</span></div>
+      </div>
+      <div class="hint">💡 <b>If asked "how do you test?":</b> point here. One live A/B test on the KeeGuard quote form, 50/50 split at the campaign level. Trial is ahead (+15% conv. rate) but only at 87% confidence — the disciplined answer is "I'd let it reach 95% before rolling out." Contrast this with the Jun 14 broad-match change, which was NOT tested — that's the lesson.</div>
+      <table class="gt" style="margin-top:14px; border-radius:8px;">
+        <thead><tr>
+          <th class="l">Experiment</th><th class="l">Type</th><th class="l">Campaign</th><th class="l">Status</th><th class="l">Dates</th><th>Traffic split</th>
+        </tr></thead>
+        <tbody>
+          <tr class="rrow">
+            <td class="l"><a class="cname">KeeGuard LP — quote form test</a><br><span class="badge-note">Shorter form: 9 fields → 4 fields</span></td>
+            <td class="l">Custom experiment</td>
+            <td class="l">Search | KeeGuard Rooftop Guardrails</td>
+            <td class="l"><span class="status-dot st-on"></span> <span class="stxt">Active</span></td>
+            <td class="l">May 12 – ongoing</td>
+            <td>50% / 50%</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="expgrid">
+        <div class="ocard">
+          <h4>Base: current quote form (9 fields)</h4>
+          <div class="sub">50% of traffic</div>
+          <div class="row"><span class="nm">Clicks</span><span>851</span></div>
+          <div class="row"><span class="nm">Conversions</span><span>67</span></div>
+          <div class="row"><span class="nm">Conv. rate</span><span>7.87%</span></div>
+          <div class="row"><span class="nm">Cost / conv.</span><span>$78.90</span></div>
+        </div>
+        <div class="ocard" style="border-color:var(--blue);">
+          <h4>Trial: short form (4 fields) <span class="up" style="font-size:12px;">+15.6% conv. rate</span></h4>
+          <div class="sub">50% of traffic · 87% confidence — not yet significant</div>
+          <div class="row"><span class="nm">Clicks</span><span>849</span></div>
+          <div class="row"><span class="nm">Conversions</span><span>77</span></div>
+          <div class="row"><span class="nm">Conv. rate</span><span>9.07%</span></div>
+          <div class="row"><span class="nm">Cost / conv.</span><span>$68.40</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ CAMPAIGN GROUPS ═══════════════ -->
+    <section class="view" id="v-campaigngroups">
+      <div class="pagehead">
+        <h1>Campaign groups</h1>
+        <div class="daterange">Last 3 months <span class="datebox">May 1 – Jul 31, 2026 ▾</span></div>
+      </div>
+      <div class="hint">💡 <b>One-liner:</b> campaign groups bundle campaigns under a shared performance target. The account's target — 300 leads/month at ≤$95 — is exactly what leadership set, and the group status shows it's behind pace. This is where the "300 → 200" conversation is formalized inside Google Ads.</div>
+      <table class="gt" style="margin-top:14px; border-radius:8px;">
+        <thead><tr>
+          <th class="l" style="width:20px"></th>
+          <th class="l">Campaign group</th><th class="l">Campaigns</th><th class="l">Performance target</th><th class="l">Target status</th>
+          <th>Cost</th><th>Cost / conv.</th><th>Conversions</th>
+        </tr></thead>
+        <tbody>
+          <tr class="rrow">
+            <td class="l"><span class="status-dot st-on"></span></td>
+            <td class="l"><a class="cname">US Lead Generation</a></td>
+            <td class="l">5 campaigns</td>
+            <td class="l">300 conversions / month<br><span class="badge-note">at CPA ≤ $95.00</span></td>
+            <td class="l"><span class="stxt" style="color:var(--red); font-weight:600;">⚠ Behind pace</span><br><span class="badge-alert">Jul: 203 conv. @ $112 CPA</span></td>
+            <td>$80,690</td><td>$105.75</td><td>763.00</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="cardrow">
+        <div class="ocard" style="grid-column:1/-1;">
+          <h4>Monthly pace vs. target</h4>
+          <div class="sub">Target: 300 leads/month at ≤ $95 CPA</div>
+          <div class="minibar" style="height:130px;">
+            <div class="mb"><div class="n">302 ✓</div><div class="bar" style="height:78%"></div><div class="m">May · $89 CPA</div></div>
+            <div class="mb dropped"><div class="n">258 ✗</div><div class="bar" style="height:66%; background:var(--amber);"></div><div class="m">Jun · $103 CPA</div></div>
+            <div class="mb dropped"><div class="n">203 ✗</div><div class="bar" style="height:52%"></div><div class="m">Jul · $112 CPA</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ ASSETS ═══════════════ -->
+    <section class="view" id="v-assets">
+      <div class="pagehead">
+        <h1>Assets</h1>
+        <span class="viewchip">Account level · Associations view</span>
+        <div class="daterange">Last 3 months <span class="datebox">May 1 – Jul 31, 2026 ▾</span></div>
+      </div>
+      <div class="hint">💡 <b>Quick line:</b> assets (formerly "extensions") make ads bigger and lift CTR for free. "Request a Quote" sitelink converts well; images are only on PMax. An easy add: price assets for Kee Klamp SKUs and call assets during business hours for the sales line.</div>
+      <div class="toolbar"><span class="filter">▽&nbsp; Add filter</span><span class="spacer"></span><span class="tbtn"><span class="i">▦</span>Columns</span><span class="tbtn"><span class="i">⭳</span>Download</span></div>
+      <table class="gt" style="border-radius:0 0 8px 8px;">
+        <thead><tr>
+          <th class="l">Asset</th><th class="l">Type</th><th class="l">Level</th><th class="l">Status</th>
+          <th>Impr.</th><th>Clicks</th><th>CTR</th>
+        </tr></thead>
+        <tbody id="tb-assets"></tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════════ AUDIENCES, KEYWORDS, AND CONTENT ═══════════════ -->
+    <section class="view" id="v-audiences">
+      <div class="pagehead">
+        <h1>Audiences, keywords, and content</h1>
+        <div class="daterange">Last 3 months <span class="datebox">May 1 – Jul 31, 2026 ▾</span></div>
+      </div>
+      <div class="hint">💡 <b>The smoking-gun page.</b> Search keywords: broad-match keywords with QS 3–5 burning budget. Search terms: "fall protection jobs", "free training" — $2,900 with zero leads. Negative keywords: only 3, added Jul 28 (reactive, late). This is where you prove the lead-drop diagnosis with receipts.</div>
+
+      <div class="subtabs">
+        <div class="stab on" data-s="kw" onclick="subTab('kw')">Search keywords</div>
+        <div class="stab" data-s="st" onclick="subTab('st')">Search terms</div>
+        <div class="stab" data-s="aud" onclick="subTab('aud')">Audiences</div>
+        <div class="stab" data-s="neg" onclick="subTab('neg')">Negative search keywords</div>
+      </div>
+
+      <div class="subpane on" id="s-kw">
+        <div class="toolbar" style="margin-top:0; border-radius:0;"><span class="filter">▽&nbsp; Filter: Top keywords by cost</span><span class="spacer"></span><span class="tbtn"><span class="i">⭳</span>Download</span></div>
+        <table class="gt" style="border-radius:0 0 8px 8px;">
+          <thead><tr>
+            <th class="l">Keyword</th><th class="l">Match type</th><th class="l">Campaign</th><th class="l">Quality Score</th>
+            <th>↓ Cost</th><th>Cost / conv.</th><th>Conversions</th><th>CTR</th><th>Avg. CPC</th><th>Clicks</th><th>Impr.</th>
+          </tr></thead>
+          <tbody id="tb-keywords"></tbody>
+        </table>
+        <p class="foot-note">Showing top 16 keywords by cost. Quality Score = expected CTR + ad relevance + landing page experience (1–10).</p>
+      </div>
+
+      <div class="subpane" id="s-st">
+        <div class="toolbar" style="margin-top:0; border-radius:0;"><span class="filter">▽&nbsp; Matched search terms · sorted by cost</span><span class="spacer"></span><span class="tbtn"><span class="i">⭳</span>Download</span></div>
+        <table class="gt" style="border-radius:0 0 8px 8px;">
+          <thead><tr>
+            <th class="l">Search term</th><th class="l">Matched keyword</th><th class="l">Added / Excluded</th>
+            <th>↓ Cost</th><th>Conversions</th><th>Cost / conv.</th><th>Clicks</th>
+          </tr></thead>
+          <tbody id="tb-terms"></tbody>
+        </table>
+        <p class="foot-note">⚠ Terms marked "None" are matched by broad match but not added as keywords — the first place to look when CPA suddenly rises.</p>
+      </div>
+
+      <div class="subpane" id="s-aud">
+        <table class="gt" style="margin-top:14px; border-radius:8px;">
+          <thead><tr>
+            <th class="l">Audience segment</th><th class="l">Type</th><th class="l">Targeting</th><th class="l">Campaigns</th>
+            <th>Impr.</th><th>Clicks</th><th>Conversions</th>
+          </tr></thead>
+          <tbody id="tb-audiences"></tbody>
+        </table>
+        <p class="foot-note">All Search audiences run in Observation mode (bid adjustments only, no reach restriction) — the safe default for B2B Search.</p>
+      </div>
+
+      <div class="subpane" id="s-neg">
+        <table class="gt" style="margin-top:14px; border-radius:8px;">
+          <thead><tr>
+            <th class="l">Negative keyword</th><th class="l">Match type</th><th class="l">Level</th><th class="l">Added</th>
+          </tr></thead>
+          <tbody>
+            <tr class="rrow"><td class="l">"jobs"</td><td class="l">Phrase</td><td class="l">Campaign — Fall Protection Systems</td><td class="l">Jul 28, 2026 <span class="badge-alert">6 weeks late</span></td></tr>
+            <tr class="rrow"><td class="l">"salary"</td><td class="l">Phrase</td><td class="l">Campaign — Fall Protection Systems</td><td class="l">Jul 28, 2026</td></tr>
+            <tr class="rrow"><td class="l">"free training"</td><td class="l">Phrase</td><td class="l">Campaign — Fall Protection Systems</td><td class="l">Jul 28, 2026</td></tr>
+          </tbody>
+        </table>
+        <p class="foot-note">Only 3 negatives in the whole account — and they were added 6 weeks after broad match went live. Recommendation: build a shared negative list (careers, training, PDF/free, DIY, competitor-irrelevant) applied account-wide.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════ CHANGE HISTORY ═══════════════ -->
+    <section class="view" id="v-changehistory">
+      <div class="pagehead">
+        <h1>Change history</h1>
+        <div class="daterange"><span class="datebox">Apr 1 – Jul 31, 2026 ▾</span></div>
+      </div>
+      <div class="hint">💡 <b>The detective's page — end your lead-drop answer here.</b> "I'd confirm the timeline in Change history: match types and bid strategy both changed the morning of Jun 14, and the conversion decline starts that same week. Correlation plus mechanism — that's my primary cause."</div>
+      <div class="toolbar"><span class="filter">▽&nbsp; Filter: All changes · All users</span><span class="spacer"></span><span class="tbtn"><span class="i">⭳</span>Download</span></div>
+      <table class="gt" style="border-radius:0 0 8px 8px;">
+        <thead><tr>
+          <th class="l">Date &amp; time</th><th class="l">User</th><th class="l">Campaign</th><th class="l">Change type</th><th class="l">Changes</th>
+        </tr></thead>
+        <tbody id="tb-changes"></tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════════ PRACTICE SCENARIOS ═══════════════ -->
+    <section class="view" id="v-scenarios">
+      <div class="pagehead">
+        <h1>🎯 Practice scenarios</h1>
+        <span class="viewchip">Not part of Google Ads — your interview training ground</span>
+      </div>
+      <div class="hint">💡 <b>How to use this page:</b> read the interviewer prompt out loud, answer aloud using the real dashboard pages (don't peek), then open the model answer and compare. The green boxes are "advanced flourishes" — lines that make you sound senior. Work top to bottom; difficulty escalates.</div>
+
+      <!-- METRICS PLAYBOOK -->
+      <div class="scen">
+        <div class="scen-head"><span class="lv core">PLAYBOOK</span><h4>Primary vs. supporting metrics — your operating system for every answer</h4></div>
+        <div class="scen-body">
+          <p><b>Primary metrics</b> (lead with these, always, in this order): <b>Cost</b> → <b>Conversions</b> → <b>Cost / conv.</b> For lead gen, these are the business. Everything else exists to explain them.</p>
+          <p><b>Supporting metrics</b> (use to diagnose, never to headline): <b>CTR</b>, <b>Avg. CPC</b>, <b>Conv. rate</b>, Clicks, Impressions.</p>
+          <ul>
+            <li><b>CTR benchmark (lead-gen Search):</b> 5–8% = doing things right · above 8% = excellent · below 5% = look at search terms, targeting, or ad copy. On this account: Kee Klamp 6.21% ✓ · KeeGuard 5.00% (borderline) · Gates 4.20% (slightly under) · Fall Protection 2.70% ✗ · PMax 0.90% (exception — Display/YouTube inventory, don't judge it by CTR).</li>
+            <li><b>Conv. rate benchmark:</b> 5–15% = doing things right · under 5% = problem. Here: KeeGuard 8.50% ✓ · Kee Klamp 7.56% ✓ · Gates 5.83% ✓ · Fall Protection 4.12% ✗ — under the floor, and that's your diagnosis anchor.</li>
+            <li><b>Prerequisite before trusting ANY of this:</b> conversion tracking must count real leads (form fills + calls here), not button clicks or page views. Say this early in the interview — it's the mark of someone who's been burned.</li>
+            <li><b>Timeframes:</b> never judge on less than 7 days; routine reads at 7–30 days; significant changes on 2/4/8-week averages; always sanity-check a second timeframe before acting.</li>
+            <li><b>Blended numbers lie:</b> account CTR reads 2.63% — but that's PMax's 208k cheap impressions dragging a blend. Segment before you diagnose. Same for the account's $105.75 CPA: it spans $55 to $192.</li>
+          </ul>
+          <div class="flourish"><b>Sound senior:</b> "I keep primary and supporting metrics separate. Cost per lead is the verdict; CTR and conversion rate are the evidence. If CTR is under 5% I look at search terms and copy; if conversion rate is under 5% I look at traffic quality and the landing page. And I never read either at the campaign level only — the campaign number is an average that hides the problem."</div>
+        </div>
+      </div>
+
+      <!-- S1 -->
+      <div class="scen">
+        <div class="scen-head"><span class="lv core">CORE 1</span><h4>"Walk me through this account."</h4></div>
+        <div class="scen-body">
+          <div class="ivq"><b>INTERVIEWER</b>"Here's our Google Ads account. Take a look and tell me what you see."</div>
+          <p class="task"><b>Your task:</b> 2 minutes max, out loud, Campaigns page only. Primary metrics first, then one supporting-metric observation, then your headline finding. Do NOT list every number.</p>
+          <details class="model"><summary>Model answer</summary><div class="inner">
+            <p>"Let me orient first: Campaigns view, May through July, five campaigns — four Search, one Performance Max — and the conversion action is real leads: quote form fills plus calls, so the data's trustworthy. <b>Primary metrics: $80,690 spent, 763 leads, $105.75 per lead.</b> Spend is flat versus the prior period but leads are down 15% and cost per lead is up 22% — so this is an efficiency problem, not a budget problem."</p>
+            <p>"Supporting metrics point at where: Kee Klamp converts at $55 with a 6.2% CTR — that's my benchmark of healthy. Fall Protection Systems is $192 a lead on a 2.7% CTR and 4.1% conversion rate — both under the floor for lead-gen Search. It also takes 40% of the spend. That's where I'd dig first."</p>
+            <div class="flourish"><b>Flourish:</b> end with intent — "Mind if I step down into its ad groups? A campaign number is an average, and averages hide problems."</div>
+          </div></details>
+        </div>
+      </div>
+
+      <!-- S2 -->
+      <div class="scen">
+        <div class="scen-head"><span class="lv core">CORE 2</span><h4>The step-down drill: campaign → ad group → ad → keyword → search term</h4></div>
+        <div class="scen-body">
+          <div class="ivq"><b>INTERVIEWER</b>"You said Fall Protection Systems looks bad. Its CTR is 2.7%. What do you do with that?"</div>
+          <p class="task"><b>Your task:</b> narrate the full dissection using the real pages: Ad groups → Ads → Audiences/keywords → Search terms. Never make a decision at the level you spotted the problem.</p>
+          <details class="model"><summary>Model answer</summary><div class="inner">
+            <p>"2.7% is the campaign blend — I don't act on a blend. Step down to <b>ad groups</b>: 'Fall Protection – General' is 2.25% CTR at $296 a lead, while its siblings are 3.4% and 3.8% at ~$130. So the campaign isn't broken — one ad group is. Step down again to the <b>ad</b>: that group's RSA is rated 'Average' with generic copy. Then the <b>keywords</b>: its broad-match terms sit at Quality Score 3–5. And the <b>search terms</b> close the case: 'fall protection jobs near me', 'free training ppt' — $2,900 spent, zero leads."</p>
+            <p>"So the low CTR isn't one problem, it's a chain: broad match admits junk queries → ads look irrelevant to those queries → CTR falls → Quality Score falls → CPC rises. Fix at the entry point: match types and negatives first, then copy."</p>
+            <div class="flourish"><b>Flourish:</b> "The rule I work by: diagnose top-down, fix bottom-up. You spot it at the campaign level, you prove it at the search-term level, and you fix it there first."</div>
+          </div></details>
+        </div>
+      </div>
+
+      <!-- S3 -->
+      <div class="scen">
+        <div class="scen-head"><span class="lv core">CORE 3</span><h4>"Leads dropped from 300 to 200. Investigate."</h4></div>
+        <div class="scen-body">
+          <div class="ivq"><b>INTERVIEWER</b>"Leadership is asking why lead volume fell by a third over the quarter. Walk me through how you'd figure it out."</div>
+          <p class="task"><b>Your task:</b> the flagship question. Framework out loud: measurement → segment → volume-vs-efficiency → external. End at Change history. (Full script in the 🎓 coach, "The lead drop" tab.)</p>
+          <details class="model"><summary>Model answer (compressed)</summary><div class="inner">
+            <ol>
+              <li><b>Verify it's real:</b> conversion tag, site/form changes, does the CRM see the same decline? Only real leads count — if someone added a button-click conversion, the whole analysis is garbage.</li>
+              <li><b>Segment the −99:</b> by campaign it's FPS ≈ −35 (starts week of Jun 14), KeeGuard ≈ −20 (budget-capped, 38% lost IS), Gates ≈ −15 (CPC inflation), PMax ≈ −10 (stale creative).</li>
+              <li><b>Volume vs. efficiency:</b> spend flat, clicks slightly up, conversion rate down → buying more but worse traffic. Efficiency problem.</li>
+              <li><b>Confirm mechanism in Change history:</b> Jun 14, 9:12 AM — 247 keywords to broad; 9:17 AM — bid strategy to Maximize conversions with no CPA guardrail. Decline starts that week. Correlation plus mechanism.</li>
+            </ol>
+            <div class="flourish"><b>Flourish:</b> "And I'd check one boring thing everyone skips: the timeframe. This is a 3-month view — I'd re-cut it as four 2-week windows to see whether the decline is a step (a change did it) or a slope (the market did it). Here it's a step, dated Jun 14."</div>
+          </div></details>
+        </div>
+      </div>
+
+      <!-- S4 -->
+      <div class="scen">
+        <div class="scen-head"><span class="lv adv">ADVANCED 4</span><h4>"Same budget. Get me more leads."</h4></div>
+        <div class="scen-body">
+          <div class="ivq"><b>INTERVIEWER</b>"You can't have another dollar. How do you grow lead volume next month?"</div>
+          <p class="task"><b>Your task:</b> reallocation with arithmetic, out loud. Use Budget/day and Cost/conv. columns; the money is misallocated, not insufficient.</p>
+          <details class="model"><summary>Model answer</summary><div class="inner">
+            <p>"The account spends ~$890/day. $360 of it goes to a $192-per-lead campaign while a $73-per-lead campaign is capped at $220 and losing 38% of its impressions to budget. I'd move ~$100/day from Fall Protection to KeeGuard. Rough math: $100/day ≈ $3,000/month. At KeeGuard's ~$75–85 marginal cost per lead — I assume the marginal lead costs more than the average one — that's roughly 35–40 extra leads. Fall Protection loses maybe 15 of its expensive leads. Net: +20–25 leads/month at a lower blended CPA, before I've fixed anything else."</p>
+            <p>"Then the free wins: negatives on the junk search terms (that's ~$950/month spent on zero-conversion queries), and reverting the worst broad keywords to phrase. That's recovery without a dollar of new budget."</p>
+            <div class="flourish"><b>Flourish:</b> saying <b>"marginal cost per lead, not average"</b> — and knowing lost-IS-budget means guaranteed cheap volume exists — is what separates senior media buyers from dashboard readers.</div>
+          </div></details>
+        </div>
+      </div>
+
+      <!-- S5 -->
+      <div class="scen">
+        <div class="scen-head"><span class="lv adv">ADVANCED 5</span><h4>"Our Google rep says move everything to broad match + Smart Bidding."</h4></div>
+        <div class="scen-body">
+          <div class="ivq"><b>INTERVIEWER</b>"We got a call from our Google account rep recommending we switch all campaigns to broad match with automated bidding. Should we?"</div>
+          <p class="task"><b>Your task:</b> disagree diplomatically, with evidence from this account. This tests judgment and vendor skepticism.</p>
+          <details class="model"><summary>Model answer</summary><div class="inner">
+            <p>"We ran that exact play on June 14 in Fall Protection Systems, and we have the receipts: CTR fell from ~4.5% to 2.7%, conversion rate under 5%, cost per lead nearly doubled to $192. Broad match plus Smart Bidding <i>can</i> work — but only with guardrails this account didn't have: a target CPA (there was none — pure Maximize conversions), a mature negative list (there were 3 negatives, added six weeks late), and enough conversion volume per campaign for the algorithm to learn on."</p>
+            <p>"So my answer is: not account-wide, not untested. If we try it again, it goes through Experiments as a 50/50 split with a tCPA guardrail, judged at 95% confidence on cost per lead — exactly like the landing-page test that's running now. Google's recommendations optimize for Google's coverage; our job is to adopt the ones that survive our own testing."</p>
+            <div class="flourish"><b>Flourish:</b> "Auto-apply recommendations is turned off in every account I run. Optimization score is a coverage metric, not a performance metric — I treat 81.2% as a to-review list, not a to-do list."</div>
+          </div></details>
+        </div>
+      </div>
+
+      <!-- S6 -->
+      <div class="scen">
+        <div class="scen-head"><span class="lv adv">ADVANCED 6</span><h4>"CPCs are up 11% — a new competitor entered. Respond."</h4></div>
+        <div class="scen-body">
+          <div class="ivq"><b>INTERVIEWER</b>"Auction insights shows bluewatermfg.com bidding on our terms and CPCs climbing. What's your move?"</div>
+          <p class="task"><b>Your task:</b> Insights page → Auction insights card. Avoid the trap answer ("bid more").</p>
+          <details class="model"><summary>Model answer</summary><div class="inner">
+            <p>"First, I don't start a bidding war — that's paying Google to fight. Three moves instead: <b>(1) Win on Quality Score, not bid:</b> tighter ad groups and copy that mirrors the query cut real CPC; Gates &amp; Walkways at $8.45 CPC and QS 7–8 has room. <b>(2) Defend the brand:</b> exact-match 'kee klamp' and 'keeguard' terms at QS 10 are cheap to hold and expensive for them to attack — I'd watch whether they bid on our brand and add brand campaigns if needed. <b>(3) Compete where they aren't:</b> our lost impression share on KeeGuard is budget-driven, 38% — I can buy guaranteed cheap impressions there while they overpay on the head terms."</p>
+            <div class="flourish"><b>Flourish:</b> "I'd also check their angle — if they're winning overlap share with a lower price point, that's a message-and-landing-page problem, and no bid changes fix a message problem."</div>
+          </div></details>
+        </div>
+      </div>
+
+      <!-- S7 -->
+      <div class="scen">
+        <div class="scen-head"><span class="lv exp">EXPERT 7</span><h4>"Sales says the leads are junk."</h4></div>
+        <div class="scen-body">
+          <div class="ivq"><b>INTERVIEWER</b>"Volume looks fine but our sales team says half the leads from ads go nowhere. What do you do?"</div>
+          <p class="task"><b>Your task:</b> the measurement-maturity question. Primary vs. secondary conversions, offline import, value-based bidding.</p>
+          <details class="model"><summary>Model answer</summary><div class="inner">
+            <p>"This account optimizes to form fills and calls — that's the right <b>primary</b> conversion, but it's the top of the funnel. Google can't tell a $200k KeeGuard project inquiry from a student downloading a spec sheet; Conv. value is $0 across the board. So step one is closing the loop: import offline conversion stages from the CRM — MQL, SQL, closed-won — matched by GCLID. Qualified stages become the new primary conversions we bid to; raw form fills move to <b>secondary</b> — tracked, visible, but not optimized toward."</p>
+            <p>"Then I'd find where junk concentrates. My bet from this account: the broad-match traffic in Fall Protection – General and PMax's form fills — PMax will happily manufacture cheap low-quality leads if you let it optimize on form submissions. With value data flowing, I can switch those campaigns to tROAS or value-weighted tCPA, and 'volume' conversations become 'pipeline' conversations."</p>
+            <div class="flourish"><b>Flourish:</b> "Cost per lead is a proxy metric. The real KPI is cost per qualified opportunity — and the fastest way to look senior in B2B is to be the person who wires that up."</div>
+          </div></details>
+        </div>
+      </div>
+
+      <!-- S8 -->
+      <div class="scen">
+        <div class="scen-head"><span class="lv exp">EXPERT 8</span><h4>"We recovered to 300. Now leadership wants 400."</h4></div>
+        <div class="scen-body">
+          <div class="ivq"><b>INTERVIEWER</b>"Assume you've fixed the decline. Where do the next 100 leads a month come from?"</div>
+          <p class="task"><b>Your task:</b> growth thinking with a sequence, not a wish list. Name where volume physically exists.</p>
+          <details class="model"><summary>Model answer</summary><div class="inner">
+            <p>"In order of certainty: <b>(1) Buy back lost impression share</b> — KeeGuard's 38% lost-to-budget is real, auctioned demand we're declining daily; fully funding it is ~+35 leads at a known CPA. <b>(2) Expand what's proven</b> — Kee Klamp at $55/lead scales into adjacent SKU and spec-driven queries ('galvanized pipe fittings structural', railing code searches). <b>(3) Rebuild Fall Protection properly</b> — phrase match, negatives, tCPA ~$90; its addressable volume is the account's biggest. <b>(4) New demand, tested small</b> — a competitor-terms campaign and PMax scaled only after lead-quality data exists. Each step gates the next: I scale a thing only after its CPA is proven at the current level."</p>
+            <div class="flourish"><b>Flourish:</b> "I'd set the expectation that lead 301–400 costs more than lead 200–300 — marginal CPA rises as you buy deeper. I'd budget the 400 target at ~$110–120 blended, not today's $95, and say so up front. Under-promising there is a credibility play."</div>
+          </div></details>
+        </div>
+      </div>
+
+      <!-- S9 -->
+      <div class="scen">
+        <div class="scen-head"><span class="lv exp">EXPERT 9</span><h4>"Yesterday we only got 2 leads. The client is panicking."</h4></div>
+        <div class="scen-body">
+          <div class="ivq"><b>INTERVIEWER</b>"It's Tuesday morning. Monday's report shows 2 leads vs. the usual 9–10 a day. The client wants changes NOW. What do you do?"</div>
+          <p class="task"><b>Your task:</b> the discipline question. Timeframe rules under pressure.</p>
+          <details class="model"><summary>Model answer</summary><div class="inner">
+            <p>"First: one day is not a decision-making timeframe — I don't touch bids, budgets, or keywords on 24 hours of data. Daily lead flow is lumpy, B2B especially (Mondays and Fridays swing, conversion lag means yesterday's clicks convert tomorrow). My floor for reading data is 7 days; for significant changes, 2–8 week averages."</p>
+            <p>"But 'don't panic' isn't 'do nothing.' I'd spend 15 minutes ruling out breakage, because outages ARE visible in a day: Is the campaign serving (status, budget exhausted, disapprovals)? Is the site up and the form working — submit a test lead? Is the conversion tag firing? Billing failure? If all clear, I tell the client: 'Everything's serving and tracking; this looks like normal daily variance plus conversion lag — here's the 7-day trend, and here's the date we'll reassess.' Giving them a review date is what actually stops the panic."</p>
+            <div class="flourish"><b>Flourish:</b> "The skill isn't resisting changes — it's knowing which problems show up in a day (breakage) versus which need weeks (performance). I react instantly to the first kind and deliberately slowly to the second."</div>
+          </div></details>
+        </div>
+      </div>
+
+      <!-- DRILLS -->
+      <div class="scen">
+        <div class="scen-head"><span class="lv adv">DRILLS</span><h4>Solo assignments — do these before the interview</h4></div>
+        <div class="scen-body">
+          <div class="drill"><b>1 · Timed walkthrough.</b> Hide hints (💡 top bar), open Campaigns, record yourself on your phone doing Core 1 in under 2 minutes. Listen back once. Primary metrics first — if you hear yourself open with CTR, redo it.</div>
+          <div class="drill"><b>2 · Mental math reps.</b> Cover the Cost/conv. column with your hand and compute it for 3 campaigns from Cost ÷ Conversions (e.g., $10,541 ÷ 192 ≈ $55). Do the same for one CTR (Clicks ÷ Impr.) and one conv. rate (Conv. ÷ Clicks). Interviewers notice when the math is instant.</div>
+          <div class="drill"><b>3 · The step-down chain, aloud, 90 seconds.</b> Campaigns → Ad groups → Ads → Search keywords → Search terms, narrating Fall Protection's problem at each level without pausing. This is Core 2 as muscle memory.</div>
+          <div class="drill"><b>4 · Write 10 negative keywords.</b> From the Search terms tab, draft a shared negative list (careers, free/training, DIY, informational). Bonus: say which match type each negative gets and why.</div>
+          <div class="drill"><b>5 · Fix the weak ad.</b> The "Average"-strength RSA in Fall Protection – General: write 8 new headlines and 3 descriptions that mirror high-intent queries ("fall protection systems for flat roofs") and exclude job-seekers by wording.</div>
+          <div class="drill"><b>6 · Benchmark flashcards.</b> From memory: lead-gen Search CTR good/excellent/bad thresholds; conv. rate floor and healthy range; minimum decision timeframe; the two June 14 changes and their timestamps. If you can cite "9:12 AM and 9:17 AM," you own the room.</div>
+          <div class="drill"><b>7 · The columns tour.</b> In a real account (or here, conceptually): Columns → Modify — know that you'd add "Search lost IS (budget)", "Search lost IS (rank)", "Conv. value/cost", and "All conv." — and be ready to say why each earns a spot while 100 others don't.</div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<div id="toast">Practice mode — this isn't a real account, nothing was applied</div>
+<button class="coach-fab" onclick="toggleCoach()">🎓 Interview coach</button>
+
+<!-- ================= COACH DRAWER ================= -->
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h2>🎓 Interview coach — KEE Safety mock account</h2>
+    <button class="x" onclick="toggleCoach()">✕</button>
+  </div>
+  <div class="tabs">
+    <div class="tab on" data-p="walk" onclick="tab('walk')">Walkthrough</div>
+    <div class="tab" data-p="camps" onclick="tab('camps')">Campaigns</div>
+    <div class="tab" data-p="drop" onclick="tab('drop')">The lead drop</div>
+    <div class="tab" data-p="recs" onclick="tab('recs')">Recommendations</div>
+    <div class="tab" data-p="pages" onclick="tab('pages')">Pages</div>
+    <div class="tab" data-p="gloss" onclick="tab('gloss')">Glossary</div>
+  </div>
+  <div class="drawer-body">
+
+    <div class="pane on" id="p-walk">
+      <h3>How to walk an interviewer through this account</h3>
+      <p>Structure beats detail. Use this 4-step order — it shows you think top-down like a marketer, not cell-by-cell like a spreadsheet.</p>
+      <ol><li><b>Orient (15 sec):</b> say what you're looking at before analyzing it.</li></ol>
+      <div class="say">"This is the Campaigns view for KEE Safety's account, May through July, compared to the previous 3 months. Five campaigns — four Search, one Performance Max — spending about $27k a month, with 'Leads' (quote form + calls) as the conversion action."</div>
+      <ol start="2"><li><b>Headline the account totals:</b> lead with the two numbers that matter to the business.</li></ol>
+      <div class="say">"Top line: 763 leads at $105.75 each. Spend is roughly flat vs. the prior period, but conversions are down ~15% and cost per lead is up ~22% — so this is an efficiency problem, not a budget problem. The chart confirms it: leads have slid from ~300/month in May to ~200 in July."</div>
+      <ol start="3"><li><b>Contrast best vs. worst campaign:</b> show you can rank by what matters (cost/conv., not clicks).</li></ol>
+      <div class="say">"Kee Klamp is my most efficient campaign — $55 a lead at a 6.2% CTR, classic high-intent product searches. Fall Protection Systems is the outlier: it takes 40% of spend but delivers leads at $192, three and a half times more expensive."</div>
+      <ol start="4"><li><b>Drill down with intent:</b> Ad groups → the damage is one ad group. Audiences/keywords → the wasted search terms. Change history → the Jun 14 timeline. Then give recommendations. Every page you open should answer a question you just raised aloud.</li></ol>
+      <h3>Rules of thumb under pressure</h3>
+      <ul>
+        <li>Never read a metric without interpreting it ("CTR is 2.7%… which is low for Search, suggesting loose targeting").</li>
+        <li>Tie every observation to money or leads — that's what KEE Safety's hiring manager cares about.</li>
+        <li>If asked something you don't know, narrate how you'd find out ("I'd check the search terms report / Change history").</li>
+        <li>B2B nuance: a lead isn't revenue. Mention lead <i>quality</i> and offline conversion tracking — it's a differentiator.</li>
+      </ul>
+    </div>
+
+    <div class="pane" id="p-camps">
+      <h3>Campaign-by-campaign story</h3>
+      <p>Click any card (or any campaign name in the table) to highlight the row.</p>
+      <div class="card" onclick="hl('row-fps')">
+        <div class="t">Search | Fall Protection Systems <span class="pill bad">PROBLEM</span></div>
+        <div class="d">The main culprit behind the lead drop. On <b>Jun 14</b> keywords were switched to broad match with Maximize conversions (verify in <b>Change history</b> — it's there). Impressions ballooned, but CTR fell to 2.7% and conv. rate to 4.1% — broader, colder traffic. Result: $192 per lead on the biggest budget ($360/day). Leads fell from ~75/month to ~40/month. Drill into <b>Ad groups</b>: the damage is concentrated in "Fall Protection – General" ($296/lead).</div>
+      </div>
+      <div class="card" onclick="hl('row-keeguard')">
+        <div class="t">Search | KeeGuard Rooftop Guardrails <span class="pill warn">CONSTRAINED</span></div>
+        <div class="d">The volume workhorse: 284 leads at $72.92, 8.5% conv. rate. But <b>Limited by budget</b>, losing 38% of impression share — it runs out of money daily. Cheapest win in the account: feed it budget from Fall Protection. Also home of the live landing-page experiment (+15% conv. rate, not yet significant).</div>
+      </div>
+      <div class="card" onclick="hl('row-keeklamp')">
+        <div class="t">Search | Kee Klamp Fittings &amp; Railings <span class="pill good">STAR</span></div>
+        <div class="d">Best efficiency: $54.90 per lead, 6.2% CTR, $4.15 clicks. People searching KEE's own product names — very high intent. QS 10 on brand terms. Protect it (exact match, watch competitors in Auction insights) and expand to adjacent SKU searches.</div>
+      </div>
+      <div class="card" onclick="hl('row-gates')">
+        <div class="t">Search | Safety Gates &amp; Roof Walkways <span class="pill warn">WATCH</span></div>
+        <div class="d">Middling: $145 per lead with the account's highest CPC ($8.45), creeping up — rising auction competition (see bluewatermfg.com entering Auction insights). Traffic quality is fine (4.2% CTR, 5.8% CvR); the price is the issue. Fix via Quality Score and a tCPA cap.</div>
+      </div>
+      <div class="card" onclick="hl('row-pmax')">
+        <div class="t">Performance Max | Lead Gen — US <span class="pill warn">UNDERPOWERED</span></div>
+        <div class="d">47 leads at $144. The 0.9% CTR is normal for PMax (Display/YouTube inventory). Real issues visible in <b>Asset groups</b>: assets 92 days stale, thin audience signals, no lead-quality feedback. Refresh assets, add customer-list signals, import offline conversions before scaling.</div>
+      </div>
+    </div>
+
+    <div class="pane" id="p-drop">
+      <h3>The question they'll ask: "Leads fell from 300 to 200 — why?"</h3>
+      <div class="minibar">
+        <div class="mb"><div class="n">302</div><div class="bar" style="height:78%"></div><div class="m">May</div></div>
+        <div class="mb"><div class="n">258</div><div class="bar" style="height:64%"></div><div class="m">Jun</div></div>
+        <div class="mb dropped"><div class="n">203</div><div class="bar" style="height:47%"></div><div class="m">Jul</div></div>
+      </div>
+      <p>Don't jump to an answer — walk a framework. Interviewers score the <i>process</i>.</p>
+      <h3>Step 1 — Rule out a measurement problem first</h3>
+      <ul class="checklist">
+        <li>Did the conversion tag break? Check Google Tag Manager / tag diagnostics and whether the website or quote form changed recently.</li>
+        <li>Does GA4 (or the CRM) show the same drop? If Ads dropped but the CRM didn't, it's tracking, not demand.</li>
+      </ul>
+      <div class="say">"Before touching campaigns, I'd verify the drop is real — check the conversion tag, recent site changes, and whether the CRM sees the same decline. A third of 'performance drops' are tracking issues."</div>
+      <h3>Step 2 — Segment the drop</h3>
+      <p>Break the −99 leads down by campaign, device, geography, and week. In this account:</p>
+      <ul>
+        <li><b>Fall Protection Systems: ≈ −35/mo.</b> Drop starts the week of Jun 14 — exactly when broad match + Maximize conversions were applied. Smoking gun in Change history; receipts in the Search terms tab.</li>
+        <li><b>KeeGuard: ≈ −20/mo.</b> Rising CPCs mean its capped budget buys fewer clicks; lost impression share (budget) climbed to 38%.</li>
+        <li><b>Gates &amp; Walkways: ≈ −15/mo.</b> CPC inflation ($8.45 and rising; new competitor in Auction insights).</li>
+        <li><b>PMax: ≈ −10/mo.</b> Creative fatigue; assets not refreshed all quarter.</li>
+        <li>The remainder is normal noise/seasonality.</li>
+      </ul>
+      <h3>Step 3 — Separate volume vs. efficiency</h3>
+      <div class="say">"Spend was flat, clicks actually rose slightly, but conversion rate fell — so we're buying <b>more but worse</b> traffic. That's an efficiency problem concentrated in the broad-match change, compounded by our best campaign being budget-starved."</div>
+      <h3>Step 4 — Check external factors (mention, then de-prioritize)</h3>
+      <ul>
+        <li>Seasonality: construction/facilities budgets can dip mid-summer — compare year-over-year, check Google Trends.</li>
+        <li>Competition: Auction insights — bluewatermfg.com is new and CPCs rose ~11%.</li>
+        <li>Demand shift: any change in KEE's pricing, lead forms, or landing pages (the experiment changed the form for half of KeeGuard traffic — know your own tests!).</li>
+      </ul>
+    </div>
+
+    <div class="pane" id="p-recs">
+      <h3>Recommendations — in priority order</h3>
+      <p>Give 3–5, each with the action, the reason, and the expected impact. Quantify where possible.</p>
+      <ol>
+        <li><b>Fix Fall Protection Systems' match types.</b> Audit the search terms report, add negatives (job-seeker, DIY, informational queries), move proven queries back to phrase/exact, and set a target CPA (~$90). <i>Expected: cost/lead from $192 toward ~$100, recovering ~25–30 leads/mo without new budget.</i></li>
+        <li><b>Reallocate budget to KeeGuard.</b> Shift ~$100/day from Fall Protection to the budget-limited KeeGuard campaign (38% lost IS, $73/lead, 8.5% conv. rate). <i>Expected: ~+30–35 leads/mo at the account's second-best CPA. Together, items 1–2 plausibly recover the 100 lost monthly leads.</i></li>
+        <li><b>Close the measurement gap.</b> Conv. value is $0 — the account can't tell a $500 Kee Klamp inquiry from a $200k KeeGuard project. Import offline conversions (MQL → SQL → closed) so bidding optimizes for revenue, not form fills. Very strong B2B talking point.</li>
+        <li><b>Contain rising CPCs in Gates &amp; Walkways.</b> Improve Quality Score (tighter ad groups, copy matching query intent, faster landing pages), monitor Auction insights, apply a tCPA cap.</li>
+        <li><b>Rehabilitate PMax before scaling it.</b> Refresh creatives, add customer-list + site-visitor signals, exclude brand terms, gate more budget on CRM lead quality.</li>
+      </ol>
+      <h3>Close with a plan, not a list</h3>
+      <div class="say">"Week 1 I'd fix tracking and match types; week 2 reallocate budget; then set up offline conversion import. I'd expect to be back near 300 leads/month within 6–8 weeks at a blended CPA under $95 — and with lead-quality data flowing in, we could then talk about scaling, not just recovering."</div>
+      <p style="margin-top:10px;">Note the <b>Recommendations page</b> in the left nav mirrors these — mention that you review Google's recommendations critically rather than auto-applying them.</p>
+    </div>
+
+    <div class="pane" id="p-pages">
+      <h3>One line per page (if they click around)</h3>
+      <div class="kv"><b>Overview</b> Google's summary. Use for orientation, then navigate away with intent.</div>
+      <div class="kv"><b>Recommendations</b> Optimization score 81.2%. Review critically; never auto-apply blindly.</div>
+      <div class="kv"><b>Insights &amp; reports</b> Google itself flags the Jun 14 change; Auction insights shows the new competitor.</div>
+      <div class="kv"><b>Campaigns</b> Your home base. Totals, best vs. worst, the trend chart.</div>
+      <div class="kv"><b>Ad groups</b> Damage is concentrated: "Fall Protection – General" at $296/lead. Segment before concluding.</div>
+      <div class="kv"><b>Ads</b> One RSA per ad group. Weak "Average" strength in the problem group; copy relevance drives QS.</div>
+      <div class="kv"><b>Asset groups</b> PMax's version of ad groups. Stale creative (92 days), thin signals.</div>
+      <div class="kv"><b>Experiments</b> Live LP test +15% but 87% confidence — wait for 95%. The broad-match change skipped testing; that's the lesson.</div>
+      <div class="kv"><b>Campaign groups</b> The 300/month @ $95 target lives here — status: Behind pace.</div>
+      <div class="kv"><b>Assets</b> Sitelinks/callouts lift CTR free. Add price + call assets.</div>
+      <div class="kv"><b>Audiences, keywords, content</b> The receipts: QS 3–5 broad keywords, junk search terms, negatives added 6 weeks late.</div>
+      <div class="kv"><b>Change history</b> The timeline proof. Two changes on Jun 14 morning; decline starts that week.</div>
+    </div>
+
+    <div class="pane" id="p-gloss">
+      <h3>Every metric on these screens, in one line each</h3>
+      <div class="kv"><b>Impr. (Impressions)</b> How many times ads were shown. Visibility, not interest.</div>
+      <div class="kv"><b>Clicks</b> Times someone clicked an ad. You pay per click on Search.</div>
+      <div class="kv"><b>CTR</b> Clicks ÷ impressions. Relevance signal. Search benchmark ~3–6%; PMax looks much lower by design.</div>
+      <div class="kv"><b>Avg. CPC</b> Cost ÷ clicks. Rises with competition, falls with Quality Score.</div>
+      <div class="kv"><b>Cost</b> Total spend for the period.</div>
+      <div class="kv"><b>Conversions</b> Here: leads (quote form + calls). Always ask "conversions of what?"</div>
+      <div class="kv"><b>Conv. rate</b> Conversions ÷ clicks. Landing page + traffic quality. 5–15% healthy for lead-gen Search; under 5% = investigate.</div>
+      <div class="kv"><b>Primary vs. secondary conversions</b> Primary = what bidding optimizes toward (real leads: forms + calls). Secondary = tracked for visibility only (e.g., funnel steps, Calendly views). Never let a soft action sit as primary.</div>
+      <div class="kv"><b>All conv.</b> Primary + secondary conversion actions combined. Useful context, never the optimization target.</div>
+      <div class="kv"><b>Cost / conv. (CPA)</b> Cost ÷ conversions. The most important number on the screen for lead gen.</div>
+      <div class="kv"><b>Conv. value / ROAS</b> Revenue ÷ cost. Empty here — itself a finding (no value tracking).</div>
+      <div class="kv"><b>Budget & "Limited by budget"</b> Daily cap. "Limited" = could convert more but hits its cap.</div>
+      <div class="kv"><b>Lost IS (budget)</b> Share of eligible auctions missed for budget. 38% = 4 in 10 chances missed.</div>
+      <div class="kv"><b>Quality Score</b> 1–10 per keyword: expected CTR + ad relevance + landing page. Higher QS = cheaper clicks.</div>
+      <div class="kv"><b>Ad strength</b> Google's RSA asset-diversity rating (Poor→Excellent). Directional, not a KPI.</div>
+      <div class="kv"><b>Broad match</b> Matches loosely related queries. Cheap reach, risky without negatives.</div>
+      <div class="kv"><b>Maximize conversions / tCPA</b> Smart Bidding. Powerful, but re-learns for ~2 weeks after changes.</div>
+      <div class="kv"><b>Performance Max</b> Automated campaigns across Search/Display/YouTube/Gmail/Maps. Runs on assets + audience signals.</div>
+      <div class="kv"><b>Asset group</b> PMax's unit: theme + creatives + audience signal.</div>
+      <div class="kv"><b>Search term vs. keyword</b> Keyword = what you bid on; search term = what the user actually typed.</div>
+      <div class="kv"><b>Auction insights</b> Who else shows on your queries and how often. Competition monitor.</div>
+      <div class="kv"><b>Change history</b> The account audit log. First stop when performance shifts suddenly.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= DATA (all sums verified against campaign totals) ================= */
+const ADG = [
+ ["Fall Protection – General","Search | Fall Protection Systems","warn",98400,2214,18378,62,"⚠ broad-match traffic concentrated here"],
+ ["Roof Fall Protection Systems","Search | Fall Protection Systems","on",32600,1108,8204,61,""],
+ ["Fall Arrest & Lifelines (Kee Line®)","Search | Fall Protection Systems","on",20200,760,5666,45,""],
+ ["KeeGuard Rooftop Guardrail","Search | KeeGuard Rooftop Guardrails","on",30400,1702,10552,158,""],
+ ["Non-Penetrating Roof Railing","Search | KeeGuard Rooftop Guardrails","on",22100,1050,6510,82,""],
+ ["KeeGuard Contractor (Temporary)","Search | KeeGuard Rooftop Guardrails","on",14300,588,3646,44,""],
+ ["Kee Klamp Fittings (Brand)","Search | Kee Klamp Fittings & Railings","on",24600,1690,6591,132,""],
+ ["Pipe Railing Systems","Search | Kee Klamp Fittings & Railings","on",16300,850,3950,60,""],
+ ["Self-Closing Safety Gates (Kee Gate®)","Search | Safety Gates & Roof Walkways","on",17800,760,6180,46,""],
+ ["Roof Walkways (Kee Walk®)","Search | Safety Gates & Roof Walkways","on",11600,475,4256,26,""],
+];
+const ADS = [
+ ["Fall Protection – General","av",["Fall Protection Systems","Engineered Rooftop Safety","Free Site Assessment"],"www.keesafety.com/fall-protection","OSHA-compliant fall protection for flat roofs. Talk to a safety specialist today.","Design, supply & installation across the US."],
+ ["Roof Fall Protection Systems","gd",["Roof Fall Protection","Design, Supply & Install","OSHA & ANSI Compliant"],"www.keesafety.com/roof","Complete rooftop safety systems for facilities teams.","Free layout design from our engineers."],
+ ["Fall Arrest & Lifelines (Kee Line®)","gd",["Horizontal Lifelines","Kee Line® Fall Arrest","Engineered to ANSI"],"www.keesafety.com/kee-line","Engineered horizontal lifeline systems for roof work.","Specify with confidence — tested & certified."],
+ ["KeeGuard Rooftop Guardrail","ex",["KeeGuard® Roof Guardrail","No Roof Penetration","Installs in Hours"],"www.keesafety.com/keeguard","Free-standing rooftop guardrail. No welding, no drilling, no membrane damage.","Request a quote — free site assessment."],
+ ["Non-Penetrating Roof Railing","ex",["Non-Penetrating Guardrail","Protect Your Roof Membrane","Free Layout Design"],"www.keesafety.com/keeguard","Counterweighted railing that protects your warranty.","OSHA 1910.28 compliant. Ships fast."],
+ ["KeeGuard Contractor (Temporary)","gd",["Temporary Roof Guardrail","KeeGuard® Contractor","Rent or Buy"],"www.keesafety.com/contractor","Modular temporary edge protection for contractors.","Fast install, reusable components."],
+ ["Kee Klamp Fittings (Brand)","ex",["Kee Klamp® Fittings","Genuine Kee Safety®","Ships From US Stock"],"www.keesafety.com/kee-klamp","Original galvanized structural pipe fittings since 1934.","No welding required. Order today."],
+ ["Pipe Railing Systems","gd",["Pipe Railing Systems","No Welding Required","Order Online"],"www.keesafety.com/railings","Modular railing kits for any layout.","ADA-compliant options available."],
+ ["Self-Closing Safety Gates (Kee Gate®)","gd",["Self-Closing Safety Gates","Kee Gate® Spring Gates","ANSI Compliant"],"www.keesafety.com/kee-gate","Spring-loaded gates for ladders, platforms & mezzanines.","Adjustable to fit openings up to 40 in."],
+ ["Roof Walkways (Kee Walk®)","gd",["Kee Walk® Roof Walkways","Safe Roof Access","Any Roof Type"],"www.keesafety.com/kee-walk","Anti-slip walkway systems for metal & membrane roofs.","Protect your roof and your people."],
+];
+const ASG = [
+ ["Rooftop Safety — Facilities Managers","gd","on",124200,1204,4371,31],
+ ["Fall Protection — Contractors","gd","on",84400,673,2386,16],
+];
+const KW = [
+ ["fall protection systems","Broad","Fall Protection Systems",5,41200,890,7120,21],
+ ["roof fall protection","Broad","Fall Protection Systems",6,18400,512,3994,26],
+ ["fall protection equipment","Broad","Fall Protection Systems",4,15900,398,3151,8],
+ ["osha fall protection requirements","Broad","Fall Protection Systems",3,12700,301,2167,3],
+ ["kee klamp","Exact","Kee Klamp Fittings & Railings",10,8900,812,2516,71],
+ ["rooftop guardrail system","Phrase","KeeGuard Rooftop Guardrails",8,9800,542,3306,52],
+ ["roof edge protection","Phrase","KeeGuard Rooftop Guardrails",7,8900,410,2665,31],
+ ["roof safety systems","Phrase","Fall Protection Systems",7,8100,276,1987,19],
+ ["non penetrating roof guardrail","Exact","KeeGuard Rooftop Guardrails",9,6200,398,2308,44],
+ ["self closing safety gate","Phrase","Safety Gates & Roof Walkways",8,6300,298,2414,21],
+ ["pipe railing fittings","Phrase","Kee Klamp Fittings & Railings",8,5600,321,1509,22],
+ ["roof walkway system","Phrase","Safety Gates & Roof Walkways",7,4300,176,1517,9],
+ ["mezzanine safety gate","Exact","Safety Gates & Roof Walkways",8,3900,187,1570,13],
+ ["kee klamp fittings","Exact","Kee Klamp Fittings & Railings",10,4100,402,1327,34],
+ ["keeguard","Exact","KeeGuard Rooftop Guardrails",10,2400,289,896,29],
+ ["horizontal lifeline system","Phrase","Fall Protection Systems",7,3800,148,1104,11],
+];
+const TERMS = [
+ ["fall protection systems for flat roofs","fall protection systems (broad)","Added",1892,14,135.14,241],
+ ["fall protection jobs near me","fall protection systems (broad)","None ⚠",1104,0,"—",132],
+ ["rooftop guardrail installers","roof fall protection (broad)","Added",986,11,89.64,118],
+ ["free fall protection training ppt","fall protection equipment (broad)","None ⚠",876,0,"—",102],
+ ["osha fall protection fine amounts","osha fall protection requirements (broad)","None ⚠",531,0,"—",71],
+ ["non penetrating roof railing cost","non penetrating roof guardrail (exact)","Added",498,9,55.33,86],
+ ["kee klamp near me","kee klamp (exact)","Added",412,12,34.33,133],
+ ["fall protection harness inspection checklist","fall protection equipment (broad)","None ⚠",389,0,"—",48],
+ ["diy roof railing ideas","roof fall protection (broad)","Excluded Jul 28",214,0,"—",31],
+ ["self closing gate for stairs","self closing safety gate (phrase)","Added",203,4,50.75,27],
+];
+const AUD = [
+ ["In-market: Building & Site Safety Services","Google segment","Observation","All Search campaigns",84200,2210,148],
+ ["Custom: Competitor site visitors","Custom segment","Signal","PMax — both asset groups",61400,588,14],
+ ["Customer list: Past quote requests (2,140)","Your data","Observation + PMax signal","KeeGuard, Kee Klamp, PMax",12800,402,39],
+ ["In-market: Commercial Construction Services","Google segment","Observation","Fall Protection Systems",46900,1104,52],
+];
+const ASSETS = [
+ ["Request a Quote","Sitelink","Account","on",148300,1642,"1.11%"],
+ ["KeeGuard® Overview","Sitelink","Account","on",121500,884,"0.73%"],
+ ["Case Studies","Sitelink","Account","on",98400,512,"0.52%"],
+ ["Contact an Engineer","Sitelink","Account","on",96100,689,"0.72%"],
+ ["OSHA Compliant","Callout","Account","on",201400,"—","—"],
+ ["Free Site Assessment","Callout","Account","on",198700,"—","—"],
+ ["Non-Penetrating Design","Callout","Campaign — KeeGuard","on",64200,"—","—"],
+ ["90+ Years of Safety Experience","Callout","Account","on",187900,"—","—"],
+ ["Systems: Guardrails, Walkways, Lifelines, Gates","Structured snippet","Account","on",134600,"—","—"],
+ ["Product imagery (8 images)","Image","PMax asset groups","on",208600,"—","—"],
+ ["KEE Safety logo (2 versions)","Business logo","Account","on",496900,"—","—"],
+];
+const CHANGES = [
+ ["Jul 28, 2026 · 4:12 PM","marketing@keesafety.com","Fall Protection Systems","Negative keywords",'Added 3 campaign negative keywords: "jobs", "salary", "free training"',""],
+ ["Jul 8, 2026 · 11:02 AM","marketing@keesafety.com","Performance Max | Lead Gen","Status",'Asset group "Fall Protection — Contractors" re-enabled',""],
+ ["Jun 14, 2026 · 9:17 AM","marketing@keesafety.com","Fall Protection Systems","Bid strategy","Changed bid strategy: Target CPA ($95.00) → Maximize conversions","alert"],
+ ["Jun 14, 2026 · 9:12 AM","marketing@keesafety.com","Fall Protection Systems","Keyword","Changed match type on 247 keywords: phrase/exact → broad","alert"],
+ ["May 20, 2026 · 2:45 PM","admin@keesafety.com","Safety Gates & Roof Walkways","Budget","Daily budget changed: $100.00 → $115.00",""],
+ ["May 12, 2026 · 10:31 AM","marketing@keesafety.com","KeeGuard Rooftop Guardrails","Experiment",'Created experiment "KeeGuard LP — quote form test" (50/50 split)',""],
+ ["May 3, 2026 · 9:05 AM","agency@vertexdigital.com","KeeGuard Rooftop Guardrails","Ad",'Created responsive search ad in ad group "Non-Penetrating Roof Railing"',""],
+ ["Apr 22, 2026 · 3:38 PM","admin@keesafety.com","Account","Conversion",'Modified conversion action "Lead — quote request form" (attribution: data-driven)',""],
+];
+
+/* ================= HELPERS ================= */
+const $ = id => document.getElementById(id);
+const money = n => "$" + n.toLocaleString("en-US");
+const num = n => n.toLocaleString("en-US");
+const pct = n => n.toFixed(2) + "%";
+const fix2 = n => "$" + n.toFixed(2);
+
+/* ================= RENDER TABLES ================= */
+(function(){
+  // Ad groups
+  let t=0,c=0,co=0,v=0;
+  $("tb-adgroups").innerHTML = ADG.map(g=>{
+    const [name,camp,st,impr,clicks,cost,conv,note]=g;
+    t+=impr;c+=clicks;co+=cost;v+=conv;
+    return `<tr class="rrow"><td class="l"><input type="checkbox"></td>
+      <td class="l"><span class="status-dot ${st==='warn'?'st-lim':'st-on'}"></span></td>
+      <td class="l"><a class="cname">${name}</a>${note?`<br><span class="badge-alert">${note}</span>`:""}</td>
+      <td class="l" style="font-size:12.5px;color:var(--ink2)">${camp}</td>
+      <td class="l"><span class="stxt">Eligible</span></td>
+      <td>${money(cost)}</td><td>${fix2(cost/conv)}</td><td>${conv.toFixed(2)}</td>
+      <td>${pct(conv/clicks*100)}</td><td>${pct(clicks/impr*100)}</td><td>${fix2(cost/clicks)}</td>
+      <td>${num(clicks)}</td><td>${num(impr)}</td></tr>`;
+  }).join("") + `<tr class="total"><td class="l"></td><td class="l"></td>
+      <td class="l" colspan="3">Total: All Search ad groups ⓘ</td>
+      <td>${money(co)}</td><td>${fix2(co/v)}</td><td>${v.toFixed(2)}</td>
+      <td>${pct(v/c*100)}</td><td>${pct(c/t*100)}</td><td>${fix2(co/c)}</td>
+      <td>${num(c)}</td><td>${num(t)}</td></tr>`;
+
+  // Ads (metrics inherited from their ad group — one RSA per group)
+  const strengthName = {ex:"Excellent",gd:"Good",av:"Average",pr:"Poor"};
+  $("tb-ads").innerHTML = ADS.map((a,i)=>{
+    const [group,str,heads,url,d1,d2]=a;
+    const g = ADG[i]; const [,camp,,impr,clicks,cost,conv]=g;
+    return `<tr class="rrow"><td class="l"><input type="checkbox"></td>
+      <td class="l"><div class="adprev">
+        <div class="sp"><b>Ad</b>${url}</div>
+        <div class="h">${heads.join(" | ")}</div>
+        <div class="d">${d1} ${d2}</div>
+      </div></td>
+      <td class="l" style="font-size:12.5px;">${group}<br><span style="color:var(--ink2)">${camp}</span></td>
+      <td class="l"><span class="strength ${str}">${strengthName[str]}</span></td>
+      <td class="l"><span class="status-dot st-on"></span> <span class="stxt">Eligible</span></td>
+      <td>${money(cost)}</td><td>${fix2(cost/conv)}</td><td>${conv.toFixed(2)}</td>
+      <td>${pct(clicks/impr*100)}</td><td>${num(clicks)}</td><td>${num(impr)}</td></tr>`;
+  }).join("");
+
+  // Asset groups
+  $("tb-assetgroups").innerHTML = ASG.map(g=>{
+    const [name,str,st,impr,clicks,cost,conv]=g;
+    return `<tr class="rrow"><td class="l"><input type="checkbox"></td>
+      <td class="l"><span class="status-dot st-on"></span></td>
+      <td class="l"><a class="cname">${name}</a><br><span class="badge-note">Assets last updated Apr 30 — 92 days ago</span></td>
+      <td class="l"><span class="strength gd">Good</span></td>
+      <td class="l"><span class="stxt">Eligible</span></td>
+      <td>${money(cost)}</td><td>${fix2(cost/conv)}</td><td>${conv.toFixed(2)}</td>
+      <td>${pct(clicks/impr*100)}</td><td>${fix2(cost/clicks)}</td><td>${num(clicks)}</td><td>${num(impr)}</td></tr>`;
+  }).join("") + `<tr class="total"><td class="l"></td><td class="l"></td>
+      <td class="l" colspan="3">Total: Performance Max | Lead Gen — US</td>
+      <td>$6,757</td><td>$143.77</td><td>47.00</td><td>0.90%</td><td>$3.60</td><td>1,877</td><td>208,600</td></tr>`;
+
+  // Keywords
+  $("tb-keywords").innerHTML = KW.map(k=>{
+    const [kw,match,camp,qs,impr,clicks,cost,conv]=k;
+    const qcls = qs>=8?"hi":(qs>=6?"md":"lo");
+    const cpa = conv>0? fix2(cost/conv) : "—";
+    return `<tr class="rrow"><td class="l"><a class="cname">${kw}</a></td>
+      <td class="l">${match}${match==="Broad"?' <span class="badge-alert">since Jun 14</span>':""}</td>
+      <td class="l" style="font-size:12.5px;color:var(--ink2)">${camp}</td>
+      <td class="l"><span class="qs ${qcls}">${qs}/10</span></td>
+      <td>${money(cost)}</td><td>${cpa}</td><td>${conv.toFixed(2)}</td>
+      <td>${pct(clicks/impr*100)}</td><td>${fix2(cost/clicks)}</td><td>${num(clicks)}</td><td>${num(impr)}</td></tr>`;
+  }).join("");
+
+  // Search terms
+  $("tb-terms").innerHTML = TERMS.map(t=>{
+    const [term,matched,added,cost,conv,cpa,clicks]=t;
+    const bad = added.includes("None");
+    return `<tr class="rrow"><td class="l" style="${bad?'color:var(--red);':''}">${term}</td>
+      <td class="l" style="font-size:12.5px;color:var(--ink2)">${matched}</td>
+      <td class="l">${bad?`<span class="badge-alert">${added}</span>`:`<span class="stxt">${added}</span>`}</td>
+      <td>${money(cost)}</td><td>${conv.toFixed(2)}</td><td>${typeof cpa==="number"?fix2(cpa):cpa}</td><td>${num(clicks)}</td></tr>`;
+  }).join("");
+
+  // Audiences
+  $("tb-audiences").innerHTML = AUD.map(a=>{
+    const [name,type,mode,camps,impr,clicks,conv]=a;
+    return `<tr class="rrow"><td class="l"><a class="cname">${name}</a></td>
+      <td class="l">${type}</td><td class="l">${mode}</td>
+      <td class="l" style="font-size:12.5px;color:var(--ink2)">${camps}</td>
+      <td>${num(impr)}</td><td>${num(clicks)}</td><td>${conv.toFixed(2)}</td></tr>`;
+  }).join("");
+
+  // Assets
+  $("tb-assets").innerHTML = ASSETS.map(a=>{
+    let [name,type,level,st,impr,clicks,ctr]=a;
+    if(typeof impr!=="number"||!isFinite(impr)) impr=496900;
+    return `<tr class="rrow"><td class="l"><a class="cname">${name}</a></td>
+      <td class="l">${type}</td><td class="l">${level}</td>
+      <td class="l"><span class="status-dot st-on"></span> <span class="stxt">Approved</span></td>
+      <td>${num(impr)}</td><td>${typeof clicks==="number"?num(clicks):clicks}</td><td>${ctr}</td></tr>`;
+  }).join("");
+
+  // Change history
+  $("tb-changes").innerHTML = CHANGES.map(c=>{
+    const [dt,user,camp,type,desc,flag]=c;
+    return `<tr class="rrow" ${flag?'style="background:#fff8f7;"':''}>
+      <td class="l" style="white-space:nowrap;">${dt}</td>
+      <td class="l" style="font-size:12.5px;color:var(--ink2)">${user}</td>
+      <td class="l">${camp}</td>
+      <td class="l">${type}${flag?'<br><span class="badge-alert">⚠ correlates with lead decline</span>':''}</td>
+      <td class="l">${desc}</td></tr>`;
+  }).join("");
+})();
+
+/* ================= TREND CHART ================= */
+function drawTrend(svgId, H){
+  const conv = [76,73,78,75,68,65,62,63,55,52,49,47];
+  const cpa  = [86,89,84,88,98,104,109,107,121,128,134,139];
+  const svg = $(svgId); if(!svg) return;
+  const W = svg.clientWidth || 1100, padL=46, padR=52, padT=14, padB=26;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const iw=W-padL-padR, ih=H-padT-padB;
+  const x=i=>padL+iw*i/(conv.length-1);
+  const yC=v=>padT+ih*(1-v/100), yP=v=>padT+ih*(1-v/160);
+  let g='';
+  [0,25,50,75,100].forEach(v=>{
+    g+=`<line x1="${padL}" y1="${yC(v)}" x2="${W-padR}" y2="${yC(v)}" stroke="#f1f3f4"/>`;
+    g+=`<text x="${padL-8}" y="${yC(v)+4}" font-size="11" fill="#5f6368" text-anchor="end">${v}</text>`;
+  });
+  [0,40,80,120,160].forEach(v=>{ g+=`<text x="${W-padR+8}" y="${yP(v)+4}" font-size="11" fill="#b3898a">$${v}</text>`; });
+  [[0,'May'],[4,'Jun'],[8,'Jul']].forEach(([i,m])=>{
+    g+=`<line x1="${x(i)}" y1="${padT}" x2="${x(i)}" y2="${H-padB}" stroke="#e8eaed" stroke-dasharray="3,3"/>`;
+    g+=`<text x="${x(i)+4}" y="${H-8}" font-size="11" fill="#5f6368">${m}</text>`;
+  });
+  g+=`<line x1="${x(6)}" y1="${padT}" x2="${x(6)}" y2="${H-padB}" stroke="#e37400" stroke-dasharray="4,3" stroke-width="1.4"/>`;
+  g+=`<text x="${x(6)+5}" y="${padT+12}" font-size="10.5" fill="#e37400">Jun 14: broad match applied</text>`;
+  const path=(d,yf)=>d.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+yf(v).toFixed(1)).join(' ');
+  g+=`<path d="${path(cpa,yP)}" fill="none" stroke="#d93025" stroke-width="2" opacity=".85"/>`;
+  g+=`<path d="${path(conv,yC)}" fill="none" stroke="#1a73e8" stroke-width="2.4"/>`;
+  const wk=['May 1','May 8','May 15','May 22','Jun 1','Jun 8','Jun 15','Jun 22','Jul 1','Jul 8','Jul 15','Jul 22'];
+  conv.forEach((v,i)=>{ g+=`<circle cx="${x(i)}" cy="${yC(v)}" r="3" fill="#1a73e8"><title>Week of ${wk[i]}: ${v} leads</title></circle>`; });
+  cpa.forEach((v,i)=>{ g+=`<circle cx="${x(i)}" cy="${yP(v)}" r="2.5" fill="#d93025"><title>Cost/conv: $${v}</title></circle>`; });
+  svg.innerHTML=g;
+}
+drawTrend('chart',230);
+
+/* ================= ROUTING ================= */
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on', v.id==='v-'+id));
+  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('sel', a.dataset.view===id));
+  if(id==='campaigns') requestAnimationFrame(()=>drawTrend('chart',230));
+  if(id==='overview')  requestAnimationFrame(()=>drawTrend('chart2',190));
+  window.scrollTo({top:0});
+}
+function subTab(id){
+  document.querySelectorAll('.stab').forEach(t=>t.classList.toggle('on', t.dataset.s===id));
+  document.querySelectorAll('.subpane').forEach(p=>p.classList.toggle('on', p.id==='s-'+id));
+}
+function toast(){
+  const t=$("toast"); t.classList.add('show');
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+/* ================= COACH ================= */
+function toggleCoach(){ $("drawer").classList.toggle('open'); }
+function tab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t.dataset.p===id));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on', p.id==='p-'+id));
+}
+function hl(rowId){
+  showView('campaigns');
+  document.querySelectorAll('tr.hl').forEach(r=>r.classList.remove('hl'));
+  const r=$(rowId);
+  if(r){ r.classList.add('hl'); r.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>r.classList.remove('hl'),3500); }
+}
+function coachTo(key){
+  const map={fps:'row-fps',keeguard:'row-keeguard',keeklamp:'row-keeklamp',gates:'row-gates',pmax:'row-pmax'};
+  $("drawer").classList.add('open'); tab('camps'); hl(map[key]);
+}
+</script>
+<style>
+  body.clean .coach-fab, body.clean .hintbtn, body.clean .practice-only, body.clean .hint{display:none !important;}
+</style>
+<script>
+  if (new URLSearchParams(location.search).has('clean')) {
+    document.body.classList.add('clean');
+    var chip = document.querySelector('.practice-chip');
+    if (chip) chip.textContent = 'DEMO ACCOUNT \u2014 fictional data';
+  }
+</script>
+</body>
+</html>
