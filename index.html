@@ -524,6 +524,9 @@
       </table>
     </section>
 
+    <!-- ═══════════════ AD GROUP DETAIL (rendered by JS) ═══════════════ -->
+    <section class="view" id="v-adgroupdetail"><div id="agd"></div></section>
+
     <!-- ═══════════════ ADS ═══════════════ -->
     <section class="view" id="v-ads">
       <div class="pagehead">
@@ -1169,12 +1172,12 @@ const fix2 = n => "$" + n.toFixed(2);
 (function(){
   // Ad groups
   let t=0,c=0,co=0,v=0;
-  $("tb-adgroups").innerHTML = ADG.map(g=>{
+  $("tb-adgroups").innerHTML = ADG.map((g,i)=>{
     const [name,camp,st,impr,clicks,cost,conv,note]=g;
     t+=impr;c+=clicks;co+=cost;v+=conv;
     return `<tr class="rrow"><td class="l"><input type="checkbox"></td>
       <td class="l"><span class="status-dot ${st==='warn'?'st-lim':'st-on'}"></span></td>
-      <td class="l"><a class="cname">${name}</a>${note?`<br><span class="badge-alert">${note}</span>`:""}</td>
+      <td class="l"><a class="cname" onclick="openAdGroup(${i})">${name}</a>${note?`<br><span class="badge-alert">${note}</span>`:""}</td>
       <td class="l" style="font-size:12.5px;color:var(--ink2)">${camp}</td>
       <td class="l"><span class="stxt">Eligible</span></td>
       <td>${money(cost)}</td><td>${fix2(cost/conv)}</td><td>${conv.toFixed(2)}</td>
@@ -1304,10 +1307,75 @@ function drawTrend(svgId, H){
 }
 drawTrend('chart',230);
 
+/* ================= AD GROUP DRILL-DOWN ================= */
+// maps each KW row (by index) to its ad group index in ADG
+const KW_AG = [0,1,0,0,6,3,4,1,4,8,7,9,8,6,3,2];
+const AG_STORY = [
+ "⚠ This is where the lead drop lives. Broad match was applied here Jun 14: CTR fell to 2.25%, conv. rate to 2.80%, and cost per lead hit $296.42 — versus ~$130 in its sibling ad groups. The search terms tab has the receipts (jobs, free training, OSHA fine queries).",
+ "Solid performer taking mild spillover damage from the campaign's broad-match change — $134.49 per lead, 3.40% CTR. Would benefit from the campaign-level tCPA guardrail.",
+ "Niche but efficient: engineered lifeline (Kee Line®) queries convert at 5.92% with a $125.91 CPA. Small volume, stable.",
+ "The volume workhorse of the account: 158 leads at $66.78, 9.28% conv. rate, 5.60% CTR. It's throttled by the campaign's budget cap — first in line for reallocated spend.",
+ "Highest-intent theme in the campaign: 'non-penetrating' queries signal a buyer protecting a roof membrane/warranty. 7.81% conv. rate, $79.39 CPA.",
+ "Temporary/rental demand from contractors — steady at $82.86 per lead. Watch CPC creep and keep it separated from permanent-install traffic.",
+ "Best economics in the entire account: brand-term traffic ('kee klamp') at $49.93 per lead, 6.87% CTR, Quality Score 10. Protect with exact match; monitor competitors in Auction insights.",
+ "Adjacent generic queries riding the brand halo — 5.21% CTR, $65.83 per lead. Expansion candidate for SKU-level and spec-driven searches.",
+ "Kee Gate® demand is steady (6.05% conv. rate) but CPC is $8.13 and rising with new auction competition — Quality Score work beats bid raises here.",
+ "Smallest ad group with the account's highest CPC ($8.96). Fine CTR and conv. rate — the price is the problem. Tighten ad-to-query relevance to lift QS before adding budget."
+];
+function openAdGroup(i){
+  const [name,camp,st,impr,clicks,cost,conv,note] = ADG[i];
+  const ad = ADS[i]; const strengthName={ex:"Excellent",gd:"Good",av:"Average",pr:"Poor"};
+  const kws = KW.map((k,j)=>({k,j})).filter(o=>KW_AG[o.j]===i).map(o=>o.k);
+  const chips = [
+    ["Cost", money(cost)], ["Cost / conv.", fix2(cost/conv)], ["Conversions", conv.toFixed(2)],
+    ["Conv. rate", pct(conv/clicks*100)], ["CTR", pct(clicks/impr*100)], ["Avg. CPC", fix2(cost/clicks)],
+    ["Clicks", num(clicks)], ["Impr.", num(impr)]
+  ].map(c=>`<div class="mchip" style="flex:0 0 150px;"><div class="lbl">${c[0]}</div><div class="val" style="font-size:19px;">${c[1]}</div></div>`).join("");
+  const kwRows = kws.length ? kws.map(k=>{
+    const [kw,match,,qs,ki,kc,kco,kv]=k;
+    const qcls = qs>=8?"hi":(qs>=6?"md":"lo");
+    return `<tr class="rrow"><td class="l"><a class="cname">${kw}</a></td>
+      <td class="l">${match}${match==="Broad"?' <span class="badge-alert">since Jun 14</span>':""}</td>
+      <td class="l"><span class="qs ${qcls}">${qs}/10</span></td>
+      <td>${money(kco)}</td><td>${kv>0?fix2(kco/kv):"—"}</td><td>${kv.toFixed(2)}</td>
+      <td>${pct(kc/ki*100)}</td><td>${fix2(kco/kc)}</td><td>${num(kc)}</td><td>${num(ki)}</td></tr>`;
+  }).join("") : `<tr><td class="l" colspan="10" style="color:var(--ink2)">No keywords from the account's top-16 list sit in this ad group — in a real account you'd see its full keyword list here.</td></tr>`;
+  $("agd").innerHTML = `
+    <div class="pagehead">
+      <h1>${name}</h1>
+      <span class="viewchip">${camp}</span>
+      <div class="daterange">Last 3 months <span class="datebox">May 1 – Jul 31, 2026 ▾</span></div>
+    </div>
+    <p style="margin:2px 0 10px;"><a class="cname" onclick="showView('adgroups')">← All ad groups</a></p>
+    <div class="hint">💡 ${AG_STORY[i]}</div>
+    <div class="chartcard" style="margin-top:6px;"><div class="metric-chips" style="flex-wrap:wrap;">${chips}</div></div>
+    <div class="cardrow">
+      <div class="ocard" style="grid-column:1/-1;">
+        <h4>Responsive search ad &nbsp;<span class="strength ${ad[1]}">${strengthName[ad[1]]}</span> <span class="stxt" style="margin-left:8px;"><span class="status-dot st-on"></span> Eligible</span></h4>
+        <div class="adprev" style="margin-top:8px; max-width:640px;">
+          <div class="sp"><b>Ad</b>${ad[3]}</div>
+          <div class="h">${ad[2].join(" | ")}</div>
+          <div class="d">${ad[4]} ${ad[5]}</div>
+        </div>
+      </div>
+    </div>
+    <div class="toolbar"><span class="filter">▽&nbsp; Keywords in this ad group · from top-16 by cost</span><span class="spacer"></span><span class="tbtn"><span class="i">⭳</span>Download</span></div>
+    <table class="gt" style="border-radius:0 0 8px 8px;">
+      <thead><tr>
+        <th class="l">Keyword</th><th class="l">Match type</th><th class="l">Quality Score</th>
+        <th>↓ Cost</th><th>Cost / conv.</th><th>Conversions</th><th>CTR</th><th>Avg. CPC</th><th>Clicks</th><th>Impr.</th>
+      </tr></thead>
+      <tbody>${kwRows}</tbody>
+    </table>
+    <p class="foot-note">Ad group totals include all keywords, including those outside the top-16 account list shown here.</p>`;
+  showView('adgroupdetail');
+}
+
 /* ================= ROUTING ================= */
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on', v.id==='v-'+id));
-  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('sel', a.dataset.view===id));
+  const navId = (id==='adgroupdetail') ? 'adgroups' : id;
+  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('sel', a.dataset.view===navId));
   if(id==='campaigns') requestAnimationFrame(()=>drawTrend('chart',230));
   if(id==='overview')  requestAnimationFrame(()=>drawTrend('chart2',190));
   window.scrollTo({top:0});
@@ -1334,12 +1402,13 @@ function hl(rowId){
   if(r){ r.classList.add('hl'); r.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>r.classList.remove('hl'),3500); }
 }
 function coachTo(key){
+  if(document.body.classList.contains('clean')){ showView('adgroups'); return; }
   const map={fps:'row-fps',keeguard:'row-keeguard',keeklamp:'row-keeklamp',gates:'row-gates',pmax:'row-pmax'};
   $("drawer").classList.add('open'); tab('camps'); hl(map[key]);
 }
 </script>
 <style>
-  body.clean .coach-fab, body.clean .hintbtn, body.clean .practice-only, body.clean .hint{display:none !important;}
+  body.clean .coach-fab, body.clean .hintbtn, body.clean .practice-only, body.clean .hint, body.clean .drawer{display:none !important;}
 </style>
 <script>
   if (new URLSearchParams(location.search).has('clean')) {
