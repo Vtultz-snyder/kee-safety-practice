@@ -83,6 +83,28 @@
   .badge-alert{display:inline-block; font-size:10.5px; color:var(--red); background:#fce8e6; border:1px solid #f6c7c3; border-radius:10px; padding:1px 8px; margin-top:4px;}
   .foot-note{color:var(--ink2); font-size:11.5px; line-height:1.7; margin-top:18px;}
   .foot-note a{color:var(--blue); text-decoration:none;}
+  /* ---------- when and where ads showed ---------- */
+  .seglbl{font-size:12px; color:var(--ink2);}
+  .segsel{font-size:13px; padding:5px 8px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink); max-width:290px;}
+  .segpills{display:inline-flex; border:1px solid var(--line); border-radius:16px; overflow:hidden;}
+  .segpill{font-size:12.5px; padding:5px 14px; cursor:pointer; color:var(--ink2); border-right:1px solid var(--line);}
+  .segpill:last-child{border-right:none;}
+  .segpill:hover{background:var(--bg2);}
+  .segpill.on{background:#e8f0fe; color:var(--blue-dark); font-weight:600;}
+  .segtabs{display:flex; gap:2px; border-bottom:1px solid var(--line); margin-top:14px;}
+  .stab2{padding:10px 16px; font-size:13px; color:var(--ink2); cursor:pointer; border-bottom:3px solid transparent; font-weight:500;}
+  .stab2:hover{color:var(--ink);}
+  .stab2.on{color:var(--blue-dark); border-bottom-color:var(--blue);}
+  .segbar{height:9px; border-radius:2px; background:var(--blue); display:inline-block; vertical-align:middle; min-width:2px;}
+  .segbar.warnb{background:var(--amber);}
+  .segbar.badb{background:var(--red);}
+  .segbar.goodb{background:var(--green);}
+  .barcell{width:150px;}
+  .cpa-hi{color:var(--red); font-weight:600;}
+  .cpa-lo{color:var(--green); font-weight:600;}
+  .segnote{display:inline-block; font-size:10.5px; color:var(--amber); background:#fef7e0; border:1px solid #fdd663; border-radius:10px; padding:1px 8px; margin-left:6px;}
+  .segrec{background:#e6f4ea; border:1px solid #a8dab5; border-radius:8px; padding:10px 14px; margin-top:12px; font-size:12.5px; line-height:1.65; color:#20613a;}
+  body.clean .segrec{display:none;}
   tr.hl{background:#fef7e0 !important; transition:background .3s;}
   /* cards / overview */
   .cardrow{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; margin-top:14px;}
@@ -229,6 +251,7 @@
     <a data-view="assetgroups" class="sub" onclick="showView('assetgroups')">Asset groups</a>
     <a data-view="experiments" class="sub" onclick="showView('experiments')">Experiments</a>
     <a data-view="campaigngroups" class="sub" onclick="showView('campaigngroups')">Campaign groups</a>
+    <a data-view="segments" class="sub" onclick="showView('segments')">When and where ads showed</a>
     <div class="grp">More</div>
     <a data-view="assets" onclick="showView('assets')">Assets</a>
     <a data-view="audiences" onclick="showView('audiences')">Audiences, keywords, and content</a>
@@ -496,13 +519,47 @@
         <div class="ocard">
           <h4>Reports</h4>
           <div class="sub">Predefined reports you'd actually pull</div>
+          <div class="row"><span class="nm cname" onclick="setSegTab('device');showView('segments')">When and where ads showed</span><span>→</span></div>
           <div class="row"><span class="nm cname">Search terms report</span><span>→</span></div>
           <div class="row"><span class="nm cname">Impression share &amp; lost IS (budget/rank)</span><span>→</span></div>
-          <div class="row"><span class="nm cname">Day of week / hour of day</span><span>→</span></div>
+          <div class="row"><span class="nm cname" onclick="setSegTab('hod');showView('segments')">Day of week / hour of day</span><span>→</span></div>
           <div class="row"><span class="nm cname">Landing pages</span><span>→</span></div>
           <div class="row"><span class="nm cname">Conversion lag (days to convert)</span><span>→</span></div>
         </div>
       </div>
+    </section>
+
+    <!-- ═══════════════ WHEN AND WHERE ADS SHOWED ═══════════════ -->
+    <section class="view" id="v-segments">
+      <div class="pagehead">
+        <h1>When and where ads showed</h1>
+        <span class="viewchip" id="seg-scopechip">🏠 All campaigns</span>
+        <div class="daterange">Date range <span class="datebox" id="seg-datebox">May 1 – Jul 31, 2026 ▾</span></div>
+      </div>
+      <p style="margin:2px 0 10px;"><a class="cname" onclick="showView('insights')">← Insights and reports</a></p>
+      <div class="hint" id="seg-hint"></div>
+
+      <div class="toolbar" style="gap:12px; flex-wrap:wrap;">
+        <span class="seglbl">Campaign</span>
+        <select id="seg-camp" class="segsel" onchange="renderSeg()"></select>
+        <span class="spacer"></span>
+        <span class="seglbl">Date range</span>
+        <span class="segpills">
+          <span class="segpill" data-d="30" onclick="setSegDays(30)">30 days</span>
+          <span class="segpill" data-d="60" onclick="setSegDays(60)">60 days</span>
+          <span class="segpill on" data-d="90" onclick="setSegDays(90)">90 days</span>
+        </span>
+      </div>
+
+      <div class="segtabs">
+        <span class="stab2 on" data-s="device" onclick="setSegTab('device')">Devices</span>
+        <span class="stab2" data-s="dow" onclick="setSegTab('dow')">Day of week</span>
+        <span class="stab2" data-s="hod" onclick="setSegTab('hod')">Hour of day</span>
+        <span class="stab2" data-s="geo" onclick="setSegTab('geo')">Locations</span>
+        <span class="stab2" data-s="match" onclick="setSegTab('match')">Matching locations</span>
+      </div>
+      <div id="seg-body"></div>
+      <p class="foot-note">Segment reports re-slice the same spend, so every tab totals to the account figures for the selected date range and campaign. Rows do not add across tabs.</p>
     </section>
 
     <!-- ═══════════════ AD GROUPS ═══════════════ -->
@@ -1371,11 +1428,180 @@ function openAdGroup(i){
   showView('adgroupdetail');
 }
 
+/* ================= WHEN AND WHERE ADS SHOWED =================
+   Every tab re-slices the SAME totals, so each table foots to the
+   account/campaign figures already shown on the Campaigns page.
+   Windows are built backwards from the Jun 14 broad-match change:
+   the shorter the window, the more of it sits after the damage.   */
+const SEG_WIN = {
+  90:{lbl:"May 1 – Jul 31, 2026 ▾",  sub:"Last 90 days",             impr:496900, clicks:13074, cost:80690, conv:763, t:0},
+  60:{lbl:"Jun 2 – Jul 31, 2026 ▾",  sub:"Last 60 days",             impr:344200, clicks:8638,  cost:53850, conv:421, t:0.55},
+  30:{lbl:"Jul 2 – Jul 31, 2026 ▾",  sub:"Last 30 days",             impr:183600, clicks:4410,  cost:28140, conv:172, t:1}
+};
+/* [key, name, impr, clicks, cost, conv, extraTilt] — extraTilt marks the
+   broad-match-damaged campaign, whose segment shape skews harder.        */
+const SEG_CAMP = [
+  ["all","🏠 All campaigns",                      496900,13074,80690,763,0],
+  ["fps","Search | Fall Protection Systems",      151200, 4082,32248,168,1],
+  ["kg","Search | KeeGuard Rooftop Guardrails",    66800, 3340,20708,284,0],
+  ["kk","Search | Kee Klamp Fittings & Railings",  40900, 2540,10541,192,0],
+  ["gw","Search | Safety Gates & Roof Walkways",   29400, 1235,10436, 72,0],
+  ["pmax","Performance Max | Lead Gen — US",      208600, 1877, 6757, 47,0]
+];
+/* row: {n:name, w:click weight, cw:conv weight, im:impr modifier,
+         cm:cost modifier, tt:traffic tilt, ct:conv tilt, note:badge} */
+const SEG_DEVICE = [
+  {n:"Mobile phones", w:47, cw:24, im:0.936, cm:0.915, tt:1.30, ct:0.85},
+  {n:"Computers",     w:48, cw:71, im:1.042, cm:1.083, tt:0.93, ct:1.06},
+  {n:"Tablets",       w:5,  cw:5,  im:1.200, cm:1.000, tt:0.90, ct:0.95}
+];
+const SEG_DOW = [
+  {n:"Monday",    w:17.2, cw:19.80, im:0.94, cm:1.04, tt:0.92, ct:1.05},
+  {n:"Tuesday",   w:18.1, cw:21.80, im:0.95, cm:1.03, tt:0.92, ct:1.06},
+  {n:"Wednesday", w:17.8, cw:21.30, im:0.96, cm:1.02, tt:0.93, ct:1.05},
+  {n:"Thursday",  w:16.6, cw:18.90, im:0.95, cm:1.03, tt:0.92, ct:1.04},
+  {n:"Friday",    w:13.9, cw:12.50, im:1.05, cm:0.98, tt:1.10, ct:0.95},
+  {n:"Saturday",  w:8.2,  cw:3.70,  im:1.24, cm:0.86, tt:1.35, ct:0.75},
+  {n:"Sunday",    w:7.8,  cw:3.10,  im:1.27, cm:0.84, tt:1.36, ct:0.72}
+];
+const HOD_W = [1.0,0.7,0.6,0.6,0.8,1.4,2.6,4.4,6.6,8.3,8.7,8.4,6.4,8.0,8.2,7.7,6.3,4.6,3.4,2.8,2.6,2.4,2.0,1.5];
+const HOD_INTENT = [0.25,0.25,0.25,0.25,0.25,0.25,0.5,0.9,1.35,1.35,1.35,1.35,1.0,1.3,1.3,1.3,1.3,0.9,0.6,0.35,0.35,0.35,0.35,0.35];
+const SEG_HOD = HOD_W.map((w,h)=>{
+  const biz = h>=8 && h<=17;
+  const h12 = h===0 ? 12 : (h>12 ? h-12 : h), ap = h<12 ? "AM" : "PM";
+  return {n:h12+":00 "+ap+" – "+h12+":59 "+ap,
+          w:w, cw:w*HOD_INTENT[h], im:biz?0.95:1.15, cm:biz?1.05:0.80,
+          tt:biz?0.85:(h===6||h===7?1.10:1.45), ct:biz?1.08:0.80, hr:h};
+});
+const SEG_GEO = [
+  {n:"California",       w:12.8, cw:9.22,  im:1.05, cm:1.25, tt:1.15, ct:0.85, note:"thin distributor coverage"},
+  {n:"Texas",            w:11.5, cw:13.23, im:0.98, cm:0.95, tt:1.00, ct:1.00},
+  {n:"Florida",          w:8.8,  cw:5.72,  im:1.05, cm:1.00, tt:1.15, ct:0.85, note:"thin distributor coverage"},
+  {n:"Ohio",             w:8.4,  cw:11.34, im:0.95, cm:0.90, tt:0.97, ct:1.03},
+  {n:"New York",         w:7.9,  cw:11.06, im:0.95, cm:1.10, tt:0.97, ct:1.03},
+  {n:"Pennsylvania",     w:7.6,  cw:9.88,  im:0.96, cm:0.92, tt:0.97, ct:1.03},
+  {n:"Illinois",         w:7.2,  cw:8.28,  im:1.00, cm:1.00, tt:1.00, ct:1.00},
+  {n:"Georgia",          w:5.4,  cw:5.94,  im:0.98, cm:0.90, tt:1.00, ct:1.00},
+  {n:"North Carolina",   w:4.8,  cw:5.04,  im:0.98, cm:0.88, tt:1.00, ct:1.00},
+  {n:"Michigan",         w:4.6,  cw:5.52,  im:0.97, cm:0.90, tt:1.00, ct:1.00},
+  {n:"All other states", w:21.0, cw:17.85, im:1.02, cm:0.95, tt:1.02, ct:0.98}
+];
+const SEG_MATCH = [
+  {n:"Presence: people in your targeted locations",           w:88, cw:96, im:0.98, cm:1.02, tt:0.96, ct:1.02},
+  {n:"Interest: people searching for your targeted locations", w:12, cw:4,  im:1.15, cm:0.85, tt:1.30, ct:0.80, note:"targeting leak"}
+];
+
+let segDays = 90, segTab = "device", segCampKey = "all";
+
+/* Allocate a total across rows by weight, forcing the column to foot exactly. */
+function segAlloc(rows, total, weightFn){
+  const ws = rows.map(weightFn), s = ws.reduce((a,b)=>a+b,0);
+  const out = ws.map(w => Math.round(total * w / s));
+  let mi = 0; out.forEach((v,i)=>{ if(v > out[mi]) mi = i; });
+  out[mi] += total - out.reduce((a,b)=>a+b,0);
+  return out;
+}
+function segRows(rows){
+  const c = SEG_CAMP.find(x=>x[0]===segCampKey), w = SEG_WIN[segDays], a = SEG_WIN[90];
+  const tot = {impr:Math.round(c[2]*w.impr/a.impr), clicks:Math.round(c[3]*w.clicks/a.clicks),
+               cost:Math.round(c[4]*w.cost/a.cost),  conv:Math.round(c[5]*w.conv/a.conv)};
+  const k = w.t * (c[6] ? 1.35 : 1);                  // tilt strength for this window/campaign
+  const tp = r => r.w  * (1 + (r.tt-1)*k);
+  const cp = r => r.cw * (1 + (r.ct-1)*k);
+  const impr   = segAlloc(rows, tot.impr,   r=>tp(r)*r.im);
+  const clicks = segAlloc(rows, tot.clicks, r=>tp(r));
+  const cost   = segAlloc(rows, tot.cost,   r=>tp(r)*r.cm);
+  const conv   = segAlloc(rows, tot.conv,   r=>cp(r));
+  return {tot, rows: rows.map((r,i)=>({...r, impr:impr[i], clicks:clicks[i], cost:cost[i], conv:conv[i]}))};
+}
+function segTable(data, dimLabel){
+  const {tot, rows} = data;
+  const acctCpa = tot.cost / tot.conv;
+  const maxCost = Math.max(...rows.map(r=>r.cost));
+  const body = rows.map(r=>{
+    const cpa = r.conv > 0 ? r.cost/r.conv : 0;
+    const ratio = cpa / acctCpa;
+    const cls = r.conv===0 ? "" : (ratio > 1.35 ? "cpa-hi" : (ratio < 0.75 ? "cpa-lo" : ""));
+    const bar = ratio > 1.35 ? "badb" : (ratio < 0.75 ? "goodb" : (ratio > 1.12 ? "warnb" : ""));
+    return `<tr class="rrow">
+      <td class="l">${r.n}${r.note?`<span class="segnote">${r.note}</span>`:""}</td>
+      <td class="l barcell"><span class="segbar ${bar}" style="width:${Math.max(2,Math.round(r.cost/maxCost*130))}px"></span></td>
+      <td>${num(r.impr)}</td>
+      <td>${num(r.clicks)}</td>
+      <td>${pct(r.clicks/r.impr*100)}</td>
+      <td>${fix2(r.cost/r.clicks)}</td>
+      <td>${money(r.cost)}</td>
+      <td>${r.conv.toFixed(2)}</td>
+      <td class="${cls}">${r.conv>0?fix2(cpa):"—"}</td></tr>`;
+  }).join("");
+  return `<table class="gt" style="margin-top:0; border-radius:0 0 8px 8px;">
+    <thead><tr>
+      <th class="l">${dimLabel}</th><th class="l barcell">Cost share</th>
+      <th>Impr.</th><th>Interactions</th><th>Interaction rate</th>
+      <th>Avg. cost</th><th>↓ Cost</th><th>Conversions</th><th>Cost / conv.</th>
+    </tr></thead>
+    <tbody>${body}
+      <tr class="total"><td class="l">Total: ${dimLabel.toLowerCase()}</td><td class="l"></td>
+        <td>${num(tot.impr)}</td><td>${num(tot.clicks)}</td><td>${pct(tot.clicks/tot.impr*100)}</td>
+        <td>${fix2(tot.cost/tot.clicks)}</td><td>${money(tot.cost)}</td>
+        <td>${tot.conv.toFixed(2)}</td><td>${fix2(acctCpa)}</td></tr>
+    </tbody></table>`;
+}
+const SEG_META = {
+  device:{dim:"Device", src:()=>SEG_DEVICE,
+    hint:"<b>The trap on this tab:</b> mobile has the <i>higher</i> interaction rate and the <i>cheaper</i> average cost, so it looks like the efficient device. It isn't. Its cost per conversion is roughly 2.5× desktop. Cheap clicks that fill in a form and never buy are exactly what Smart Bidding chases when all it can see is form fills.",
+    rec:"<b>What you'd say:</b> \"I wouldn't cut mobile blind, because some of those are real people checking us from a roof. I'd apply a negative bid adjustment on mobile in the damaged campaign, and more importantly I'd get offline conversions flowing so Google optimizes to closed revenue instead of form count. This tab is the argument for that project, not a bid change on its own.\""},
+  dow:{dim:"Day of week", src:()=>SEG_DOW,
+    hint:"<b>B2B pattern, textbook version:</b> facilities managers and safety officers specify on weekdays. Saturday and Sunday take a real slice of spend and return a fraction of the leads. This is the cheapest win in the account: no budget increase, no IT ticket, no new creative.",
+    rec:"<b>What you'd say:</b> \"Weekend spend buys leads at roughly double the weekday rate. I'd set an ad schedule bid adjustment rather than switching weekends off, because a hard off-switch also kills the Monday-morning research that converts later. Then I'd re-check in four weeks against the conversion lag report.\""},
+  hod:{dim:"Hour of day", src:()=>SEG_HOD,
+    hint:"<b>Read this tab against Jun 14.</b> Broad match pulled in evening and overnight traffic, which is when job-seeker and OSHA-homework queries happen. Business hours still carry the conversions. Narrow the window and the after-hours share grows, which is the fingerprint of the match-type change rather than a seasonal wobble.",
+    rec:"<b>What you'd say:</b> \"I'd trim bids between roughly 8 PM and 6 AM before I touch anything structural, because it's reversible in a click and it doesn't disturb the bid strategy's learning. The overnight clicks aren't a bidding problem though. They're a match-type problem, so the negatives come first and this is the guardrail behind them.\""},
+  geo:{dim:"Location", src:()=>SEG_GEO,
+    hint:"<b>Where this gets organizational.</b> California is the single largest line of spend and one of the worst cost per lead, and Florida is close behind. Both are places where lead volume outruns the coverage that can service it. Ohio and Pennsylvania are the reverse: cheaper leads, and you'd want to know whether they're being followed up faster.",
+    rec:"<b>What you'd say:</b> \"Before I touch geo bids I'd want a conversation with sales about coverage, because a lead in a state we can't service well isn't a bad keyword, it's a routing problem. That's the version of this answer that shows you understand a multi-business-unit company: the fix is a bid adjustment plus a conversation, and the conversation is the harder half.\""},
+  match:{dim:"Location type", src:()=>SEG_MATCH,
+    hint:"<b>The setting almost nobody checks.</b> Google's default location option is <i>Presence or interest</i>: your ads can serve to someone anywhere in the world who is merely searching <i>about</i> your targeted locations. For a US-only industrial supplier that's a pure leak, and it hides inside the campaign settings rather than in any keyword report.",
+    rec:"<b>What you'd say:</b> \"I'd switch location options from 'Presence or interest' to 'Presence' in every campaign. It takes about ninety seconds, it's the first thing I check in any account I inherit, and it usually pays for itself in a week. This is the kind of thing I'd expect to find in a first-week audit rather than something anyone did wrong.\""}
+};
+function setSegDays(d){ segDays = d; renderSeg(); }
+function setSegTab(t){ segTab = t; renderSeg(); }
+function renderSeg(){
+  const sel = $("seg-camp");
+  if(!sel.options.length){
+    sel.innerHTML = SEG_CAMP.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join("");
+  }
+  segCampKey = sel.value || "all";
+  const w = SEG_WIN[segDays], meta = SEG_META[segTab];
+  const camp = SEG_CAMP.find(c=>c[0]===segCampKey);
+  $("seg-datebox").textContent = w.lbl;
+  $("seg-scopechip").textContent = segCampKey==="all" ? "🏠 All campaigns" : camp[1];
+  document.querySelectorAll('#v-segments .segpill').forEach(p=>p.classList.toggle('on', +p.dataset.d===segDays));
+  document.querySelectorAll('#v-segments .stab2').forEach(t=>t.classList.toggle('on', t.dataset.s===segTab));
+  $("seg-hint").innerHTML = "💡 " + meta.hint;
+
+  const data = segRows(meta.src());
+  const chips = [
+    ["Cost", money(data.tot.cost)], ["Cost / conv.", fix2(data.tot.cost/data.tot.conv)],
+    ["Conversions", data.tot.conv.toFixed(2)], ["Interaction rate", pct(data.tot.clicks/data.tot.impr*100)],
+    ["Avg. cost", fix2(data.tot.cost/data.tot.clicks)], ["Impr.", num(data.tot.impr)]
+  ].map(c=>`<div class="mchip" style="flex:0 0 160px;"><div class="lbl">${c[0]}</div><div class="val" style="font-size:19px;">${c[1]}</div></div>`).join("");
+
+  $("seg-body").innerHTML =
+    `<div class="chartcard" style="margin-top:12px;"><div class="metric-chips" style="flex-wrap:wrap;">${chips}</div></div>
+     <div class="toolbar" style="margin-top:12px;"><span class="filter">▽&nbsp; Add filter</span>
+       <span class="spacer"></span><span style="font-size:12px;color:var(--ink2);">${w.sub} · ${segCampKey==="all"?"all enabled campaigns":camp[1]}</span>
+       <span class="tbtn"><span class="i">▦</span>Columns</span><span class="tbtn" onclick="toast()"><span class="i">⭳</span>Download</span></div>
+     ${segTable(data, meta.dim)}
+     <div class="segrec">✅ ${meta.rec}</div>`;
+}
+
 /* ================= ROUTING ================= */
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on', v.id==='v-'+id));
   const navId = (id==='adgroupdetail') ? 'adgroups' : id;
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('sel', a.dataset.view===navId));
+  if(id==='segments')  renderSeg();
   if(id==='campaigns') requestAnimationFrame(()=>drawTrend('chart',230));
   if(id==='overview')  requestAnimationFrame(()=>drawTrend('chart2',190));
   window.scrollTo({top:0});
