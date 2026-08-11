@@ -2163,13 +2163,13 @@ function tabMatched(){
 /* ---------- coaching ---------- */
 const SEG_HINT = {
  device:["<b>Spend and cost per conversion by device, and the place you act on it.</b> Mobile has the higher CTR and the cheaper CPC, so it reads as the efficient device. It isn't: its cost per conversion is roughly 2.5× computers (Google's name for desktop). <b>The Bid adj. column is editable</b> — click any value to set a positive or negative adjustment, which is how you'd suppress a device entirely or lean into one that drives calls. Also note <b>Conv. value is 0.00 on every row</b>: no revenue is attached to any conversion, so Smart Bidding is optimizing to form count.",
-   "<b>What you'd say:</b> \"I wouldn't cut mobile blind, because some of those are real people checking us from a roof. I'd put a negative bid adjustment on mobile in the damaged campaign. But the zero in the Conv. value column is the bigger finding: until closed revenue flows back in, we're asking Google to buy forms, and it's buying them.\""],
+   "<b>What you'd say:</b> \"I wouldn't just kill mobile. Some of those are probably real people checking us from a rooftop. I'd knock the mobile bid down in the campaign that's struggling and see what happens. Honestly though, the thing that jumps out more is that Conv. value column. It's zero the whole way down. So we're basically telling Google to go and get us forms, and it's doing exactly that.\""],
  when:["<b>Read this tab against Jun 14.</b> Broad match pulled in evening and overnight traffic, which is when job-seeker and OSHA-homework queries happen. Business hours still carry the conversions. Narrow the date range and the after-hours share grows, which is the fingerprint of the match-type change rather than a seasonal wobble.",
-   "<b>What you'd say:</b> \"I'd trim bids between roughly 8 PM and 6 AM before I touch anything structural, because it's reversible and it doesn't disturb the bid strategy's learning. The overnight clicks aren't a bidding problem though. They're a match-type problem, so the negatives come first and this is the guardrail behind them.\""],
+   "<b>What you'd say:</b> \"I'd pull the bids down overnight, say eight in the evening through six in the morning. That's easy to undo and it won't upset the bid strategy. The late-night clicks aren't really a bidding problem though, they're a match type problem. So I'd sort the negatives out first and treat this as a backstop.\""],
  where:["<b>Placements and channels, and for a Search account most of it won't apply.</b> The Search campaigns only run on Google Search and Search partners, so there's little to see. Performance Max is the exception: it scatters spend across Display, YouTube, Gmail, Discover and Maps, and that spend converts far worse than the Search slice of the same campaign. Select the PMax campaign above to see it.",
-   "<b>What you'd say:</b> \"On the Search side this tab is nearly empty, which is how it should be. Where it earns its keep is Performance Max, because that's the one campaign where I can't choose the channel. Most of that budget is going to Display and YouTube at a much worse cost per lead than its own Search traffic, and that's the argument for either capping PMax or moving the money into Search where I control it.\""],
+   "<b>What you'd say:</b> \"On the Search side there's not much here, which is fine, that's how it should be. Performance Max is where it gets interesting, because that's the one campaign where I don't get to pick the channel. Most of that money is going to Display and YouTube and it's converting a lot worse than PMax's own Search traffic. So either we cap it, or we move that budget into Search where I can actually control it.\""],
  matched:["<b>The best report on this page, and the one to spend real time in.</b> It opens on the whole country. <b>Click the blue United States link</b> to drill in, then use the dimension picker to switch to Cities, States, Counties, Postal codes or DMA regions. Then just read the cost per conversion column down the list: the cheap rows are where you're efficient, the expensive rows are where money is leaking. This is also where <i>Presence or interest</i> targeting shows up, since Google's default serves your ads to people anywhere in the world merely searching <i>about</i> your locations.",
-   "<b>What you'd say:</b> \"I'd switch location options from 'Presence or interest' to 'Presence' in every campaign. It takes about ninety seconds, it's the first thing I check in an account I inherit, and it usually pays for itself in a week.\""]
+   "<b>What you'd say:</b> \"I'd change the location setting from 'Presence or interest' to just 'Presence' across all of them. Takes about a minute and a half. It's genuinely the first thing I look at when I pick up somebody else's account, and it usually pays for itself inside a week.\""]
 };
 
 /* ---------- menus and routing ---------- */
@@ -2333,7 +2333,7 @@ function pageAudiences(){
     : demoTab==="Age" ? "<b>Age skews old here, and that is correct.</b> Facilities managers and safety officers are not 18 to 24. The younger brackets carry cost with almost no conversions."
     : "<b>Gender data is thin and heavily Unknown.</b> Treat it as directional at best.";
   const guide = `<div class="hint">💡 ${dm} <b>One honest caveat to say out loud:</b> Google's demographic data is less reliable than Meta's, because Google infers most of it rather than having it declared. Use it to form a hypothesis and to set modest bid adjustments, not to make a big call. Saying that unprompted signals you know the limits of your own data.</div>
-    <div class="segrec">✅ <b>What you'd say:</b> "I'd treat this as directional. If a household income bracket or an age band is running double the account cost per lead, I'd put a negative bid adjustment on it and watch it, rather than excluding outright. Google infers this data, so I want a trend before I act hard on it."</div>`;
+    <div class="segrec">✅ <b>What you'd say:</b> "I'd take this as a hint rather than gospel. If an income bracket or an age group is costing us double what everyone else does, I'd put a negative adjustment on it and keep an eye on it. I wouldn't exclude it outright. Google's guessing at a lot of this, so I want to see a pattern before I do anything drastic."</div>`;
   return guide + `<div class="democard"><h4>Audience segments</h4>
       <div class="showtab" onclick="toast()">˅ &nbsp;Show table <span class="edit">Edit audience segments</span></div></div>
     <div class="democard"><h4>Demographics</h4>
@@ -2562,8 +2562,8 @@ function pageRecs(){
     <div class="mtile"><div class="k">Recommendations</div><div class="v">${live.length}</div><div class="d">${recDismissed.length} dismissed</div></div>
     <div class="mtile" style="display:flex;align-items:center;justify-content:center;gap:20px;">
       <span class="recbtn" onclick="dismissAll()">Dismiss all</span><span class="tbi" onclick="toast()"><b>⭳</b>Download</span></div></div>
-    <div class="hint" style="margin-top:14px;">💡 <b>How to talk about this page:</b> most of these exist to make Google money, not to make your account better. The professional answer is not "I ignore recommendations," it is "I read them, I apply the measurement ones, and I treat the spend-more ones as a hypothesis to test." Say that and you sound like someone who has run an account rather than someone who read a blog post.</div>
-    <div class="segrec" style="margin:12px 0 0;">✅ <b>The optimization score line:</b> "Optimization score is Google's opinion of how closely you follow Google's advice. It isn't a performance metric. I've run accounts in the sixties that outperformed accounts in the nineties. I'd rather be judged on cost per qualified lead."</div>
+    <div class="hint" style="margin-top:14px;">💡 <b>How to talk about this page:</b> most of these are here to make Google money, not to make your account better. Don't just say you ignore them though, that sounds lazy. Say something closer to: I read them, I'll take the ones that improve measurement, and the ones telling me to spend more I treat as a hypothesis I'd want to test first. That sounds like somebody who's run an account rather than somebody who read a blog post.</div>
+    <div class="segrec" style="margin:12px 0 0;">✅ <b>The optimization score line:</b> "Optimization score is basically Google's score for how much you do what Google says. It isn't a performance metric. I've had accounts sitting in the sixties doing better than ones up in the nineties. I'd rather be judged on what a decent lead costs us."</div>
     <div class="cardrow">${cards}</div>`;
 }
 /* ---------- SEARCH TERMS ---------- */
@@ -2658,7 +2658,7 @@ const INSIGHTS = [
 ];
 function pageInsights(){
   return `<div class="hint">💡 <b>Be honest about this page in the room.</b> Insights is automated commentary generated on top of data you can read yourself. It is not where diagnosis happens. Glance at it, take the one insight that names a real change, and move to Change history and Search terms where the evidence actually lives.</div>
-    <div class="segrec" style="margin:12px 0 0;">✅ <b>What you'd say:</b> "I look at Insights, but I don't work from it. It's Google summarizing my own account back to me. The conversion-decline insight here is right, and it points at the Jun 14 change, but I'd have found that in Change history anyway. I spend my time in Search terms and the segment reports, because that's where I can act on something."</div>
+    <div class="segrec" style="margin:12px 0 0;">✅ <b>What you'd say:</b> "I'll glance at Insights, but I don't really work from it. It's just Google telling me about my own account. The conversion drop it's flagging is real, and it does point at the June change, but I'd have found that in Change history in about thirty seconds anyway. I spend my time in Search terms and the segment reports instead, because that's where I can actually do something."</div>
     <div class="cardrow">${INSIGHTS.map((r,i)=>`
       <div class="ocard" style="grid-column:1/-1; ${i===0?'border-left:4px solid var(--amber);':''}">
         <h4>${i===0?"⚡ ":""}${r[0]}</h4><div class="sub">${r[1]}</div>
@@ -2668,7 +2668,7 @@ function pageInsights(){
           <span class="lk" onclick="toast()">Dismiss</span></div></div>`).join("")}</div>`;
 }
 const AUCTION_HINT = ["<b>How to read this fast:</b> impression share is how often you showed when you were eligible. Overlap rate is how often that competitor showed in the same auction as you. Position above rate is how often they beat you when you both showed. <b>bluewatermfg.com is new</b>, and account CPCs rose about 11% at the same time, which is your explanation for rising click costs that has nothing to do with anything you did.",
- "<b>What you'd say:</b> \"A new entrant is bidding on our terms and pushing CPCs up about 11%. That's an auction problem, not an account problem, so the answer isn't to panic-bid. I'd protect the brand terms first, since that's where losing position actually costs us, and I'd fix Quality Score on the generic terms before I pay more per click.\""];
+ "<b>What you'd say:</b> \"There's a new player bidding on our terms and it's pushed our click costs up about eleven percent. That's the auction moving, not something we did, so I wouldn't panic and start bidding everything up. I'd protect the brand terms first, because that's where losing position actually hurts. On the generic stuff I'd rather fix Quality Score than just pay more.\""];
 
 
 /* ---------- pages that exist but aren't where the work happens ---------- */
@@ -2716,7 +2716,7 @@ function skipPage(name){
         <span class="dr-box"><span>${SEG_WIN[segDays].range}</span><span class="car">&#9662;</span></span>
         <span class="dr-arrow">&#8249;</span><span class="dr-arrow">&#8250;</span></div></div>
     <div class="hint">&#128161; <b>You can skip this one.</b> ${SKIP_NOTE[name]}</div>
-    <div class="segrec">&#9989; <b>If they click it in front of you:</b> "I know it's there, I just don't work from it. My time goes to Search terms, the segment reports and Change history, because those are the three that tell me what to change."</div>
+    <div class="segrec">&#9989; <b>If they click it in front of you:</b> "I know it's there, I just don't really use it. Most of my time goes to Search terms, the segment reports and Change history. Those are the three that actually tell me what to change."</div>
     <div class="chartcard" style="margin-top:14px; padding:40px; text-align:center; color:var(--ink2); font-size:13.5px;">
       This report is intentionally not built out in the practice account.<br>
       Go to <span class="lk" onclick="setSegTab('matched');showView('segments')">Matched locations</span>,
@@ -2862,7 +2862,7 @@ function pageCampaigns(){
     "1 - "+camps.length+" of "+camps.length);
 }
 const CAMP_HINT = ["<b>Two filters do most of the work here.</b> <i>Campaign status</i> is the first thing to set: Enabled shows what is actually running, Enabled + Paused shows what someone turned off and why. Then set the date range. Ninety days is the right default for a low-volume B2B account, because thirty days will not give you enough conversions to trust. <b>Segment is the advanced move</b>: it splits every campaign row by device, network, click type, conversion action, top vs. other, ad destination or time, without leaving the page.",
- "<b>What you'd say when you open Segment:</b> \"This is where I'd normally start a diagnosis. Segmenting by network tells me whether Search partners or Display is quietly eating budget. By click type it tells me whether I'm paying for headline clicks or sitelink clicks. By Top vs. Other it tells me whether I'm actually appearing at the top of the page or scraping the bottom. It's the same spend cut four different ways, and the cut you choose is the hypothesis you're testing.\""];
+ "<b>What you'd say when you open Segment:</b> \"This is usually where I start. Segment by network and I can see whether Search partners or Display is quietly eating budget. By click type, whether I'm paying for people hitting the headline or the sitelinks. Top versus Other tells me if I'm actually at the top of the page or scraping along the bottom. It's the same money sliced different ways, and whichever slice you pick is basically the question you're asking.\""];
 
 /* ================= AD GROUPS PAGE ================= */
 const AGTCPA = {"Fall Protection – General":"$90.00","Roof Fall Protection Systems":"$90.00",
@@ -2900,7 +2900,7 @@ function pageAdGroups(){
     "1 - "+rows.length+" of "+rows.length);
 }
 const ADGROUP_HINT = ["<b>Everything blue is a door.</b> Click an ad group name to drop into its keywords, or click the campaign name to change scope. That click-through habit is most of what \"knowing the interface\" looks like from the outside: you never navigate by the left menu when a link in the table gets you there in one step. The ad group list is also the fastest way to prove a problem is local rather than account-wide.",
- "<b>What you'd say:</b> \"I don't diagnose at campaign level, because a campaign average hides everything. Fall Protection – General is at $296 a lead while its two sibling ad groups sit near $130. Same campaign, same budget, same bid strategy. So the campaign isn't broken, one ad group is, and that's a much cheaper thing to fix.\""];
+ "<b>What you'd say:</b> \"I don't really diagnose anything at campaign level, because the average hides everything. Fall Protection – General is at two ninety-six a lead. The two ad groups sitting right next to it are around a hundred and thirty. Same campaign, same budget, same bid strategy. So it's not the campaign that's broken, it's one ad group, and that's a much easier thing to fix.\""];
 /* ================= ASSET USAGE GUIDANCE ================= */
 const ASSET_USE = {
  "Image":["use","Worth having. Feeds Performance Max and image extensions on Search."],
@@ -3010,7 +3010,7 @@ function pageKeywords(){
     tr+body, "1 - "+rows.length+" of "+rows.length);
 }
 const KW_HINT = ["<b>Two controls decide what you're looking at, and mixing them up is how people misread an account.</b> The <b>ad group selector</b> at the top sets the scope: pick one ad group to see just its keywords, or choose <i>View all ad groups in this campaign</i> to see the whole campaign at once. The <b>Keyword status</b> filter sets what's included: <i>Enabled</i> shows only what is spending right now, <i>Enabled, Paused</i> adds what someone switched off, and <i>All</i> adds removed keywords too. Always know which two you have set before you draw a conclusion.",
- "<b>What you'd say:</b> \"I usually work in Enabled only, because I want to see what's actually spending. But the first time I open an account I flip to All, because paused and removed keywords tell you what someone already tried. If the good exact-match terms are all paused and the broad ones are live, that's not a keyword problem, that's a decision somebody made, and I'd want to know why before I undo it.\""];
+ "<b>What you'd say:</b> \"Day to day I stay in Enabled, because I want to see what's actually spending. But the first time I open an account I switch it to All. Paused and removed keywords tell you what somebody already tried. If all the good exact match terms are switched off and the broad ones are running, that's not a keyword problem, somebody made that call. I'd want to know why before I undo it.\""];
 
 /* ================= LOCATIONS · AD SCHEDULE · ADV BID ADJ · GOALS ================= */
 const TARGETED = [
@@ -3107,7 +3107,7 @@ function pageLocations(){
       "1 - "+rows.length+" of "+rows.length);
 }
 const LOC_HINT=["<b>Three tabs, and the third one is the audit.</b> <i>Locations</i> is what you targeted and how each performs, with an editable bid adjustment on every row. <i>Location exclusions</i> should almost never be empty in a mature account. <i>Locations of interest</i> is the one to open first: those are people outside your targeted areas who got your ads anyway, purely because the campaign is set to <i>Presence or interest</i>.",
- "<b>What you'd say:</b> \"I'd start on Locations of interest, because that tells me in ten seconds whether the location setting is wrong. If there's real money on that tab, the fix isn't a bid adjustment, it's a campaign setting, and it takes ninety seconds. Then I'd come back to the main tab and look at cost per lead by area against where we can actually service the work.\""];
+ "<b>What you'd say:</b> \"I'd go to Locations of interest first. That tells me in about ten seconds whether the location setting's wrong. If there's real money sitting on that tab, it's not a bidding fix, it's a campaign setting, and it takes a minute. Then I'd come back here and look at cost per lead by area against where we can actually service the work.\""];
 /* ---------- AD SCHEDULE ---------- */
 const SCHED_BID = {"Mondays, 6:00 AM - 12:00 PM":"+20%","Tuesdays, 6:00 AM - 12:00 PM":"+10%","Fridays, 6:00 AM - 12:00 PM":"+10%"};
 const BLOCKS = [["12:00 AM - 6:00 AM",0,6],["6:00 AM - 12:00 PM",6,12],["12:00 PM - 6:00 PM",12,18],["6:00 PM - 12:00 AM",18,24]];
@@ -3152,7 +3152,7 @@ function pageSchedule(){
       "1 - "+rows.length+" of "+rows.length);
 }
 const SCHED_HINT=["<b>The heat map is the fast read, the table is the evidence.</b> Darker cells are more clicks. Hover any cell for the exact number. Business hours Monday to Thursday carry the account; the overnight and weekend blocks are where cost per lead roughly doubles. Bid adjustments are set per day-and-time block right in the table.",
- "<b>What you'd say:</b> \"There's no ad schedule on this account, so it runs flat all week. I wouldn't switch anything off, because Monday-morning research converts later. I'd set negative adjustments on the overnight blocks first, since that's reversible and it doesn't disturb the bid strategy's learning period.\""];
+ "<b>What you'd say:</b> \"There's no schedule on this at all, it just runs flat all week. I wouldn't switch anything off though, because someone researching on a Monday morning might well convert later. I'd start by pulling the overnight bids down, since that's easy to reverse and it won't mess with the bid strategy while it's still learning.\""];
 /* ---------- ADVANCED BID ADJUSTMENTS ---------- */
 function pageAdvBid(){
   const w=SEG_WIN[segDays];
@@ -3172,7 +3172,7 @@ function pageAdvBid(){
       row("Calls") + row("Total: Interaction type ⓘ","tot") + row("Total: Campaign ⓘ","tot"), "1 - 1 of 1");
 }
 const ADVBID_HINT=["<b>One row, and it matters more than it looks.</b> Advanced bid adjustments let you bid separately for <i>call interactions</i>, meaning someone tapping the call asset rather than clicking through to the site. For a business where a phone call from a facilities manager is worth more than a form fill, this is a real lever and almost nobody touches it.",
- "<b>What you'd say:</b> \"Calls convert at a materially better rate than site clicks here, and there's a +10% adjustment on them. I'd want to know whether that number was reasoned or inherited. If calls really are the better lead, that adjustment is probably too timid.\""];
+ "<b>What you'd say:</b> \"Calls convert quite a bit better than site clicks here, and there's already a ten percent uplift on them. I'd want to know whether somebody actually worked that out or whether it's just been sitting there. If calls really are the better lead, ten percent is probably too cautious.\""];
 /* ---------- GOALS · CONVERSIONS SUMMARY ---------- */
 const CONV_ACTIONS = [
  ["Quote request form","Submit lead form","Primary","Website",412,"Active","Don't use a value"],
@@ -3257,7 +3257,7 @@ function pageGoals(){
          <p style="font-size:13px;line-height:1.6;color:#3c4043;margin-top:6px;">Your conversion goals are grouped into different stages of the customer journey. Earlier groups should capture customers' initial engagements with your business, such as Page views or Get directions, while the final group should reflect the most valuable actions, such as Purchases or Store sales.</p></div>
        <div style="margin-left:auto; display:flex; gap:16px; align-items:center;"><span class="lk" onclick="toast()">Dismiss</span><span class="recbtn" onclick="toast()">Learn more</span></div></div>
      <div class="hint">💡 <b>This is the most important page in the account for your argument, and Group 3 is why.</b> Google groups conversion goals by stage: early engagement first, most valuable actions last. Group 1 is full, Group 2 has form fills, and <b>Group 3 is empty</b>. Nothing in this account measures a closed sale. Every conversion is worth exactly 1.00, so Smart Bidding optimizes toward form count and has no way to know a $60,000 order from a job seeker filling in a form.</div>
-     <div class="segrec">✅ <b>What you'd say, pointing at Group 3:</b> "This empty box is the whole problem. Google is optimizing perfectly toward the only thing anyone gave it, which is form submissions. Until closed revenue comes back into this column, we're paying it to buy forms. That's the offline conversion tracking project, and it's worth more than any bid change I could make."</div>
+     <div class="segrec">✅ <b>What you'd say, pointing at Group 3:</b> "This empty box here is the whole problem. Google's doing exactly what we asked it to. It's just that all we ever asked for was form fills, so that's what it goes and gets. Until the money from closed deals comes back into this column, we're paying it to collect forms. That's the offline conversion tracking piece, and honestly it's worth more than any bid change I could make."</div>
      <div class="ocard" style="margin-top:14px;">
        <div class="gtabs2" style="margin-bottom:6px;"><span class="gtab2" onclick="toast()">Sales</span><span class="gtab2 on">Leads</span>
          <span class="lk" style="margin-left:auto; align-self:center;" onclick="toast()">+ Create new chart</span></div>
@@ -3314,7 +3314,7 @@ function pageConvSettings(){
       <b>Call conversion action</b> is currently <b style="color:var(--red)">Not set yet</b>, which means calls from ads have no default conversion action behind them: set it to Calls from Ads.
       <b>Customer data terms</b> must be accepted before hashed data can be sent, and it is.
       <b>Enhanced conversions for leads</b> is the switch that lets you match a form fill back to a closed deal without touching the CRM, and it is the cheapest first step toward the offline conversion loop.</div>
-    <div class="segrec">✅ <b>What you'd say:</b> "Call conversion action isn't set, so call tracking is running without a default action behind it. That's a two-minute fix. Then enhanced conversions for leads, because that's what lets us tie a form back to a closed order later without a CRM integration project. Those two together cost almost nothing and they're the foundation for everything else I'd want to do with bidding."</div>
+    <div class="segrec">✅ <b>What you'd say:</b> "The call conversion action isn't set, so call tracking's running with nothing behind it. That's a two minute fix. Then I'd turn on enhanced conversions for leads, because that's what lets us match a form back to a closed order later without building a whole CRM integration. Neither of those really costs anything, and they're what everything else with bidding sits on top of."</div>
     <div class="setlist">${rows}</div>`;
 }
 /* ================= CONVERSION ACTION: PRIMARY/SECONDARY + CALL LENGTH ================= */
@@ -3392,7 +3392,7 @@ function pageTools(){
     ["Asset studio · Labs · Creator partnerships","Newer and experimental","Interesting, not load-bearing. Skip in an interview.","rare"]
   ];
   return `<div class="hint">💡 <b>The honest framing for this whole section:</b> Tools is deep, and almost none of it is where the work happens. The bulk of real management is Campaigns and Goals. Knowing what's in here matters mostly so you're not surprised, and so you know where to go when you need one specific thing.</div>
-    <div class="segrec">✅ <b>What you'd say if asked:</b> "I use Keyword Planner for volume and forecasts, shared negative lists out of the Shared library, and Ad Preview and Diagnosis when I need to check whether an ad is serving. Data manager matters later, because that's where offline conversion imports get wired up. The rest I know exists and rarely open."</div>
+    <div class="segrec">✅ <b>What you'd say if asked:</b> "I use Keyword Planner for search volume and forecasts. Shared negative lists out of the Shared library, so I'm not fixing the same waste in five campaigns. And Ad Preview when I need to check whether an ad's actually showing. Data manager matters further down the line, that's where offline conversions get wired in. The rest I know is there and rarely open."</div>
     <div class="cardrow">${groups.map(g=>`
       <div class="ocard"><h4>${g[0]} ${ASSET_BADGE[g[3]]}</h4><div class="sub">${g[1]}</div>
         <p style="font-size:13px;line-height:1.6;color:#3c4043;margin-top:8px;">${g[2]}</p></div>`).join("")}</div>`;
@@ -3418,7 +3418,7 @@ function pageKwPlanner(){
         <td class="l">${p[1]}</td><td class="l">${p[2]}</td><td class="l">${p[3]}</td></tr>`).join(""), "1 - 2 of 2")}`;
 }
 const KWP_HINT=["<b>The one tool worth opening in front of someone.</b> Discover new keywords gives you ideas and volume; Get search volume and forecasts tells you what a keyword list would cost and roughly return. For a low-volume B2B account the forecasts are directional at best, but the <i>volume</i> numbers are real and they settle arguments about whether demand exists.",
- "<b>What you'd say:</b> \"I'd use this to size the opportunity before asking for budget. If someone wants to expand into a new product line, I want to know whether there are two hundred searches a month or twenty thousand, because that determines whether it's a campaign or a line item in an existing one.\""];
+ "<b>What you'd say:</b> \"I'd use this to size something up before I go and ask for budget. If someone wants to push into a new product line, I want to know whether we're talking two hundred searches a month or twenty thousand. That's the difference between a whole campaign and just a few keywords in one we've already got.\""];
 /* ---------- BILLING ---------- */
 function pageBilling(){
   const rows=[["Aug 1, 2026","Automatic payment","Visa •••• 4417","$4,812.66"],
@@ -3441,7 +3441,7 @@ function pageAdmin(){
    ["Account access","4 users · 1 admin, 2 standard, 1 read-only"],["Linked accounts","Google Analytics 4, Search Console, Merchant Center (inactive)"],
    ["Terms and conditions","Accepted Jan 8, 2024"]];
   return `<div class="hint">💡 <b>One row here actually matters: auto-tagging.</b> If auto-tagging is off, no GCLID lands on your landing page, so the click ID never reaches the CRM and offline conversion imports cannot work at all. It is the first thing to verify before you promise anyone an offline conversion project. Everything else on this page is contact details and terms.</div>
-    <div class="segrec">✅ <b>What you'd say:</b> "Before I'd commit to an offline conversion tracking timeline, I'd check two things in Admin: that auto-tagging is on, and who actually has access to the account. Those take a minute and they decide whether the project is two weeks or two months."</div>
+    <div class="segrec">✅ <b>What you'd say:</b> "Before I'd put a timeline on offline conversion tracking, I'd check two things in here. Whether auto-tagging is on, and who's actually got access to the account. Takes a minute, and it's the difference between this being a couple of weeks or a couple of months."</div>
     <div class="ocard" style="margin-top:14px;"><h4>Account settings</h4>
       <table class="settbl">${S.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table></div>`;
 }
@@ -3655,7 +3655,7 @@ function pageOverview(){
       <div class="ovtlbl" onclick="event.stopPropagation();ovOpenMenu(${i})">${m} <span class="car" style="color:#fff">▾</span></div>
       <div class="ovtval">${OV_METRICS[m](w)[0]}</div>${ovMetricMenu(i)}</div>`).join("");
   return `<div class="hint">💡 <b>Start the walkthrough here, and say why you're starting here.</b> Overview is a summarised copy of reports that live elsewhere, and treating it that way out loud is itself a signal: it tells the room you know the difference between a dashboard and a diagnosis. Four beats, about fifteen seconds. Name the screen and the date range. Give the headline numbers. Say what the tiles are set to and swap one to show they're switchable. Then name where you're going next and why. Every card below links to the report that actually answers the question.</div>
-    <div class="segrec">✅ <b>Your opening script, roughly fifteen seconds:</b> "So this is the Overview, last 90 days, May through July. Account level it's ${money2(SEG_WIN[90].cost)} for ${SEG_WIN[90].conv} conversions, about ${per(SEG_WIN[90].cost,SEG_WIN[90].conv)} a lead. These four tiles are switchable, so I'd usually put cost per conversion up here rather than raw conversions. I don't spend much time on this screen though. It's a summary of reports that live elsewhere, and the thing I actually want to know is which campaign is moving that blended number. So let me go to Campaigns."</div>
+    <div class="segrec">✅ <b>Your opening script, roughly fifteen seconds:</b> "So this is the Overview. I've got it on the last 90 days, May through July. Account-wide we've spent ${money2(SEG_WIN[90].cost)} and got ${SEG_WIN[90].conv} conversions, so roughly ${per(SEG_WIN[90].cost,SEG_WIN[90].conv)} a lead. These tiles are switchable, by the way, I'd normally swap one of them over to cost per conversion. I don't spend a lot of time on this screen though. It's really a summary of reports that live elsewhere, and what I actually want to know is which campaign is dragging that number around. So let me jump into Campaigns."</div>
     <div class="ovtiles">${tiles}</div>
     ${ovChart()}
     ${ovAttention()}
