@@ -140,7 +140,8 @@
   .cm-ico{color:var(--ink2); font-size:13px;}
   .cm-nm{font-size:14px; color:var(--ink); line-height:1.35;}
   .cm-sub{font-size:12px; color:var(--ink2);}
-  .gt2{width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-top:none; font-size:13px;}
+  .gscroll{overflow-x:auto; border:1px solid var(--line); border-top:none; background:#fff;}
+  .gt2{width:100%; min-width:1180px; border-collapse:collapse; background:#fff; font-size:13px;}
   .gt2 th{font-size:12px; color:var(--ink2); font-weight:500; text-align:right; padding:12px 12px; border-bottom:1px solid var(--line); vertical-align:bottom; white-space:normal;}
   .gt2 th.l{text-align:left;}
   .gt2 td{padding:11px 12px; text-align:right; border-bottom:1px solid #edeff1; color:#3c4043; white-space:nowrap;}
@@ -1682,7 +1683,7 @@ function cpaCls(cost,conv,ref){ if(!conv) return ""; const r=(cost/conv)/ref; re
 function pageOf(rows,limit){ const t=rows.length; return {shown:rows.slice(0,limit), foot:"1 - "+Math.min(limit,t)+" of "+t}; }
 
 function tbl(head, body, foot){
-  return `<table class="gt2"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`+
+  return `<div class="gscroll"><table class="gt2"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`+
          (foot?`<div class="pager">${foot}</div>`:"");
 }
 function toolbar(level, extra){
