@@ -234,6 +234,67 @@
   .gmenu .submenu{position:absolute; left:100%; top:-8px; margin:0; display:none; min-width:260px;}
   .tbi.segon{color:var(--blue-dark);}
   .tbi.segon b{background:#e8f0fe; border-radius:4px;}
+  .setlist{margin-top:14px;}
+  .setrow{border:1px solid var(--line); border-radius:8px; margin-bottom:10px; background:#fff;}
+  .sethead{display:grid; grid-template-columns:270px 1fr 26px; gap:16px; padding:16px 18px; cursor:pointer; align-items:center;}
+  .sethead:hover{background:var(--bg2);}
+  .setlbl{font-size:14px; color:#3c4043;}
+  .setval{font-size:14px; color:var(--ink);}
+  .setval.unset{color:var(--red); font-weight:500;}
+  .setbody{padding:0 18px 18px 304px;}
+  .sethelp{font-size:13.5px; color:#3c4043; line-height:1.6;}
+  .chooser{display:inline-flex; gap:14px; align-items:center; border:1px solid var(--line); border-radius:6px; padding:12px 18px; font-size:14px; margin-top:14px; cursor:pointer; position:relative;}
+  .chooser:hover{background:var(--bg2);}
+  .setact{display:flex; justify-content:flex-end; gap:26px; margin-top:16px; border-top:1px solid var(--line); padding-top:14px; font-size:14px;}
+  .ecrow{display:block; font-size:13.5px; margin-top:14px;}
+  .okcard{background:#e6f4ea; border-radius:8px; padding:14px 16px; margin-top:16px; font-size:13px; line-height:1.55; color:#20613a;}
+  .convsel{border:1px solid var(--line); border-radius:5px; padding:6px 10px; font-size:13px;}
+  /* ---------- locations map + edit pane ---------- */
+  .mapbox{position:relative; height:250px; border:1px solid var(--line); border-bottom:none; background:#e8eef6; overflow:hidden; margin-top:12px;}
+  .mapgrid{position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px); background-size:46px 46px;}
+  .maparea{position:absolute; background:rgba(26,115,232,.34); border:1px solid rgba(26,115,232,.6); border-radius:6px;}
+  .mappin{position:absolute; width:36px; height:36px; border-radius:50%; background:#1a73e8; color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; box-shadow:0 1px 4px rgba(0,0,0,.3);}
+  .maplbl{position:absolute; font-size:11px; color:#5f6368; letter-spacing:.08em;}
+  .mapattr{position:absolute; right:8px; bottom:6px; font-size:10.5px; color:#5f6368;}
+  .mapnote{display:flex; gap:10px; align-items:center; font-size:12.5px; color:#3c4043; background:#e8f0fe; border:1px solid var(--line); border-bottom:none; padding:10px 14px;}
+  .editpane{display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line); margin-top:12px; border-radius:8px; overflow:hidden;}
+  .editleft{padding:18px 20px; border-right:1px solid var(--line);}
+  .editright .mapbox{margin-top:0; border:none; height:100%; min-height:420px;}
+  .radiorow{display:flex; gap:26px; font-size:14px; margin-bottom:12px;}
+  .bulkrow{display:block; font-size:13.5px; color:#3c4043; margin-bottom:14px;}
+  .locinput{width:100%; border:1px solid var(--line); border-radius:6px; padding:14px; font-size:14px;}
+  .lochelp{font-size:12px; color:var(--ink2); margin:6px 0 14px;}
+  .loclist{border:1px solid var(--line); border-radius:8px; max-height:300px; overflow-y:auto;}
+  .loclisthead{display:flex; justify-content:space-between; padding:12px 14px; font-size:13px; color:var(--ink2); border-bottom:1px solid var(--line);}
+  .locrow{display:grid; grid-template-columns:1fr auto 26px; gap:12px; padding:10px 14px; font-size:13px; align-items:center;}
+  .locrow i{color:var(--ink2); font-style:normal; font-size:11.5px;}
+  .locrow .lx{color:var(--ink2); cursor:pointer; text-align:right;}
+  .editact{display:flex; gap:20px; align-items:center; margin-top:16px;}
+  /* ---------- ad schedule heat map ---------- */
+  .schgrid{margin-top:14px;}
+  .schrow{display:flex; align-items:center; gap:2px; margin-bottom:3px;}
+  .schday{width:20px; font-size:12px; color:var(--ink2);}
+  .schcell{flex:1; height:26px; border-radius:1px;}
+  .schaxis{display:flex; justify-content:space-between; padding:8px 0 0 22px; font-size:11.5px; color:var(--ink2);}
+  /* ---------- goals ---------- */
+  .funnelbar{display:flex; gap:2px; height:82px; align-items:flex-end; margin:14px 0 4px;}
+  .funnelbar span{border-radius:3px 3px 0 0; height:100%;}
+  .ggroups{display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid var(--line);}
+  .ggroup{padding:18px 20px; border-right:1px solid var(--line);}
+  .ggroup:last-child{border-right:none;}
+  .glabel{font-size:14px; margin-bottom:12px;}
+  .gres{display:inline-block; margin-right:34px; vertical-align:top;}
+  .gnum{font-size:30px; font-weight:400; margin-top:2px;}
+  .gsub{display:flex; justify-content:space-between; border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-top:10px; font-size:13.5px;}
+  .gempty{background:var(--bg2); border-radius:8px; padding:14px; margin-top:12px; font-size:12.5px; line-height:1.6; color:var(--ink2);}
+  .allgoals{display:flex; align-items:center; gap:20px; margin-top:22px;}
+  .allgoals h4{font-size:17px; font-weight:400; margin-right:auto;}
+  .goalcard{border:1px solid var(--line); border-radius:8px; margin-top:14px; overflow:hidden;}
+  .goalhead{display:flex; gap:14px; align-items:center; padding:16px 18px; font-size:14px;}
+  .goalcard .gscroll{border-left:none; border-right:none;}
+  .settbl{width:100%; margin-top:14px; font-size:13.5px;}
+  .settbl td{padding:11px 0; vertical-align:top; border-bottom:1px solid #edeff1;}
+  .settbl td:first-child{width:300px; color:#3c4043;}
   .pencil{opacity:0; color:var(--ink2); margin-left:8px; cursor:pointer; font-size:12px;}
   .kwrow:hover .pencil{opacity:1;}
   .statdot.rm{background:#c5221f;}
@@ -411,9 +472,18 @@
     <a data-view="audiences" onclick="showView('audiences')">Audiences, keywords, and content</a>
     <a data-view="keywords" class="sub" onclick="showEntity('keywords')">Keywords</a>
     <a data-view="audiences" class="sub" onclick="showEntity('audiences')">Audiences</a>
-    <a data-view="segments" class="sub" onclick="setSegTab('where');showView('segments')">Locations</a>
-    <a data-view="segments" class="sub" onclick="setSegTab('when');showView('segments')">Ad schedule</a>
+    <a data-view="locations" class="sub" onclick="showEntity('locations')">Locations</a>
+    <a data-view="schedule" class="sub" onclick="showEntity('schedule')">Ad schedule</a>
+    <a data-view="skip" class="sub" onclick="skipPage('Dynamic ad targets')">Dynamic ad targets</a>
+    <a data-view="advbid" class="sub" onclick="showEntity('advbid')">Advanced bid adjustments</a>
     <a data-view="changehistory" onclick="showView('changehistory')">Change history</a>
+    <div class="navsec">GOALS</div>
+    <a data-view="goals" onclick="showEntity('goals')">Conversions</a>
+    <a data-view="goals" class="sub" onclick="showEntity('goals')">Summary</a>
+    <a data-view="skip" class="sub" onclick="skipPage('Value rules')">Value rules</a>
+    <a data-view="skip" class="sub" onclick="skipPage('Custom variables')">Custom variables</a>
+    <a data-view="convsettings" class="sub" onclick="showEntity('convsettings')">Settings</a>
+    <a data-view="skip" class="sub" onclick="skipPage('Uploads')">Uploads</a>
     <div class="grp practice-only" style="color:#b06000;">Practice mode</div>
     <a data-view="scenarios" class="practice-only" onclick="showView('scenarios')" style="color:#b06000; font-weight:600;">🎯 Practice scenarios</a>
   </nav>
@@ -2162,7 +2232,13 @@ function pageAudiences(){
           <div class="bidact"><span onclick="toggleBid(-1)">Cancel</span><span onclick="toggleBid(-1);toast()">Save</span></div>
         </div></td>
       <td>${num(Math.round(d.cost[i]/9.2))}</td><td>${num(Math.round(d.cost[i]/9.2*38))}</td><td>${(2.2+i*0.31).toFixed(2)}%</td></tr>`;}).join("");
-  return `<div class="democard"><h4>Audience segments</h4>
+  const dm = demoTab==="Household income"
+    ? "<b>Read the Lower 50% row first.</b> If a bracket is running a materially worse cost per lead than the rest, that is a bid adjustment conversation, not a mystery."
+    : demoTab==="Age" ? "<b>Age skews old here, and that is correct.</b> Facilities managers and safety officers are not 18 to 24. The younger brackets carry cost with almost no conversions."
+    : "<b>Gender data is thin and heavily Unknown.</b> Treat it as directional at best.";
+  const guide = `<div class="hint">💡 ${dm} <b>One honest caveat to say out loud:</b> Google's demographic data is less reliable than Meta's, because Google infers most of it rather than having it declared. Use it to form a hypothesis and to set modest bid adjustments, not to make a big call. Saying that unprompted signals you know the limits of your own data.</div>
+    <div class="segrec">✅ <b>What you'd say:</b> "I'd treat this as directional. If a household income bracket or an age band is running double the account cost per lead, I'd put a negative bid adjustment on it and watch it, rather than excluding outright. Google infers this data, so I want a trend before I act hard on it."</div>`;
+  return guide + `<div class="democard"><h4>Audience segments</h4>
       <div class="showtab" onclick="toast()">˅ &nbsp;Show table <span class="edit">Edit audience segments</span></div></div>
     <div class="democard"><h4>Demographics</h4>
       <div class="demotabs">${Object.keys(DEMO).map(k=>`<span class="demotab ${k===demoTab?'on':''}" onclick="setDemo('${k}')">${k}</span>`).join("")}</div>
@@ -2259,7 +2335,12 @@ const ENTPAGE = {keywords:["Keywords",pageKeywords], audiences:["Audiences",page
                  searchterms:["Search terms",()=>pageTerms()], auctioninsights:["Auction insights",()=>pageAuction()],
                  insights:["Insights",()=>pageInsights(),1],
                  campaigns:["Campaigns",()=>pageCampaigns(),1],
-                 adgroups:["Ad groups",()=>pageAdGroups()]};
+                 adgroups:["Ad groups",()=>pageAdGroups()],
+                 locations:["Locations",()=>pageLocations()],
+                 schedule:["Ad schedule",()=>pageSchedule()],
+                 advbid:["Advanced bid adjustments",()=>pageAdvBid()],
+                 goals:["Summary",()=>pageGoals(),1],
+                 convsettings:["Settings",()=>pageConvSettings(),1]};
 let entView="keywords";
 function renderEntity(){
   const p = ENTPAGE[entView]; if(!p) return;
@@ -2279,11 +2360,17 @@ function renderEntity(){
     (entView==="campaigns" ? `<div class="hint">💡 ${CAMP_HINT[0]}</div>` : "") +
     (entView==="adgroups" ? `<div class="hint">💡 ${ADGROUP_HINT[0]}</div>` : "") +
     (entView==="keywords" ? `<div class="hint">💡 ${KW_HINT[0]}</div>` : "") +
+    (entView==="advbid" ? `<div class="hint">💡 ${ADVBID_HINT[0]}</div>` : "") +
+    (entView==="schedule" ? `<div class="hint">💡 ${SCHED_HINT[0]}</div>` : "") +
+    (entView==="locations" ? `<div class="hint">💡 ${LOC_HINT[0]}</div>` : "") +
     p[1]() +
     (entView==="auctioninsights" ? `<div class="segrec">✅ ${AUCTION_HINT[1]}</div>` : "") +
     (entView==="campaigns" ? `<div class="segrec">✅ ${CAMP_HINT[1]}</div>` : "") +
     (entView==="adgroups" ? `<div class="segrec">✅ ${ADGROUP_HINT[1]}</div>` : "") +
     (entView==="keywords" ? `<div class="segrec">✅ ${KW_HINT[1]}</div>` : "") +
+    (entView==="advbid" ? `<div class="segrec">✅ ${ADVBID_HINT[1]}</div>` : "") +
+    (entView==="schedule" ? `<div class="segrec">✅ ${SCHED_HINT[1]}</div>` : "") +
+    (entView==="locations" ? `<div class="segrec">✅ ${LOC_HINT[1]}</div>` : "") +
     `<div class="gfoot"><a>Reporting is not real-time.</a> Time zone for all dates and times: (GMT-05:00) Eastern Time. <a>Learn more</a><br>
       Some inventory may be provided through third party intermediaries.<br>© Google, 2026.</div>`;
   if(_redraw==='campaigns') requestAnimationFrame(()=>drawTrend('chart4',200));
@@ -2464,6 +2551,11 @@ const AUCTION_HINT = ["<b>How to read this fast:</b> impression share is how oft
 
 /* ---------- pages that exist but aren't where the work happens ---------- */
 const SKIP_NOTE = {
+ "Dynamic ad targets":"Only relevant to Dynamic Search Ads, which this account doesn't run. Nothing to see.",
+ "Value rules":"Adjusts conversion value by device, location or audience at bid time. Powerless here, because no conversion has a value in the first place. Fix the values, then come back.",
+ "Custom variables":"Custom parameters passed with a conversion. Useful once offline imports exist; premature before that.",
+ "Conversion settings":"Account-level attribution and conversion window defaults. Worth knowing where it is; you would not demo it.",
+ "Uploads":"Where offline conversion imports actually land. Empty in this account, which is exactly the point you would make.",
  "Channel performance":"Splits performance by channel for multi-channel campaigns. For a Search-led account it repeats what Where ads showed already told you.",
  "Landing pages":"Clicks and conversions by final URL. Occasionally useful when you suspect a page is the problem rather than the traffic, but it won't diagnose an account.",
  "Stores":"Local inventory and store visits. Only relevant to retailers with physical locations and a Merchant Center feed.",
@@ -2771,6 +2863,318 @@ function pageKeywords(){
 }
 const KW_HINT = ["<b>Two controls decide what you're looking at, and mixing them up is how people misread an account.</b> The <b>ad group selector</b> at the top sets the scope: pick one ad group to see just its keywords, or choose <i>View all ad groups in this campaign</i> to see the whole campaign at once. The <b>Keyword status</b> filter sets what's included: <i>Enabled</i> shows only what is spending right now, <i>Enabled, Paused</i> adds what someone switched off, and <i>All</i> adds removed keywords too. Always know which two you have set before you draw a conclusion.",
  "<b>What you'd say:</b> \"I usually work in Enabled only, because I want to see what's actually spending. But the first time I open an account I flip to All, because paused and removed keywords tell you what someone already tried. If the good exact-match terms are all paused and the broad ones are live, that's not a keyword problem, that's a decision somebody made, and I'd want to know why before I undo it.\""];
+
+/* ================= LOCATIONS · AD SCHEDULE · ADV BID ADJ · GOALS ================= */
+const TARGETED = [
+ ["Buffalo, New York, United States","city","+10%",4.9,6.6,1.06],
+ ["Erie County, New York, United States","county","+10%",3.6,4.9,1.05],
+ ["Cleveland, Ohio, United States","city","+5%",3.5,4.8,0.90],
+ ["Pittsburgh, Pennsylvania, United States","city","+5%",2.4,3.1,0.92],
+ ["Ohio, United States","state","—",8.4,11.34,0.90],
+ ["Pennsylvania, United States","state","—",7.6,9.88,0.92],
+ ["Texas, United States","state","—",11.5,13.23,0.95],
+ ["Illinois, United States","state","—",7.2,8.28,1.00],
+ ["California, United States","state","-15%",12.8,9.22,1.25],
+ ["Florida, United States","state","-15%",8.8,5.72,1.00],
+ ["United States","country","—",29.3,22.94,0.97]
+];
+let locTab="loc", locEdit=false, locBidOpen="", locBid={};
+function setLocTab(t){ locTab=t; locEdit=false; renderEntity(); }
+function toggleLocEdit(){ locEdit=!locEdit; renderEntity(); }
+function openLocBid(k){ locBidOpen = locBidOpen===k?"":k; renderEntity(); }
+function saveLocBid(k){
+  const d=$("lb-dir").value, v=$("lb-val").value.trim();
+  locBid[k] = v==="" ? "—" : (d==="Increase"?"+":"-")+v.replace(/[^0-9.]/g,"")+"%";
+  locBidOpen=""; renderEntity(); toast();
+}
+function mapBlock(){
+  return `<div class="mapbox">
+    <div class="mapgrid"></div>
+    <div class="mappin" style="left:31%; top:38%">12</div>
+    <div class="maparea" style="left:22%; top:26%; width:22%; height:38%"></div>
+    <div class="maparea" style="left:47%; top:44%; width:14%; height:22%"></div>
+    <div class="maplbl" style="left:12%; top:16%">CANADA</div>
+    <div class="maplbl" style="left:26%; top:60%">PENNSYLVANIA</div>
+    <div class="maplbl" style="left:52%; top:70%">OHIO</div>
+    <div class="mapattr">Map data ©2026 Google</div></div>
+  <div class="mapnote">ⓘ Highlighted areas are locations you can include or exclude for this campaign. Highlighted areas do not represent the regional borders. <a class="lk2">Learn more</a></div>`;
+}
+function pageLocations(){
+  const tabs=[["loc","Locations"],["exc","Location exclusions"],["int","Locations of interest"]];
+  const head=`<div class="gtabs2">${tabs.map(t=>`<span class="gtab2 ${locTab===t[0]?'on':''}" onclick="setLocTab('${t[0]}')">${t[1]}</span>`).join("")}</div>`;
+  if(locTab==="exc")
+    return head + mapBlock() + `<div class="gtb" style="border-top:1px solid var(--line)"><span class="fab" onclick="toggleLocEdit()">✎</span>
+      <span class="funnel">▽</span><span class="addf">Add filter</span><span class="spacer"></span>
+      <span class="tbi" onclick="toast()"><b>▥</b>Columns</span><span class="tbi" onclick="toast()"><b>⭳</b>Download</span></div>` +
+      tbl(`<th class="cb l"><input type="checkbox" disabled></th><th class="l">Excluded location ↓</th><th>Cost</th><th>Conversions</th>`,
+        `<tr><td class="l" colspan="4" style="padding:30px 14px; text-align:center; color:var(--ink2);">
+          You haven't excluded any locations. To refine your targeting, edit your locations.<br>
+          <span class="lk" onclick="setLocTab('loc');toggleLocEdit()">+ Edit locations</span></td></tr>`, "");
+  if(locTab==="int")
+    return head + `<div class="hint">💡 <b>This is the tab that exposes the leak.</b> "Locations of interest" are people who were <i>not</i> in your targeted areas but searched about them. They only get your ads because the campaign's location option is set to <i>Presence or interest</i>. Any spend on this tab is spend you almost certainly did not intend.</div>` +
+      tbl(`<th class="cb l"><input type="checkbox" disabled></th><th class="l">Location of interest</th><th>↓ Cost</th><th>Conversions</th><th>Cost / conv.</th><th>Clicks</th><th>Impr.</th>`,
+        [["United States (outside targeted areas)",5940,22,1006,38400],["Canada",1284,4,214,9100],["United Kingdom",612,1,98,4300],["India",398,0,142,11800]]
+        .map(r=>`<tr><td class="cb l"><input type="checkbox"></td><td class="l">${r[0]}</td><td>${money2(r[1])}</td>
+          <td>${r[2].toFixed(2)}</td><td class="${r[2]?'':'cpa-hi'}">${r[2]?money2(r[1]/r[2]):"—"}</td><td>${num(r[3])}</td><td>${num(r[4])}</td></tr>`).join(""),
+        "1 - 4 of 4");
+  if(locEdit){
+    const reach = [4000,305000,462000,46000,276000,131000,56000,49000,1240000,2100000,331000000];
+    return head + `<div class="editpane">
+      <div class="editleft">
+        <div class="radiorow"><label><input type="radio" checked> Location</label><label><input type="radio"> Radius</label></div>
+        <label class="bulkrow"><input type="checkbox"> Add locations in bulk</label>
+        <input class="locinput" placeholder="Enter a location to include">
+        <div class="lochelp">For example, a country, city, region, or postal code</div>
+        <div class="loclist"><div class="loclisthead"><span>Locations (${TARGETED.length})</span><span>Reach ⓘ</span></div>
+          ${TARGETED.map((t,i)=>`<div class="locrow"><span>${t[0]} <i>${t[1]}</i></span><span>${num(reach[i]||50000)}</span><span class="lx">⊗</span></div>`).join("")}</div>
+        <div class="editact"><span class="recbtn" onclick="toggleLocEdit()">Save</span><span class="lk" onclick="toggleLocEdit()">Cancel</span></div>
+      </div>
+      <div class="editright">${mapBlock()}</div></div>`;
+  }
+  const w=SEG_WIN[segDays], a=SEG_WIN[90];
+  const rows = TARGETED.map(t=>{
+    const cost=Math.round(w.cost*t[3]/100), conv=Math.round(w.conv*t[4]/100),
+          clicks=Math.round(w.clicks*t[3]/100), impr=Math.round(w.impr*t[3]/100*1.02);
+    return {n:t[0], bid:(locBid[t[0]]||t[2]), cost:Math.round(cost*t[5]), conv, clicks, impr};
+  }).sort((x,y)=>y.cost-x.cost);
+  const ref = rows.reduce((a,r)=>a+r.cost,0)/rows.reduce((a,r)=>a+r.conv,0);
+  return head + mapBlock() +
+    `<div class="gtb" style="border-top:1px solid var(--line)"><span class="fab" onclick="toggleLocEdit()">✎</span>
+      <span class="funnel">▽</span><span class="addf">Add filter</span><span class="spacer"></span>
+      <span class="tbi" onclick="toast()"><b>≡</b>Segment</span><span class="tbi" onclick="toast()"><b>▥</b>Columns</span>
+      <span class="tbi" onclick="toast()"><b>⭳</b>Download</span><span class="tbi" onclick="toast()"><b>⛶</b>Expand</span></div>` +
+    tbl(`<th class="cb l"><input type="checkbox" disabled></th><th class="l">Targeted location</th><th>Bid adj.</th>
+      <th>↓ Cost</th><th>Conversions</th><th>Cost / conv.</th><th>Conv. rate</th><th>Clicks</th><th>Impr.</th>`,
+      rows.map(r=>`<tr><td class="cb l"><input type="checkbox"></td>
+        <td class="l"><a class="lk2" onclick="toast()">${r.n}</a></td>
+        <td style="position:relative; white-space:nowrap;">
+          <span onclick="event.stopPropagation();openLocBid(${JSON.stringify(r.n).replace(/"/g,"&quot;")})" style="cursor:pointer">${r.bid}&nbsp;<span style="color:var(--ink2)">✎</span></span>
+          <div class="bidpop ${locBidOpen===r.n?'open':''}" onclick="event.stopPropagation()"><h5>Bid adjustment ⓘ</h5>
+            <div class="bidrow"><select id="lb-dir"><option>Increase</option><option>Decrease</option></select><input id="lb-val" placeholder="%"></div>
+            <div class="bidnote">Enter a number above to see an example.<br>To remove a bid adjustment, leave this field blank.</div>
+            <div class="bidact"><span onclick="openLocBid('')">Cancel</span><span onclick="saveLocBid(${JSON.stringify(r.n).replace(/"/g,"&quot;")})">Save</span></div></div></td>
+        <td>${money2(r.cost)}</td><td>${r.conv.toFixed(2)}</td>
+        <td class="${cpaCls(r.cost,r.conv,ref)}">${r.conv?money2(r.cost/r.conv):"—"}</td>
+        <td>${rate(r.conv,r.clicks)}</td><td>${num(r.clicks)}</td><td>${num(r.impr)}</td></tr>`).join(""),
+      "1 - "+rows.length+" of "+rows.length);
+}
+const LOC_HINT=["<b>Three tabs, and the third one is the audit.</b> <i>Locations</i> is what you targeted and how each performs, with an editable bid adjustment on every row. <i>Location exclusions</i> should almost never be empty in a mature account. <i>Locations of interest</i> is the one to open first: those are people outside your targeted areas who got your ads anyway, purely because the campaign is set to <i>Presence or interest</i>.",
+ "<b>What you'd say:</b> \"I'd start on Locations of interest, because that tells me in ten seconds whether the location setting is wrong. If there's real money on that tab, the fix isn't a bid adjustment, it's a campaign setting, and it takes ninety seconds. Then I'd come back to the main tab and look at cost per lead by area against where we can actually service the work.\""];
+/* ---------- AD SCHEDULE ---------- */
+const SCHED_BID = {"Mondays, 6:00 AM - 12:00 PM":"+20%","Tuesdays, 6:00 AM - 12:00 PM":"+10%","Fridays, 6:00 AM - 12:00 PM":"+10%"};
+const BLOCKS = [["12:00 AM - 6:00 AM",0,6],["6:00 AM - 12:00 PM",6,12],["12:00 PM - 6:00 PM",12,18],["6:00 PM - 12:00 AM",18,24]];
+function pageSchedule(){
+  const w=SEG_WIN[segDays];
+  const dayW = SEG_DOW.map(d=>d.w), dayC = SEG_DOW.map(d=>d.cw);
+  const hourW = SEG_HOD.map(h=>h.w), hourI = SEG_HOD.map((h,i)=>h.cw);
+  const sumD=dayW.reduce((a,b)=>a+b,0), sumH=hourW.reduce((a,b)=>a+b,0);
+  const cell = (di,hi)=>Math.round(w.clicks * (dayW[di]/sumD) * (hourW[hi]/sumH));
+  const maxCell = Math.max(...SEG_DOW.map((_,di)=>Math.max(...SEG_HOD.map((_,hi)=>cell(di,hi)))));
+  const grid = SEG_DOW.map((d,di)=>`<div class="schrow"><span class="schday">${d.n[0]}</span>
+    ${SEG_HOD.map((h,hi)=>{const v=cell(di,hi); const o=(v/maxCell);
+      return `<span class="schcell" style="background:rgba(26,115,232,${(0.14+o*0.86).toFixed(2)})" title="${d.n}, ${h.n} — ${num(v)} clicks"></span>`;}).join("")}</div>`).join("");
+  const rows=[];
+  SEG_DOW.forEach((d,di)=>BLOCKS.forEach(b=>{
+    let cl=0,im=0,ct=0,cv=0;
+    for(let h=b[1];h<b[2];h++){
+      const share=(dayW[di]/sumD)*(hourW[h]/sumH);
+      cl+=w.clicks*share; im+=w.impr*share*(SEG_HOD[h].im); ct+=w.cost*share*(SEG_HOD[h].cm);
+      cv+=w.conv*((dayC[di]/dayC.reduce((a,b)=>a+b,0)))*(hourI[h]/hourI.reduce((a,b)=>a+b,0));
+    }
+    const name=`${d.n}s, ${b[0]}`;
+    rows.push({n:name, bid:SCHED_BID[name]||"—", clicks:Math.round(cl), impr:Math.round(im), cost:Math.round(ct), conv:+cv.toFixed(2)});
+  }));
+  rows.sort((a,b)=>b.cost-a.cost);
+  const ref = rows.reduce((a,r)=>a+r.cost,0)/rows.reduce((a,r)=>a+r.conv,0);
+  return `<div class="chartcard" style="margin-top:12px; padding:18px 20px;">
+      <div style="display:flex; justify-content:flex-end;"><span class="msel">— Clicks <span class="car">▾</span></span></div>
+      <div class="schgrid">${grid}</div>
+      <div class="schaxis">${["12 AM","3 AM","6 AM","9 AM","12 PM","3 PM","6 PM","9 PM","12 AM"].map(x=>`<span>${x}</span>`).join("")}</div></div>
+    <div class="gtb" style="border-top:1px solid var(--line)"><span class="fab" onclick="toast()">✎</span>
+      <span class="funnel">▽</span><span class="addf">Add filter</span><span class="spacer"></span>
+      <span class="tbi" onclick="toast()"><b>≡</b>Segment</span><span class="tbi" onclick="toast()"><b>▥</b>Columns</span>
+      <span class="tbi" onclick="toast()"><b>⭳</b>Download</span><span class="tbi" onclick="toast()"><b>⛶</b>Expand</span></div>` +
+    tbl(`<th class="cb l"><input type="checkbox" disabled></th><th class="l">Day &amp; time</th><th>Bid adj.</th><th>Clicks</th>
+      <th>Impr.</th><th>CTR</th><th>Avg. CPC</th><th>↓ Cost</th><th>Conv. rate</th><th>Conversions</th><th>Cost / conv.</th>`,
+      rows.map(r=>`<tr><td class="cb l"><input type="checkbox"></td><td class="l">${r.n}</td>
+        <td>${r.bid}<span class="pencil">✎</span></td><td>${num(r.clicks)}</td><td>${num(r.impr)}</td>
+        <td>${rate(r.clicks,r.impr)}</td><td>${per(r.cost,r.clicks)}</td><td>${money2(r.cost)}</td>
+        <td>${rate(r.conv,r.clicks)}</td><td>${r.conv.toFixed(2)}</td>
+        <td class="${cpaCls(r.cost,r.conv,ref)}">${r.conv?money2(r.cost/r.conv):"—"}</td></tr>`).join(""),
+      "1 - "+rows.length+" of "+rows.length);
+}
+const SCHED_HINT=["<b>The heat map is the fast read, the table is the evidence.</b> Darker cells are more clicks. Hover any cell for the exact number. Business hours Monday to Thursday carry the account; the overnight and weekend blocks are where cost per lead roughly doubles. Bid adjustments are set per day-and-time block right in the table.",
+ "<b>What you'd say:</b> \"There's no ad schedule on this account, so it runs flat all week. I wouldn't switch anything off, because Monday-morning research converts later. I'd set negative adjustments on the overnight blocks first, since that's reversible and it doesn't disturb the bid strategy's learning period.\""];
+/* ---------- ADVANCED BID ADJUSTMENTS ---------- */
+function pageAdvBid(){
+  const w=SEG_WIN[segDays];
+  const calls={clicks:Math.round(w.clicks*0.058), impr:Math.round(w.impr*0.041), cost:Math.round(w.cost*0.052), conv:+(w.conv*0.19).toFixed(2)};
+  const row=(lbl,cls)=>`<tr class="${cls||''}"><td class="cb l">${cls?"":'<input type="checkbox">'}</td>
+    <td class="l">${lbl}</td><td>${cls?"":'+10%<span class="pencil">✎</span>'}</td>
+    <td>${num(calls.clicks)}</td><td>${num(calls.impr)}</td><td>${rate(calls.clicks,calls.impr)}</td>
+    <td>${per(calls.cost,calls.clicks)}</td><td>${money2(calls.cost)}</td><td>97.34%</td>
+    <td>${rate(calls.conv,calls.clicks)}</td><td>${calls.conv.toFixed(2)}</td><td>${per(calls.cost,calls.conv)}</td></tr>`;
+  return `<div class="gtb" style="border-top:1px solid var(--line)"><span class="funnel">▽</span>
+      <span class="addf">Add filter</span><span class="spacer"></span>
+      <span class="tbi" onclick="toast()"><b>▥</b>Columns</span><span class="tbi" onclick="toast()"><b>⭳</b>Download</span>
+      <span class="tbi" onclick="toast()"><b>⛶</b>Expand</span><span class="tbchev">˅</span></div>` +
+    tbl(`<th class="cb l"><input type="checkbox" disabled></th><th class="l">Interaction type</th><th>Bid adj.</th>
+      <th>↓ Interactions</th><th>Impr.</th><th>CTR</th><th>Avg. CPC</th><th>Cost</th><th>Inter. coverage</th>
+      <th>Conv. rate</th><th>Conversions</th><th>Cost / conv.</th>`,
+      row("Calls") + row("Total: Interaction type ⓘ","tot") + row("Total: Campaign ⓘ","tot"), "1 - 1 of 1");
+}
+const ADVBID_HINT=["<b>One row, and it matters more than it looks.</b> Advanced bid adjustments let you bid separately for <i>call interactions</i>, meaning someone tapping the call asset rather than clicking through to the site. For a business where a phone call from a facilities manager is worth more than a form fill, this is a real lever and almost nobody touches it.",
+ "<b>What you'd say:</b> \"Calls convert at a materially better rate than site clicks here, and there's a +10% adjustment on them. I'd want to know whether that number was reasoned or inherited. If calls really are the better lead, that adjustment is probably too timid.\""];
+/* ---------- GOALS · CONVERSIONS SUMMARY ---------- */
+const CONV_ACTIONS = [
+ ["Quote request form","Submit lead form","Primary","Website",412,"Active","Don't use a value"],
+ ["Lead form - Submit","Submit lead form","Primary","Google hosted",0,"No recent conversions","Don't use a value"],
+ ["Calls from Ads","Phone call lead","Primary","Call from Ads",186,"Active","Don't use a value"],
+ ["Website Calls (7214)","Phone call lead","Primary","Website",74,"Active","Don't use a value"],
+ ["Business profile - Tracked call","Phone call lead","Primary","Other",0,"No recent conversions","Don't use a value"],
+ ["Site assessment booked","Contact","Secondary","Website",91,"Active","Don't use a value"],
+ ["Newsletter signup","Contact","Secondary","Website",0,"No recent conversions","Don't use a value"]
+];
+const GOAL_GROUPS = [
+ ["Group 1 goals", 674, null, [["Contacts",91],["Page views",0],["Get directions",0],["Phone call leads",260]]],
+ ["Group 2 goals", 412, "0.00", [["Submit lead forms",412]]],
+ ["Group 3 goals", null, null, []]
+];
+let goalTab="goals", convDetail=null;
+function setGoalTab(t){ goalTab=t; convDetail=null; renderEntity(); }
+function openConv(i){ convDetail=i; renderEntity(); }
+function closeConv(){ convDetail=null; renderEntity(); }
+function goalCard(goalName, sub){
+  const acts = CONV_ACTIONS.map((a,i)=>[a,i]).filter(x=>x[0][1]===goalName);
+  const body = acts.map(([a,i])=>`<tr><td class="cb l"><input type="checkbox"></td>
+    <td class="l"><a class="lk2" onclick="openConv(${i})">${a[0]}</a></td>
+    <td class="l"><span class="ulink">${a[2]}</span></td><td class="l">${a[3]}</td>
+    <td>${a[4].toFixed(2)}</td><td>0.00</td>
+    <td class="l"><span class="pill ${a[5]==="Active"?"good":"warn"}">${a[5]}</span></td><td class="l">⋮</td></tr>`).join("");
+  return `<div class="goalcard">
+    <div class="goalhead"><b>${goalName}</b> <span class="ulink">${sub}</span> <span class="ulink">5 of 5 campaigns</span>
+      <span class="lk" style="margin-left:auto" onclick="toast()">Edit goal</span></div>
+    ${tbl(`<th class="cb l"><input type="checkbox" disabled></th><th class="l">Conversion action</th><th class="l">Action optimization ↓</th>
+      <th class="l">Conversion source</th><th>All conv.</th><th>All conv. value</th><th class="l">Status</th><th class="l">Actions</th>`,
+      body, "1 - "+acts.length+" of "+acts.length)}</div>`;
+}
+function pageGoals(){
+  if(convDetail!==null){
+    const a = CONV_ACTIONS[convDetail];
+    const isCall = a[1]==="Phone call lead";
+    const S = [["Conversion name",a[0]],
+      ["Action optimization",`${isCall?"Phone call leads":"Lead"}, <select class="convsel" onchange="setConvOpt(${convDetail},this.value)">
+        <option ${convOpt(convDetail)==="Primary"?"selected":""}>Primary</option>
+        <option ${convOpt(convDetail)==="Secondary"?"selected":""}>Secondary</option></select> action`],
+      ["Value",`<b style="color:var(--red)">${a[6]}</b>`],["Source",a[3]+'<div style="font-size:11.5px;color:var(--ink2)">Not editable</div>'],
+      ["Count","One conversion"]]
+      .concat(isCall ? [["Call length",`<select class="convsel" onchange="setCallLen(${convDetail},this.value)">
+        ${["1 second","15 seconds","30 seconds","60 seconds","90 seconds"].map(x=>`<option ${convLen(convDetail)===x?"selected":""}>${x}</option>`).join("")}</select>`]] : [])
+      .concat([["Click-through conversion window","30 days"],
+      ["Attribution",'Data-driven <span class="pill good">Recommended</span><div style="font-size:11.5px;color:var(--ink2)">Google paid channels</div>']]);
+    return `<div class="crumb"><a onclick="closeConv()">Goals</a> ›</div>
+      <div class="seg-head"><h1>${a[0]}</h1></div>
+      <div class="gtabs2"><span class="gtab2 on">Details</span><span class="gtab2" onclick="toast()">Settings</span></div>
+      <div class="hint" style="margin-top:14px;">💡 <b>Look at the Value row.</b> Every conversion action in this account says <i>Don't use a value</i>. That means every lead is worth exactly 1.00 to Google, whether it turns into a $2,000 order or a $60,000 one. This single row is why Smart Bidding chases form count, and it is the concrete thing offline conversion tracking fixes.</div>
+      ${isCall?`<div class="hint">💡 <b>Call length is set to 1 second.</b> That counts a misdial as a lead. Raising it to 60 seconds is the single cheapest quality filter in the account: it does not change what you bid, it changes what counts as a conversion, and every downstream number gets more honest. <b>Action optimization</b> is editable here too, which is how you move an action between Primary (bid toward it) and Secondary (observe only).</div>`:""}
+      <div class="ocard" style="margin-top:14px;"><h4>${a[1]==="Phone call lead"?"Calls from ads":"Website conversion"}</h4>
+        <div class="sub">${a[1]==="Phone call lead"?"Tracks calls that are longer than a minimum length you set when people call directly from the ad":"Tracks an action someone takes on your website"} <a class="lk2">Learn more</a></div>
+        <table class="settbl">${S.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table>
+        <div style="text-align:right; margin-top:10px;"><span class="lk" onclick="toast()">Edit settings</span></div></div>`;
+  }
+  const tabs=[["goals","Goals"],["diag","Diagnostics"]];
+  const head=`<div class="gtabs2">${tabs.map(t=>`<span class="gtab2 ${goalTab===t[0]?'on':''}" onclick="setGoalTab('${t[0]}')">${t[1]}</span>`).join("")}</div>`;
+  if(goalTab==="diag")
+    return head + `<div class="hint" style="margin-top:14px;">💡 <b>Diagnostics is the page that tells you whether your measurement is trustworthy</b> before you argue about performance. Check it first in any account you inherit.</div>` +
+      tbl(`<th class="l">Check</th><th class="l">Status</th><th class="l">What it means</th>`,
+      [["Tag firing","<span class='pill good'>OK</span>","The conversion tag is present on the thank-you page."],
+       ["Conversion value","<span class='pill bad'>Not set</span>","No revenue is attached to any conversion action."],
+       ["Offline imports","<span class='pill bad'>None</span>","No closed-deal data has ever been uploaded."],
+       ["Enhanced conversions","<span class='pill warn'>Off</span>","Hashed first-party data is not being sent."],
+       ["Duplicate actions","<span class='pill warn'>2 possible</span>","Website Calls and Business profile calls may double-count."],
+       ["Attribution model","<span class='pill good'>Data-driven</span>","Recommended setting is in use."]]
+      .map(r=>`<tr><td class="l">${r[0]}</td><td class="l">${r[1]}</td><td class="l">${r[2]}</td></tr>`).join(""),"");
+  const groups = GOAL_GROUPS.map(g=>`<div class="ggroup">
+      <div class="glabel"><span class="ulink">${g[0]}</span></div>
+      <div class="gres"><div class="ulink" style="font-size:12px;color:var(--ink2)">Results</div>
+        <div class="gnum">${g[1]===null?"—":num(g[1])}</div></div>
+      ${g[2]!==null?`<div class="gres"><div class="ulink" style="font-size:12px;color:var(--ink2)">Results value</div><div class="gnum">${g[2]}</div></div>`:""}
+      ${g[3].length ? g[3].map(x=>`<div class="gsub"><span class="ulink">${x[0]}</span><span>${x[1]}</span></div>`).join("")
+        : `<div class="gempty">You're not measuring any goals here right now. To add a new goal you can create a new primary conversion action.<div class="lk" style="margin-top:8px" onclick="toast()">Add goal</div></div>`}
+    </div>`).join("");
+  return head +
+    `<div class="ocard" style="margin-top:14px; display:flex; gap:16px; align-items:flex-start;">
+       <span style="font-size:22px">🎓</span>
+       <div><h4>Understand your Google Ads results</h4>
+         <p style="font-size:13px;line-height:1.6;color:#3c4043;margin-top:6px;">Your conversion goals are grouped into different stages of the customer journey. Earlier groups should capture customers' initial engagements with your business, such as Page views or Get directions, while the final group should reflect the most valuable actions, such as Purchases or Store sales.</p></div>
+       <div style="margin-left:auto; display:flex; gap:16px; align-items:center;"><span class="lk" onclick="toast()">Dismiss</span><span class="recbtn" onclick="toast()">Learn more</span></div></div>
+     <div class="hint">💡 <b>This is the most important page in the account for your argument, and Group 3 is why.</b> Google groups conversion goals by stage: early engagement first, most valuable actions last. Group 1 is full, Group 2 has form fills, and <b>Group 3 is empty</b>. Nothing in this account measures a closed sale. Every conversion is worth exactly 1.00, so Smart Bidding optimizes toward form count and has no way to know a $60,000 order from a job seeker filling in a form.</div>
+     <div class="segrec">✅ <b>What you'd say, pointing at Group 3:</b> "This empty box is the whole problem. Google is optimizing perfectly toward the only thing anyone gave it, which is form submissions. Until closed revenue comes back into this column, we're paying it to buy forms. That's the offline conversion tracking project, and it's worth more than any bid change I could make."</div>
+     <div class="ocard" style="margin-top:14px;">
+       <div class="gtabs2" style="margin-bottom:6px;"><span class="gtab2" onclick="toast()">Sales</span><span class="gtab2 on">Leads</span>
+         <span class="lk" style="margin-left:auto; align-self:center;" onclick="toast()">+ Create new chart</span></div>
+       <div class="funnelbar"><span style="flex:6.7; background:#aecbfa"></span><span style="flex:4.1; background:#c6dafc"></span><span style="flex:1; background:#e8f0fe"></span></div>
+       <div class="ggroups">${groups}</div></div>
+     <div class="allgoals"><h4>All your goals</h4><span class="lk" onclick="toast()">View all conversion actions</span><span class="recbtn" onclick="toast()">+ Create goal</span></div>
+     ${goalCard("Submit lead form","Account-default goal")}
+     ${goalCard("Phone call lead","Account-default goal for 2 sources")}
+     ${goalCard("Contact","Account-default goal for 1 source")}`;
+}
+
+/* ================= CONVERSION SETTINGS ================= */
+let convSetOpen="", callConvAction="Not set yet", ecLeadsOn=true;
+function openSet(k){ convSetOpen = convSetOpen===k?"":k; renderEntity(); }
+function pickCallConv(v){ callConvAction=v; convSetOpen=""; renderEntity(); toast(); }
+function toggleEC(){ ecLeadsOn=!ecLeadsOn; renderEntity(); }
+const SETROWS = [
+ ["call","Call conversion action", ()=>callConvAction,
+  ()=>`<div class="setbody"><div class="sethelp">Select a default conversion action to track conversions when call reporting is enabled ⓘ</div>
+    <div class="chooser" onclick="event.stopPropagation();toggleMenu('callconvmenu')">${callConvAction==="Not set yet"?"Choose…":callConvAction} <span class="car">▾</span>
+      <div class="gmenu" id="callconvmenu" style="left:0;right:auto;min-width:290px" onclick="event.stopPropagation()">
+        ${["Calls from Ads","Website Calls (7214)","Business profile - Tracked call","None"].map(o=>`<div class="mi" onclick="pickCallConv('${o}')">${o}</div>`).join("")}</div></div>
+    <div class="setact"><span class="lk" onclick="openSet('')">Cancel</span><span class="lk" onclick="openSet('')">Save</span></div></div>`],
+ ["cdt","Customer data terms", ()=>"Accepted",
+  ()=>`<div class="setbody"><div class="sethelp">You have accepted the customer data terms. These are required before you can send hashed first-party data to Google.</div></div>`],
+ ["ecl","Enhanced conversions for leads", ()=>ecLeadsOn?"Managed through Google tag":"Off",
+  ()=>`<div class="setbody">
+    <div class="sethelp">Measure leads on your website that convert offline by sending hashed form user data. No CRM changes needed. <a class="lk2">Learn more</a></div>
+    <label class="ecrow"><input type="checkbox" ${ecLeadsOn?"checked":""} onclick="toggleEC()"> Turn on enhanced conversions for leads</label>
+    <div class="sethelp" style="margin-top:12px;">Choose a method for setting up and managing user-provided data<br>
+      <span style="color:var(--ink2)">You can use your existing Google tag, or Google Tag Manager</span></div>
+    <div style="display:flex; gap:22px; align-items:center; margin-top:10px;">
+      <div class="chooser" style="min-width:170px">Google tag <span class="car">▾</span></div>
+      <span class="lk" onclick="toast()">Which method should I use?</span></div>
+    ${ecLeadsOn?`<div class="okcard">✅ <b>Your tag is configured to include user-provided data from your website</b>
+      <div style="margin-top:6px; color:#20613a;">Make sure your Google tag is installed in the code of your website. <a class="lk2">Learn more</a></div>
+      <div class="lk" style="margin-top:8px" onclick="toast()">Tag details</div></div>`:""}
+    <div class="setact"><span class="lk" onclick="openSet('')">Cancel</span><span class="lk" onclick="openSet('')">Save</span></div></div>`],
+ ["ec","Enhanced conversions", ()=>"Managed through Google Tag. Recording Enhanced Conversions.",
+  ()=>`<div class="setbody"><div class="sethelp">Enhanced conversions improve measurement accuracy by sending hashed first-party data alongside your existing conversion tags.</div></div>`],
+ ["evc","Engaged-view conversions", ()=>"Non-skippable video ad formats not included",
+  ()=>`<div class="setbody"><div class="sethelp">Counts a conversion when someone watches at least 10 seconds of a skippable video ad and converts within 3 days. Not relevant to a Search-led account.</div></div>`],
+ ["aas","App attribution sharing", ()=>"App campaigns share conversion attribution across app campaign subtypes",
+  ()=>`<div class="setbody"><div class="sethelp">Only relevant if you run App campaigns. This account does not.</div></div>`]
+];
+function pageConvSettings(){
+  const rows = SETROWS.map(r=>`<div class="setrow ${convSetOpen===r[0]?'open':''}">
+    <div class="sethead" onclick="openSet('${r[0]}')">
+      <span class="setlbl">${r[1]}</span>
+      <span class="setval ${r[0]==='call'&&callConvAction==='Not set yet'?'unset':''}">${r[2]()}</span>
+      <span class="car">${convSetOpen===r[0]?"˄":"˅"}</span></div>
+    ${convSetOpen===r[0]?r[3]():""}</div>`).join("");
+  return `<div class="hint">💡 <b>Three rows here decide whether your measurement is worth anything.</b>
+      <b>Call conversion action</b> is currently <b style="color:var(--red)">Not set yet</b>, which means calls from ads have no default conversion action behind them: set it to Calls from Ads.
+      <b>Customer data terms</b> must be accepted before hashed data can be sent, and it is.
+      <b>Enhanced conversions for leads</b> is the switch that lets you match a form fill back to a closed deal without touching the CRM, and it is the cheapest first step toward the offline conversion loop.</div>
+    <div class="segrec">✅ <b>What you'd say:</b> "Call conversion action isn't set, so call tracking is running without a default action behind it. That's a two-minute fix. Then enhanced conversions for leads, because that's what lets us tie a form back to a closed order later without a CRM integration project. Those two together cost almost nothing and they're the foundation for everything else I'd want to do with bidding."</div>
+    <div class="setlist">${rows}</div>`;
+}
+/* ================= CONVERSION ACTION: PRIMARY/SECONDARY + CALL LENGTH ================= */
+let convOverrides = {};
+function setConvOpt(i, v){ convOverrides[i] = Object.assign({}, convOverrides[i], {opt:v}); renderEntity(); toast(); }
+function setCallLen(i, v){ convOverrides[i] = Object.assign({}, convOverrides[i], {len:v}); renderEntity(); toast(); }
+function convOpt(i){ return (convOverrides[i]&&convOverrides[i].opt) || CONV_ACTIONS[i][2]; }
+function convLen(i){ return (convOverrides[i]&&convOverrides[i].len) || "1 second"; }
 
 /* ================= ROUTING ================= */
 function showView(id){
