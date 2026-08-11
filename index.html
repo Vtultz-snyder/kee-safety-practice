@@ -2542,24 +2542,49 @@ function pageRecs(){
 /* ---------- SEARCH TERMS ---------- */
 function pageTerms(){
   const rows = TERMS;
-  const T = rows.reduce((a,t)=>({c:a.c+t[3], v:a.v+t[4], k:a.k+t[6]}),{c:0,v:0,k:0});
+  const impOf = t => Math.round(t[6]*38);
+  const kwFmt = t => {
+    const k = t[1].replace(/ \(.*\)/,"");
+    return /exact/.test(t[1]) ? "["+k+"]" : /phrase/.test(t[1]) ? '"'+k+'"' : k;
+  };
+  const T = rows.reduce((a,t)=>({c:a.c+t[3], v:a.v+t[4], k:a.k+t[6], i:a.i+impOf(t)}),{c:0,v:0,k:0,i:0});
+  /* order matches the live report: … Cost, Avg. cost, Conv. value, All conv., Impr.,
+     Interaction rate, Conv. value / cost, Clicks, Keyword, Conv. rate, Conversions, Cost / conv. */
   const body = rows.map(t=>{
-    const waste = t[4]===0;
+    const clicks=t[6], impr=impOf(t), cost=t[3], conv=t[4];
     return `<tr><td class="cb l"><input type="checkbox"></td>
-    <td class="l">${t[0]}${waste?' <span class="badge-alert">no conversions</span>':''}</td>
-    <td class="l">${/broad/.test(t[1])?"Broad match":/exact/.test(t[1])?"Exact match":"Phrase match"}</td>
-    <td class="l"><span class="ulink">${t[2]}</span></td>
-    <td class="l"><a class="lk2" onclick="toast()">${t[1].replace(/ \(.*\)/,"")}</a></td>
-    <td>${t[4].toFixed(2)}</td><td>${t[4]?money2(t[3]/t[4]):"$0.00"}</td>
-    <td>${rate(t[4],t[6])}</td><td>${num(t[6])}</td><td>${num(Math.round(t[6]*38))}</td>
-    <td>${rate(t[6],t[6]*38)}</td><td>${per(t[3],t[6])}</td><td>${money2(t[3])}</td></tr>`;}).join("");
-  const tr = `<tr class="tot"><td class="cb l"></td><td class="l">Total: Search terms ⓘ</td><td class="l"></td><td class="l"></td><td class="l"></td>
-    <td>${T.v.toFixed(2)}</td><td>${T.v?money2(T.c/T.v):"$0.00"}</td><td>${rate(T.v,T.k)}</td><td>${num(T.k)}</td>
-    <td>${num(Math.round(T.k*38))}</td><td>${rate(T.k,T.k*38)}</td><td>${per(T.c,T.k)}</td><td>${money2(T.c)}</td></tr>`;
-  return entTools("Search term status: All") + tbl(
+      <td class="l">${t[0]}${conv===0?' <span class="badge-alert">no conversions</span>':''}</td>
+      <td class="l">${/broad/.test(t[1])?"Broad match":/exact/.test(t[1])?"Exact match":"Phrase match"}</td>
+      <td class="l"><span class="ulink">${t[2]}</span></td>
+      <td class="l">${t[7]||"Search | Fall Protection Systems"}</td>
+      <td>${money2(cost)}</td>
+      <td>${per(cost,clicks)}</td>
+      <td>0.00</td>
+      <td>${(conv*1.22).toFixed(2)}</td>
+      <td>${num(impr)}</td>
+      <td>${rate(clicks,impr)}</td>
+      <td>0.00</td>
+      <td>${num(clicks)}</td>
+      <td class="l"><a class="lk2" onclick="toast()">${kwFmt(t)}</a></td>
+      <td>${rate(conv,clicks)}</td>
+      <td>${conv.toFixed(2)}</td>
+      <td class="${conv?'':'cpa-hi'}">${conv?money2(cost/conv):"$0.00"}</td></tr>`;}).join("");
+  const tr = `<tr class="tot"><td class="cb l"></td><td class="l">Total: Search terms ⓘ</td>
+    <td class="l"></td><td class="l"></td><td class="l"></td>
+    <td>${money2(T.c)}</td><td>${per(T.c,T.k)}</td><td>0.00</td><td>${(T.v*1.22).toFixed(2)}</td>
+    <td>${num(T.i)}</td><td>${rate(T.k,T.i)}</td><td>0.00</td><td>${num(T.k)}</td>
+    <td class="l"></td><td>${rate(T.v,T.k)}</td><td>${T.v.toFixed(2)}</td><td>${T.v?money2(T.c/T.v):"$0.00"}</td></tr>`;
+  const banner = `<div class="recbanner" style="margin-top:12px;">🔍 <b>Add new keywords:</b> Show your ads more often to people searching for what your business offers ⓘ
+    <span style="margin-left:auto; color:var(--ink2); font-size:12.5px;">+0.5%</span>
+    <span class="lk" onclick="toast()">View</span><span class="go" onclick="toast()">Apply all</span><span class="tbi" onclick="toast()"><b>⋮</b></span></div>`;
+  const viewSel = `<span class="tbi" style="margin-right:6px" onclick="toast()"><b style="font-size:13px">Search terms ▾</b></span>`;
+  return banner + entTools("Search term status: All", viewSel) + tbl(
     `<th class="cb l"><input type="checkbox" disabled></th><th class="l">Search term</th><th class="l">Match type</th>
-     <th class="l">Added / Excluded</th><th class="l">Keyword</th><th>Conversions</th><th>Cost / conv.</th><th>Conv. rate</th>
-     <th>Clicks</th><th>Impr.</th><th>CTR</th><th>Avg. CPC</th><th>↓ Cost</th>`, tr+body, "1 - "+rows.length+" of "+rows.length);
+     <th class="l">Added / Excluded</th><th class="l">Campaign</th>
+     <th>↓ Cost</th><th>Avg. cost</th><th>Conv. value</th><th>All conv.</th><th>Impr.</th>
+     <th>Interaction rate</th><th>Conv. value / cost</th><th>Clicks</th><th class="l">Keyword</th>
+     <th>Conv. rate</th><th>Conversions</th><th>Cost / conv.</th>`,
+    tr+body, "1 - "+rows.length+" of "+rows.length);
 }
 /* ---------- AUCTION INSIGHTS ---------- */
 const AUCTION = [
