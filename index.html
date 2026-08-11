@@ -234,6 +234,12 @@
   .gmenu .submenu{position:absolute; left:100%; top:-8px; margin:0; display:none; min-width:260px;}
   .tbi.segon{color:var(--blue-dark);}
   .tbi.segon b{background:#e8f0fe; border-radius:4px;}
+  .ubadge{font-size:9.5px; border-radius:8px; padding:1px 6px; margin-left:7px; vertical-align:middle; font-weight:600;}
+  .ubadge.use{background:#e6f4ea; color:#1e7e42;}
+  .ubadge.rare{background:#fef7e0; color:#a35b00;}
+  .ubadge.avoid{background:#fce8e6; color:#c5221f;}
+  .achip.avoidchip{border-style:dashed; color:#9aa0a6;}
+  .uselegend{display:flex; gap:22px; flex-wrap:wrap; font-size:12px; color:var(--ink2); padding:0 4px 2px;}
   .recbtn{background:var(--blue); color:#fff; border-radius:18px; padding:8px 22px; font-size:13px; cursor:pointer; display:inline-block;}
   .recbtn:hover{background:var(--blue-dark);}
   .grouprow td{background:#fff !important; color:var(--blue) !important; font-size:13px;}
@@ -389,7 +395,7 @@
     <a data-view="skip" class="sub" onclick="skipPage('Dashboards')">Dashboards</a>
     <a data-view="campaigns" class="sel" onclick="showEntity('campaigns')">Campaigns</a>
     <a data-view="campaigns" class="sub" onclick="showEntity('campaigns')">Campaigns</a>
-    <a data-view="adgroups" class="sub" onclick="showView('adgroups')">Ad groups</a>
+    <a data-view="adgroups" class="sub" onclick="showEntity('adgroups')">Ad groups</a>
     <a data-view="ads" class="sub" onclick="showEntity('ads')">Ads</a>
     <a data-view="assetgroups" class="sub" onclick="showView('assetgroups')">Asset groups</a>
     <a data-view="experiments" class="sub" onclick="showView('experiments')">Experiments</a>
@@ -2207,13 +2213,19 @@ function pageAudiences(){
 const ASSET_TYPES = ["All","Image","Business name","Business logo","Sitelink","Headline","Description","Callout","Structured snippet","Call","Lead form","Message","Location","Price","App","Promotion"];
 const ASSET_ICON = {All:"✓",Image:"🖼",'Business name':"Tт",'Business logo':"🖼",Sitelink:"🔗",Headline:"Tт",Description:"Tт",Callout:"🗒",'Structured snippet':"🗒",Call:"📞",'Lead form':"🗒",Message:"💬",Location:"📍",Price:"💲",App:"📱",Promotion:"📣"};
 const ASSETX = [
+ ["Kee Safety","Business name","Account","Eligible","Advertiser","Jan 24, 2026, 8:51 PM",0,24600,"acct"],
+ ["Kee Safety logo","Business logo","Account","Eligible","Advertiser","Jan 24, 2026, 8:51 PM",0,24600,"acct"],
  ["Free Site Assessment","Sitelink","Account","Eligible","Advertiser","Jan 24, 2026, 8:53 PM",412,18400,"acct"],
  ["(734) 215-8890","Call","Campaign","Eligible","Advertiser","Jan 24, 2026, 8:29 PM",286,12900,"camp"],
+ ["Buffalo, NY — Kee Safety Inc.","Location","Campaign","Eligible","Advertiser","Jan 24, 2026, 8:31 PM",64,9100,"camp"],
  ["OSHA Compliant","Callout","Campaign","Eligible","Advertiser","Jan 24, 2026, 8:29 PM",0,9800,"camp"],
  ["Made in the USA Since 1934","Callout","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:14 AM",0,9800,"camp"],
+ ["Free Layout Design","Callout","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:15 AM",0,9800,"camp"],
  ["Request a Quote","Sitelink","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:16 AM",233,8600,"camp"],
+ ["OSHA Compliance Guide","Sitelink","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:17 AM",151,8600,"camp"],
  ["Services: Design, Supply, Install","Structured snippet","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:18 AM",0,8600,"camp"],
- ["Rooftop Safety Guide (PDF)","Lead form","Campaign","Eligible","Advertiser","Mar 11, 2026, 9:02 AM",97,4200,"camp"]
+ ["Rooftop guardrail install photo","Image","Campaign","Eligible","Advertiser","Mar 11, 2026, 9:02 AM",41,6300,"camp"],
+ ["Kee Walk walkway photo","Image","Campaign","Eligible","Advertiser","Mar 11, 2026, 9:03 AM",28,5100,"camp"]
 ];
 let assetTab="assoc", assetType="All";
 function setAssetTab(t){ assetTab=t; renderEntity(); }
@@ -2221,7 +2233,13 @@ function setAssetType(t){ assetType=t; renderEntity(); }
 function pageAssets(){
   const tabs=[["assoc","Associations"],["perf","Performance"],["url","Expanded final URL assets"]];
   const head=`<div class="gtabs2">${tabs.map(t=>`<span class="gtab2 ${assetTab===t[0]?'on':''}" onclick="setAssetTab('${t[0]}')">${t[1]}</span>`).join("")}</div>`;
-  const chips=`<div class="chipwrap">${ASSET_TYPES.map(t=>`<span class="achip ${t===assetType?'on':''}" onclick="setAssetType(${JSON.stringify(t).replace(/"/g,"&quot;")})">${t===assetType?"✓":ASSET_ICON[t]} ${t}</span>`).join("")}</div>`;
+  const chips=`<div class="chipwrap">${ASSET_TYPES.map(t=>{
+      const u = ASSET_USE[t];
+      return `<span class="achip ${t===assetType?'on':''} ${u&&u[0]==='avoid'?'avoidchip':''}" title="${u?u[1]:''}"
+        onclick="setAssetType(${JSON.stringify(t).replace(/"/g,"&quot;")})">${t===assetType?"✓":ASSET_ICON[t]} ${t}${u?ASSET_BADGE[u[0]]:""}</span>`;}).join("")}
+    <div class="uselegend"><span><span class="ubadge use">use</span> worth running</span>
+      <span><span class="ubadge rare">rare</span> situational</span>
+      <span><span class="ubadge avoid">avoid</span> not for this business</span></div></div>`;
   const banner=`<div class="recbanner">🗒 <b>Add sitelinks to your ads:</b> Get more conversions at a similar or better ROI by adding at least 6 sitelinks to your campaigns.<span class="go">View</span><span class="tbi"><b>⋮</b></span></div>`;
   const rows = ASSETX.filter(a=>assetType==="All"||a[1]===assetType);
   const acct = rows.filter(a=>a[8]==="acct"), camp = rows.filter(a=>a[8]==="camp");
@@ -2230,8 +2248,11 @@ function pageAssets(){
     <td class="l"><span class="ulink">${a[4]}</span></td><td class="l">${a[5]}</td><td>${num(a[6])}</td><td>${num(a[7])}</td></tr>`;
   const body = (acct.length?`<tr class="grouprow"><td class="l"></td><td class="l"></td><td class="l" colspan="8">Account</td></tr>`+acct.map(rowHtml).join(""):"")
              + (camp.length?`<tr class="grouprow"><td class="l"></td><td class="l"></td><td class="l" colspan="8">${CAMPMAP[entCamp]}</td></tr>`+camp.map(rowHtml).join(""):"")
-             || `<tr><td class="l" colspan="10" style="color:var(--ink2); padding:26px 14px;">No ${assetType.toLowerCase()} assets in this campaign.</td></tr>`;
-  return head + chips + banner + entTools("Asset status: Enabled, Paused",`<span class="fchip2">Asset type: ${assetType}</span><span style="color:var(--blue);font-size:12.5px;cursor:pointer">+ 1 more</span>`)
+             || `<tr><td class="l" colspan="10" style="color:var(--ink2); padding:26px 14px;">No ${assetType.toLowerCase()} assets in this campaign.${
+                  ASSET_USE[assetType] && ASSET_USE[assetType][0]!=="use" ? ` <b style="color:${ASSET_USE[assetType][0]==="avoid"?"var(--red)":"var(--amber)"}">${ASSET_USE[assetType][1]}</b>` : ""
+                }</td></tr>`;
+  const guide = `<div class="hint">💡 <b>Assets and extensions: pick, don't collect.</b> Run <b>sitelinks, callouts, structured snippets, call and location</b> first — call and location matter most here, because a phone lead from a facilities manager is worth more than a form fill. Images, business name and logo are set-and-forget. <b>Skip lead form</b> (the lead sits inside Google instead of your CRM, which breaks the offline conversion loop), and skip <b>message, price and app</b> entirely. Promotion is retail discounting, which isn't how engineered safety systems sell.</div>`;
+  return head + chips + guide + banner + entTools("Asset status: Enabled, Paused",`<span class="fchip2">Asset type: ${assetType}</span><span style="color:var(--blue);font-size:12.5px;cursor:pointer">+ 1 more</span>`)
        + tbl(`<th class="cb l"><input type="checkbox" disabled></th><th class="l" style="width:20px"></th><th class="l">Asset</th>
           <th class="l">Asset type</th><th class="l">Level</th><th class="l">Status</th><th class="l">Added by</th><th class="l">Last updated</th><th>Clicks</th><th>Impr.</th>`,
           body, "1 - "+rows.length+" of "+rows.length);
@@ -2265,7 +2286,8 @@ const ENTPAGE = {keywords:["Keywords",pageKeywords], audiences:["Audiences",page
                  overview:["Overview",()=>pageOverview(),1], recommendations:["Recommendations",()=>pageRecs(),1],
                  searchterms:["Search terms",()=>pageTerms()], auctioninsights:["Auction insights",()=>pageAuction()],
                  insights:["Insights",()=>pageInsights(),1],
-                 campaigns:["Campaigns",()=>pageCampaigns(),1]};
+                 campaigns:["Campaigns",()=>pageCampaigns(),1],
+                 adgroups:["Ad groups",()=>pageAdGroups()]};
 let entView="keywords";
 function renderEntity(){
   const p = ENTPAGE[entView]; if(!p) return;
@@ -2283,9 +2305,11 @@ function renderEntity(){
         <a class="dr-link" onclick="setSegDays(30);renderEntity()">Show last 30 days</a></div></div>` +
     (entView==="auctioninsights" ? `<div class="hint">💡 ${AUCTION_HINT[0]}</div>` : "") +
     (entView==="campaigns" ? `<div class="hint">💡 ${CAMP_HINT[0]}</div>` : "") +
+    (entView==="adgroups" ? `<div class="hint">💡 ${ADGROUP_HINT[0]}</div>` : "") +
     p[1]() +
     (entView==="auctioninsights" ? `<div class="segrec">✅ ${AUCTION_HINT[1]}</div>` : "") +
     (entView==="campaigns" ? `<div class="segrec">✅ ${CAMP_HINT[1]}</div>` : "") +
+    (entView==="adgroups" ? `<div class="segrec">✅ ${ADGROUP_HINT[1]}</div>` : "") +
     `<div class="gfoot"><a>Reporting is not real-time.</a> Time zone for all dates and times: (GMT-05:00) Eastern Time. <a>Learn more</a><br>
       Some inventory may be provided through third party intermediaries.<br>© Google, 2026.</div>`;
   if(_redraw==='campaigns') requestAnimationFrame(()=>drawTrend('chart4',200));
@@ -2625,6 +2649,63 @@ function pageCampaigns(){
 }
 const CAMP_HINT = ["<b>Two filters do most of the work here.</b> <i>Campaign status</i> is the first thing to set: Enabled shows what is actually running, Enabled + Paused shows what someone turned off and why. Then set the date range. Ninety days is the right default for a low-volume B2B account, because thirty days will not give you enough conversions to trust. <b>Segment is the advanced move</b>: it splits every campaign row by device, network, click type, conversion action, top vs. other, ad destination or time, without leaving the page.",
  "<b>What you'd say when you open Segment:</b> \"This is where I'd normally start a diagnosis. Segmenting by network tells me whether Search partners or Display is quietly eating budget. By click type it tells me whether I'm paying for headline clicks or sitelink clicks. By Top vs. Other it tells me whether I'm actually appearing at the top of the page or scraping the bottom. It's the same spend cut four different ways, and the cut you choose is the hypothesis you're testing.\""];
+
+/* ================= AD GROUPS PAGE ================= */
+const AGTCPA = {"Fall Protection – General":"$90.00","Roof Fall Protection Systems":"$90.00",
+ "Fall Arrest & Lifelines (Kee Line®)":"$110.00","KeeGuard Rooftop Guardrail":"$75.00",
+ "Non-Penetrating Roof Railing":"$75.00","KeeGuard Contractor (Temporary)":"$85.00",
+ "Kee Klamp Fittings (Brand)":"$55.00","Pipe Railing Systems":"$70.00",
+ "Self-Closing Safety Gates (Kee Gate®)":"$95.00","Roof Walkways (Kee Walk®)":"$95.00"};
+function pageAdGroups(){
+  const w = SEG_WIN[segDays], a = SEG_WIN[90];
+  const scale = {impr:w.impr/a.impr, clicks:w.clicks/a.clicks, cost:w.cost/a.cost, conv:w.conv/a.conv};
+  const rows = ADG.filter(g => entCamp==="all" ? true : g[1]===CAMPMAP[entCamp])
+    .map(g=>({n:g[0], camp:g[1], st:g[2], note:g[7],
+              impr:Math.round(g[3]*scale.impr), clicks:Math.round(g[4]*scale.clicks),
+              cost:Math.round(g[5]*scale.cost), conv:Math.round(g[6]*scale.conv)}))
+    .sort((x,y)=>y.cost-x.cost);
+  const T = sumRows(rows), ref = T.cost/T.conv;
+  const campKeyOf = n => Object.keys(CAMPMAP).find(k=>CAMPMAP[k]===n);
+  const body = rows.map(r=>`<tr class="rrow">
+    <td class="cb l"><input type="checkbox"></td><td class="l"><span class="statdot"></span></td>
+    <td class="l"><a class="lk2" onclick="setEntAG(${JSON.stringify(r.n).replace(/"/g,"&quot;")});showEntity('keywords')">${r.n}</a>${r.note?`<br><span class="badge-alert">${r.note}</span>`:""}</td>
+    <td class="l"><a class="lk2" onclick="setEntCamp('${campKeyOf(r.camp)}')">${r.camp}</a></td>
+    <td class="l"><span class="ulink">${r.st==="warn"?"Eligible":"Eligible"}</span></td>
+    <td>${AGTCPA[r.n]||"—"}</td>
+    <td>${money2(r.cost)}</td><td class="${cpaCls(r.cost,r.conv,ref)}">${per(r.cost,r.conv)}</td>
+    <td>${r.conv.toFixed(2)}</td><td>${rate(r.conv,r.clicks)}</td><td>${rate(r.clicks,r.impr)}</td>
+    <td>${per(r.cost,r.clicks)}</td><td>${num(r.clicks)}</td><td>${num(r.impr)}</td></tr>`).join("");
+  const tot = lbl=>`<tr class="tot"><td class="cb l"></td><td class="l"></td><td class="l">${lbl}</td><td class="l"></td><td class="l"></td><td></td>
+    <td>${money2(T.cost)}</td><td>${per(T.cost,T.conv)}</td><td>${T.conv.toFixed(2)}</td><td>${rate(T.conv,T.clicks)}</td>
+    <td>${rate(T.clicks,T.impr)}</td><td>${per(T.cost,T.clicks)}</td><td>${num(T.clicks)}</td><td>${num(T.impr)}</td></tr>`;
+  return entTools("Ad group status: Enabled") + tbl(
+    `<th class="cb l"><input type="checkbox" disabled></th><th class="l" style="width:20px"></th><th class="l">Ad group</th>
+     <th class="l">Campaign</th><th class="l">Status</th><th>Target CPA</th><th>↓ Cost</th><th>Cost / conv.</th>
+     <th>Conversions</th><th>Conv. rate</th><th>CTR</th><th>Avg. CPC</th><th>Clicks</th><th>Impr.</th>`,
+    body + tot("Total: All enabled ad groups in your current view ⓘ") + tot("˅ &nbsp;Total: Account ⓘ"),
+    "1 - "+rows.length+" of "+rows.length);
+}
+const ADGROUP_HINT = ["<b>Everything blue is a door.</b> Click an ad group name to drop into its keywords, or click the campaign name to change scope. That click-through habit is most of what \"knowing the interface\" looks like from the outside: you never navigate by the left menu when a link in the table gets you there in one step. The ad group list is also the fastest way to prove a problem is local rather than account-wide.",
+ "<b>What you'd say:</b> \"I don't diagnose at campaign level, because a campaign average hides everything. Fall Protection – General is at $296 a lead while its two sibling ad groups sit near $130. Same campaign, same budget, same bid strategy. So the campaign isn't broken, one ad group is, and that's a much cheaper thing to fix.\""];
+/* ================= ASSET USAGE GUIDANCE ================= */
+const ASSET_USE = {
+ "Image":["use","Worth having. Feeds Performance Max and image extensions on Search."],
+ "Business name":["use","Standard. Set it once and leave it."],
+ "Business logo":["use","Standard. Set it once and leave it."],
+ "Sitelink":["use","One of the highest-impact assets. Six or more is the target."],
+ "Headline":["use","The RSA asset that does the work. Discipline beats volume."],
+ "Description":["use","Same. Write for the query, not for Ad strength."],
+ "Callout":["use","Cheap credibility. OSHA compliant, US stock, free layout design."],
+ "Structured snippet":["use","Good fit for a product company: Services, Types, Brands."],
+ "Call":["use","Big one for B2B. A phone lead from a facilities manager is worth more than a form fill."],
+ "Location":["use","Big one if there are physical locations or distributors to point at."],
+ "Promotion":["rare","Rarely. Built for retail discounting, which is not how industrial safety sells."],
+ "Lead form":["avoid","Don't use it. The lead sits inside Google instead of your CRM, which breaks the offline conversion loop you actually need."],
+ "Message":["avoid","Never. Effectively deprecated and nobody staffs the replies."],
+ "Price":["avoid","Never for engineered-to-order products. You cannot put a price on a roof survey."],
+ "App":["avoid","Never. There is no app."]
+};
+const ASSET_BADGE = {use:'<span class="ubadge use">use</span>', rare:'<span class="ubadge rare">rare</span>', avoid:'<span class="ubadge avoid">avoid</span>'};
 
 /* ================= ROUTING ================= */
 function showView(id){
