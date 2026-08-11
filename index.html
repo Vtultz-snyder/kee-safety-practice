@@ -229,6 +229,8 @@
   .adprev2 .u{color:var(--green); font-size:12.5px;}
   .adprev2 .d{color:#4d5156; font-size:12.5px;}
   .adprev2 .lk{color:var(--blue); font-size:12.5px; cursor:pointer;}
+  .recbtn{background:var(--blue); color:#fff; border-radius:18px; padding:8px 22px; font-size:13px; cursor:pointer; display:inline-block;}
+  .recbtn:hover{background:var(--blue-dark);}
   .grouprow td{background:#fff !important; color:var(--blue) !important; font-size:13px;}
   .thumb{width:56px; height:44px; border-radius:4px; object-fit:cover; display:block;}
   tr.hl{background:#fef7e0 !important; transition:background .3s;}
@@ -368,12 +370,12 @@
 
   <!-- ============ NAV ============ -->
   <nav class="nav" id="nav">
-    <a data-view="overview" onclick="showView('overview')">Overview</a>
-    <a data-view="recommendations" onclick="showView('recommendations')">Recommendations</a>
+    <a data-view="overview" onclick="showEntity('overview')">Overview</a>
+    <a data-view="recommendations" onclick="showEntity('recommendations')">Recommendations</a>
     <a data-view="insights" onclick="showView('insights')">Insights and reports</a>
-    <a data-view="insights" class="sub" onclick="showView('insights')">Insights</a>
-    <a data-view="insights" class="sub" onclick="showView('insights')">Auction insights</a>
-    <a data-view="audiences" class="sub" onclick="showView('audiences')">Search terms</a>
+    <a data-view="insights" class="sub" onclick="showEntity('insights')">Insights</a>
+    <a data-view="auctioninsights" class="sub" onclick="showEntity('auctioninsights')">Auction insights</a>
+    <a data-view="searchterms" class="sub" onclick="showEntity('searchterms')">Search terms</a>
     <a data-view="segments" class="sub" onclick="showView('segments')">When and where ads showed</a>
     <a data-view="insights" class="sub" onclick="showView('insights')">Landing pages</a>
     <a data-view="insights" class="sub" onclick="showView('insights')">Report editor</a>
@@ -2205,12 +2207,15 @@ function pageAds(){
 }
 /* ---------- entity router ---------- */
 const ENTPAGE = {keywords:["Keywords",pageKeywords], audiences:["Audiences",pageAudiences],
-                 assets:["Assets",pageAssets], ads:["Ads",pageAds]};
+                 assets:["Assets",pageAssets], ads:["Ads",pageAds],
+                 overview:["Overview",()=>pageOverview(),1], recommendations:["Recommendations",()=>pageRecs(),1],
+                 searchterms:["Search terms",()=>pageTerms()], auctioninsights:["Auction insights",()=>pageAuction()],
+                 insights:["Insights",()=>pageInsights(),1]};
 let entView="keywords";
 function renderEntity(){
   const p = ENTPAGE[entView]; if(!p) return;
   const w = SEG_WIN[segDays];
-  $("ent-body").innerHTML = ctxRow() +
+  $("ent-body").innerHTML = (p[2] ? "" : ctxRow()) +
     `<div class="seg-head"><h1>${p[0]}</h1>
       <div class="dr"><span class="dr-lbl">${w.lbl}</span>
         <span class="dr-box" onclick="event.stopPropagation();toggleMenu('entdate')"><span>${w.range}</span><span class="car">▾</span>
@@ -2220,11 +2225,183 @@ function renderEntity(){
             <div class="mi" onclick="setSegDays(90);renderEntity()">Last 90 days</div></div></span>
         <span class="dr-arrow">‹</span><span class="dr-arrow">›</span>
         <a class="dr-link" onclick="setSegDays(30);renderEntity()">Show last 30 days</a></div></div>` +
+    (entView==="auctioninsights" ? `<div class="hint">💡 ${AUCTION_HINT[0]}</div>` : "") +
     p[1]() +
+    (entView==="auctioninsights" ? `<div class="segrec">✅ ${AUCTION_HINT[1]}</div>` : "") +
     `<div class="gfoot"><a>Reporting is not real-time.</a> Time zone for all dates and times: (GMT-05:00) Eastern Time. <a>Learn more</a><br>
       Some inventory may be provided through third party intermediaries.<br>© Google, 2026.</div>`;
 }
 function showEntity(v){ entView=v; renderEntity(); showView('entity'); }
+
+/* ================= OVERVIEW · RECOMMENDATIONS · SEARCH TERMS · AUCTION INSIGHTS ================= */
+const METRICS = {
+  "Clicks":       w=>num(w.clicks),
+  "Impr.":        w=>num(w.impr),
+  "CTR":          w=>rate(w.clicks,w.impr),
+  "Avg. CPC":     w=>per(w.cost,w.clicks),
+  "Cost":         w=>money2(w.cost),
+  "Conversions":  w=>w.conv.toFixed(2),
+  "Cost / conv.": w=>per(w.cost,w.conv),
+  "Conv. rate":   w=>rate(w.conv,w.clicks),
+  "Conv. value":  w=>"0.00",
+  "All conv.":    w=>(w.conv*1.22).toFixed(2)
+};
+const MKEYS = Object.keys(METRICS);
+const MDELTA = {"Clicks":"↑ 1,204","Impr.":"↑ 61,400","CTR":"↓ -0.41%","Avg. CPC":"↑ $0.62","Cost":"↑ $9,140.00",
+  "Conversions":"↓ -128.00","Cost / conv.":"↑ $31.18","Conv. rate":"↓ -1.62%","Conv. value":"0.00","All conv.":"↓ -156.16"};
+let ovTiles = ["Cost","Conversions","Cost / conv.","Conv. value"], ovOpen = -1;
+function openTile(i){ ovOpen = ovOpen===i?-1:i; renderEntity(); }
+function setTile(i,m){ ovTiles[i]=m; ovOpen=-1; renderEntity(); }
+function tileRow(){
+  const w = SEG_WIN[segDays];
+  return `<div class="metricrow">${ovTiles.map((m,i)=>`
+    <div class="mtile ${i===0?'sel':''}" style="position:relative">
+      <div class="k">${m} <span class="car" onclick="event.stopPropagation();openTile(${i})" style="cursor:pointer">▾</span></div>
+      <div class="v">${METRICS[m](w)}</div><div class="d">${MDELTA[m]}</div>
+      <div class="gmenu scroll ${ovOpen===i?'open':''}" style="left:0;right:auto;top:100%" onclick="event.stopPropagation()">
+        <div class="mh">Select a metric</div>
+        ${MKEYS.map(k=>`<div class="mi ${k===m?'sel':''}" onclick="setTile(${i},${JSON.stringify(k).replace(/"/g,"&quot;")})">${k}</div>`).join("")}
+      </div></div>`).join("")}
+    <div class="mtile" style="flex:0 0 150px; display:flex; gap:22px; align-items:center; justify-content:center;">
+      <span class="tbi" onclick="toast()"><b>▤</b>Metrics</span><span class="tbi" onclick="toast()"><b>⛶</b>Collapse</span></div></div>`;
+}
+function pageOverview(){
+  const w = SEG_WIN[segDays];
+  return tileRow() +
+    `<div class="chartcard" style="margin-top:14px; padding:16px 18px 8px;">
+       <div style="font-size:13px;color:var(--ink2);margin-bottom:6px;">${ovTiles[0]} · ${w.range}</div>
+       <svg id="chart3" width="100%" height="200"></svg></div>
+     <div class="cardrow">
+       <div class="ocard"><h4>Your campaigns</h4><div class="sub">Cost by campaign, ${w.lbl.toLowerCase()}</div>
+         ${SEG_CAMP.map(c=>`<div class="row"><span class="nm">${c[1]}</span><span>${money2(Math.round(c[4]*w.cost/SEG_WIN[90].cost))}</span></div>`).join("")}</div>
+       <div class="ocard"><h4>Searches</h4><div class="sub">What people searched for</div>
+         ${TERMS.slice(0,5).map(t=>`<div class="row"><span class="nm">${t[0]}</span><span>${num(t[6])}</span></div>`).join("")}</div>
+       <div class="ocard"><h4>Days &amp; hours</h4><div class="sub">When your ads showed</div>
+         <div class="row"><span class="nm">Best day</span><span>Tuesday</span></div>
+         <div class="row"><span class="nm">Best hour</span><span>10 AM – 11 AM</span></div>
+         <div class="row"><span class="nm">Weekend share of cost</span><span>13.7%</span></div>
+         <span class="lk" onclick="setSegTab('when');showView('segments')">See the full report →</span></div>
+     </div>`;
+}
+/* ---------- RECOMMENDATIONS ---------- */
+const RECS = [
+ ["Add broad match keywords","+4.2%","Reach more customers by adding broad match versions of your existing keywords.","bad",
+  "This is the one that already cost you. Broad match went on this account Jun 14 and cost per lead in Fall Protection – General went from about $130 to $296. Applying it again would repeat the damage."],
+ ["Raise your budgets","+6.7%","Your campaigns are losing impression share because of budget. Increase daily budgets to capture more traffic.","mixed",
+  "Half right. KeeGuard genuinely is limited by budget at 38% lost IS and earns leads at $73, so more money there is defensible. But Google wants you to raise every budget, including the campaign that is currently burning money."],
+ ["Bid more efficiently with Maximize conversions","+3.1%","Switch your bid strategy to get more conversions at a similar cost.","bad",
+  "Already applied Jun 14, and it is part of why performance moved. Re-applying resets the learning period again. Bid strategy changes are not free."],
+ ["Upgrade your conversion tracking with enhanced conversions","+2.9%","Improve measurement accuracy by sending hashed first-party data.","good",
+  "Take this one. It is the only recommendation on the page that makes your data better rather than spending more of your money, and it is the first step toward sending closed revenue back to Google."],
+ ["Remove redundant keywords","+0.8%","These keywords compete with each other in the same auction.","mixed",
+  "Harmless and usually correct, but worth reading before you click. Google occasionally counts a deliberate exact-match keyword as redundant against a broad one."],
+ ["Add responsive search ad assets","+1.4%","Add more headlines and descriptions to improve Ad strength.","mixed",
+  "Fine in principle. Ad strength is a diversity rating, not a performance metric, so do not chase Excellent at the cost of message discipline."],
+ ["Create a Performance Max campaign","+5.3%","Reach customers across all Google channels automatically.","bad",
+  "You already have one, and it converts at 2.5% against 5.8% on Search. Adding another is not the fix."]
+];
+let recDismissed = [];
+function dismissRec(i){ if(!recDismissed.includes(i)) recDismissed.push(i); renderEntity(); }
+function dismissAll(){ recDismissed = RECS.map((_,i)=>i); renderEntity(); }
+function restoreRecs(){ recDismissed = []; renderEntity(); }
+function pageRecs(){
+  const live = RECS.map((r,i)=>[r,i]).filter(x=>!recDismissed.includes(x[1]));
+  const score = Math.min(100, 68.4 + recDismissed.length*0);
+  const cards = live.length ? live.map(([r,i])=>`
+    <div class="ocard" style="grid-column:1/-1; border-left:4px solid ${r[3]==='good'?'var(--green)':r[3]==='bad'?'var(--red)':'var(--amber)'};">
+      <h4>${r[0]} <span style="color:var(--ink2); font-weight:400; font-size:12.5px;">${r[1]} optimization score</span></h4>
+      <p style="font-size:13px; line-height:1.6; color:#3c4043; margin:6px 0 10px;">${r[2]}</p>
+      <div class="hint" style="margin:0 0 10px;">💡 ${r[4]}</div>
+      <div style="display:flex; gap:20px; align-items:center;">
+        <span class="recbtn" onclick="toast()">Apply</span>
+        <span class="lk" onclick="dismissRec(${i})">Dismiss</span></div></div>`).join("")
+    : `<div class="ocard" style="grid-column:1/-1;"><h4>You're all caught up</h4>
+       <p style="font-size:13px;color:var(--ink2);margin-top:6px;">All recommendations dismissed. Optimization score will drop, and that is fine.</p>
+       <span class="lk" onclick="restoreRecs()">Restore recommendations</span></div>`;
+  return `<div class="metricrow"><div class="mtile"><div class="k">Optimization score</div><div class="v">${score.toFixed(1)}%</div>
+      <div class="d">Available: +${(24.4).toFixed(1)}%</div></div>
+    <div class="mtile"><div class="k">Recommendations</div><div class="v">${live.length}</div><div class="d">${recDismissed.length} dismissed</div></div>
+    <div class="mtile" style="display:flex;align-items:center;justify-content:center;gap:20px;">
+      <span class="recbtn" onclick="dismissAll()">Dismiss all</span><span class="tbi" onclick="toast()"><b>⭳</b>Download</span></div></div>
+    <div class="hint" style="margin-top:14px;">💡 <b>How to talk about this page:</b> most of these exist to make Google money, not to make your account better. The professional answer is not "I ignore recommendations," it is "I read them, I apply the measurement ones, and I treat the spend-more ones as a hypothesis to test." Say that and you sound like someone who has run an account rather than someone who read a blog post.</div>
+    <div class="segrec" style="margin:12px 0 0;">✅ <b>The optimization score line:</b> "Optimization score is Google's opinion of how closely you follow Google's advice. It isn't a performance metric. I've run accounts in the sixties that outperformed accounts in the nineties. I'd rather be judged on cost per qualified lead."</div>
+    <div class="cardrow">${cards}</div>`;
+}
+/* ---------- SEARCH TERMS ---------- */
+function pageTerms(){
+  const rows = TERMS;
+  const T = rows.reduce((a,t)=>({c:a.c+t[3], v:a.v+t[4], k:a.k+t[6]}),{c:0,v:0,k:0});
+  const body = rows.map(t=>{
+    const waste = t[4]===0;
+    return `<tr><td class="cb l"><input type="checkbox"></td>
+    <td class="l">${t[0]}${waste?' <span class="badge-alert">no conversions</span>':''}</td>
+    <td class="l">${/broad/.test(t[1])?"Broad match":/exact/.test(t[1])?"Exact match":"Phrase match"}</td>
+    <td class="l"><span class="ulink">${t[2]}</span></td>
+    <td class="l"><a class="lk2" onclick="toast()">${t[1].replace(/ \(.*\)/,"")}</a></td>
+    <td>${t[4].toFixed(2)}</td><td>${t[4]?money2(t[3]/t[4]):"$0.00"}</td>
+    <td>${rate(t[4],t[6])}</td><td>${num(t[6])}</td><td>${num(Math.round(t[6]*38))}</td>
+    <td>${rate(t[6],t[6]*38)}</td><td>${per(t[3],t[6])}</td><td>${money2(t[3])}</td></tr>`;}).join("");
+  const tr = `<tr class="tot"><td class="cb l"></td><td class="l">Total: Search terms ⓘ</td><td class="l"></td><td class="l"></td><td class="l"></td>
+    <td>${T.v.toFixed(2)}</td><td>${T.v?money2(T.c/T.v):"$0.00"}</td><td>${rate(T.v,T.k)}</td><td>${num(T.k)}</td>
+    <td>${num(Math.round(T.k*38))}</td><td>${rate(T.k,T.k*38)}</td><td>${per(T.c,T.k)}</td><td>${money2(T.c)}</td></tr>`;
+  return entTools("Search term status: All") + tbl(
+    `<th class="cb l"><input type="checkbox" disabled></th><th class="l">Search term</th><th class="l">Match type</th>
+     <th class="l">Added / Excluded</th><th class="l">Keyword</th><th>Conversions</th><th>Cost / conv.</th><th>Conv. rate</th>
+     <th>Clicks</th><th>Impr.</th><th>CTR</th><th>Avg. CPC</th><th>↓ Cost</th>`, tr+body, "1 - "+rows.length+" of "+rows.length);
+}
+/* ---------- AUCTION INSIGHTS ---------- */
+const AUCTION = [
+ ["You (keesafety.com)", 42.1, "—",  "—",  68.4, 21.7, "—",   1],
+ ["simplifiedsafety.com", 31.4, 48.0, 41.2, 61.9, 18.4, 58.8, 0],
+ ["diversifiedfallprotection.com", 24.8, 39.0, 34.6, 55.1, 14.2, 65.4, 0],
+ ["guardianfall.com", 19.2, 31.0, 28.9, 49.7, 11.8, 71.1, 0],
+ ["bluewatermfg.com", 15.6, 24.0, 33.4, 58.2, 16.9, 66.6, 2],
+ ["safetyrail.com", 12.9, 18.0, 22.1, 44.3, 9.4, 77.9, 0],
+ ["fallprotectiondistributors.com", 8.4, 12.0, 17.6, 38.8, 6.2, 82.4, 0]
+];
+function pageAuction(){
+  const p = n => typeof n==="number" ? n.toFixed(2)+"%" : n;
+  const body = AUCTION.map(a=>`<tr${a[7]===1?' class="tot"':''}>
+    <td class="cb l">${a[7]===1?"":'<input type="checkbox">'}</td>
+    <td class="l">${a[7]===1?`<b>${a[0]}</b>`:a[0]}${a[7]===2?' <span class="segnote">new competitor</span>':''}</td>
+    <td>${p(a[1])}</td><td>${p(a[2])}</td><td>${p(a[3])}</td><td>${p(a[4])}</td><td>${p(a[5])}</td><td>${p(a[6])}</td></tr>`).join("");
+  return `<div class="gtb" style="border-top:1px solid var(--line)"><span class="funnel">▽</span>
+      <span class="fchip2">Campaign: ${CAMPMAP[entCamp]}</span><span class="addf">Add filter</span><span class="spacer"></span>
+      <span class="tbi"><b style="font-size:13px">Campaign view ▾</b></span>
+      <span class="tbi" onclick="toast()"><b>≡</b>Segment</span><span class="tbi" onclick="toast()"><b>▥</b>Columns</span>
+      <span class="tbi" onclick="toast()"><b>⭳</b>Download</span><span class="tbi" onclick="toast()"><b>⛶</b>Expand</span></div>` +
+    tbl(`<th class="cb l"><input type="checkbox" disabled></th><th class="l">Display URL domain</th>
+      <th>↓ Impr. share</th><th>Overlap rate</th><th>Position above rate</th><th>Top of page rate</th>
+      <th>Abs. Top of page rate</th><th>Outranking share</th>`, body, "1 - "+AUCTION.length+" of "+AUCTION.length);
+}
+/* ---------- INSIGHTS ---------- */
+const INSIGHTS = [
+ ["Conversions declined","Detected Jun 15 – Jul 31 · Search | Fall Protection Systems",
+  "Your conversions decreased by ~46% in this campaign compared to the prior period. Likely explanation: keyword match types were changed to broad match and the bid strategy changed to Maximize conversions on Jun 14.",
+  "The one insight on this page worth reading. Google is naming your own change history back to you. Useful as corroboration, not as discovery: you'd have found it in Change history in thirty seconds."],
+ ["Search trends","Rising interest in your industry",
+  "Searches for \"OSHA rooftop compliance\" are up 140% in the last 60 days across your categories.",
+  "Directionally interesting, actionable almost never. It tells you a category moved, not whether you can profitably buy it."],
+ ["Demand forecast","Next 30 days · Fall protection",
+  "Interest in rooftop safety products is forecast to grow 8% over the next 30 days in your targeted locations.",
+  "A forecast with no confidence interval and no budget attached. Nothing here changes what you'd do Monday morning."],
+ ["Asset audience insights","Performance Max | Lead Gen — US",
+  "People who converted were 3.2x more likely to be in the \"Building & Site Safety Services\" in-market segment.",
+  "Mildly useful as an audience signal for PMax. Treat it as a hint for a test, not as a finding."]
+];
+function pageInsights(){
+  return `<div class="hint">💡 <b>Be honest about this page in the room.</b> Insights is automated commentary generated on top of data you can read yourself. It is not where diagnosis happens. Glance at it, take the one insight that names a real change, and move to Change history and Search terms where the evidence actually lives.</div>
+    <div class="segrec" style="margin:12px 0 0;">✅ <b>What you'd say:</b> "I look at Insights, but I don't work from it. It's Google summarizing my own account back to me. The conversion-decline insight here is right, and it points at the Jun 14 change, but I'd have found that in Change history anyway. I spend my time in Search terms and the segment reports, because that's where I can act on something."</div>
+    <div class="cardrow">${INSIGHTS.map((r,i)=>`
+      <div class="ocard" style="grid-column:1/-1; ${i===0?'border-left:4px solid var(--amber);':''}">
+        <h4>${i===0?"⚡ ":""}${r[0]}</h4><div class="sub">${r[1]}</div>
+        <p style="font-size:13px; line-height:1.65; color:#3c4043; margin:8px 0 10px;">${r[2]}</p>
+        <div class="hint" style="margin:0 0 10px;">💡 ${r[3]}</div>
+        <div style="display:flex; gap:20px;">${i===0?'<span class="lk" onclick="showView(\'changehistory\')">View change history →</span>':'<span class="lk" onclick="toast()">View details →</span>'}
+          <span class="lk" onclick="toast()">Dismiss</span></div></div>`).join("")}</div>`;
+}
+const AUCTION_HINT = ["<b>How to read this fast:</b> impression share is how often you showed when you were eligible. Overlap rate is how often that competitor showed in the same auction as you. Position above rate is how often they beat you when you both showed. <b>bluewatermfg.com is new</b>, and account CPCs rose about 11% at the same time, which is your explanation for rising click costs that has nothing to do with anything you did.",
+ "<b>What you'd say:</b> \"A new entrant is bidding on our terms and pushing CPCs up about 11%. That's an auction problem, not an account problem, so the answer isn't to panic-bid. I'd protect the brand terms first, since that's where losing position actually costs us, and I'd fix Quality Score on the generic terms before I pay more per click.\""];
 
 /* ================= ROUTING ================= */
 function showView(id){
@@ -2232,7 +2409,7 @@ function showView(id){
   const navId = (id==='adgroupdetail') ? 'adgroups' : (id==='entity' ? entView : id);
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('sel', a.dataset.view===navId));
   if(id==='segments')  renderSeg();
-  if(id==='entity')    renderEntity();
+  if(id==='entity'){ renderEntity(); if(entView==='overview') requestAnimationFrame(()=>drawTrend('chart3',200)); }
   if(id==='campaigns') requestAnimationFrame(()=>drawTrend('chart',230));
   if(id==='overview')  requestAnimationFrame(()=>drawTrend('chart2',190));
   window.scrollTo({top:0});
