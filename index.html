@@ -244,6 +244,75 @@
   .kwpcard h4{font-size:19px; font-weight:400; margin:18px 0 8px;}
   .kwpcard p{font-size:13px; color:#3c4043; line-height:1.55;}
   .newbadge{position:absolute; top:14px; right:16px; font-size:9.5px; background:#e8f0fe; color:var(--blue-dark); border-radius:8px; padding:2px 7px; font-weight:600;}
+  /* ---------- overview ---------- */
+  .ovtiles{display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin-top:14px;}
+  .ovtile{position:relative; color:#fff; padding:16px 20px 20px; cursor:default;}
+  .ovtlbl{font-size:14px; display:flex; align-items:center; gap:8px; cursor:pointer; opacity:.95;}
+  .ovtval{font-size:34px; font-weight:400; margin-top:8px; letter-spacing:-.5px;}
+  .ovmenu{top:100%; margin-top:4px; max-height:340px; overflow-y:auto; min-width:250px; color:var(--ink);}
+  .ovmenu .mh2{padding:10px 20px 4px; font-size:12px; color:var(--ink2);}
+  .ovchartwrap{position:relative; border:1px solid var(--line); border-top:none; background:#fff; padding:14px 10px 4px;}
+  .ovaxis{display:flex; justify-content:space-between; font-size:11.5px; color:var(--ink2); padding:2px 8px 8px;}
+  .ovtip{position:absolute; top:14px; background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(60,64,67,.3); padding:12px 14px; font-size:12.5px; display:none; min-width:210px; z-index:20; pointer-events:none;}
+  .ovtip.on{display:block;}
+  .ovtitle{font-size:13.5px; margin-bottom:8px;}
+  .ovtrow{display:grid; grid-template-columns:14px 1fr auto; gap:8px; align-items:center; padding:2px 0; color:#3c4043;}
+  .ovtrow .dot{width:10px; height:3px; border-radius:2px;}
+  .ovgrid{display:grid; grid-template-columns:1.35fr 1fr; gap:16px; margin-top:16px; align-items:start;}
+  .ovcol{display:flex; flex-direction:column; gap:16px;}
+  .ovcard{border:1px solid var(--line); border-radius:8px; background:#fff; overflow:hidden;}
+  .ovhead{display:flex; align-items:center; gap:10px; padding:14px 18px; font-size:14px; border-bottom:1px solid var(--line);}
+  .ovhead .dots{margin-left:auto; color:var(--ink2); cursor:pointer;}
+  .ovbody{padding:16px 18px 18px;}
+  .ovsub{font-size:14px; color:#3c4043; margin-bottom:12px;}
+  .ovnote{font-size:12px; color:var(--ink2); line-height:1.5; margin-top:8px;}
+  .ovp{font-size:13px; line-height:1.6; color:#3c4043; margin-top:8px;}
+  .ovcard .lk{display:inline-block; margin-top:14px;}
+  .msel.sm{padding:5px 11px; font-size:12.5px;}
+  .devkey{display:flex; gap:22px; font-size:12.5px; color:#3c4043; margin-bottom:14px;}
+  .devbar{display:grid; grid-template-columns:1fr 120px; gap:14px; align-items:center; margin-bottom:14px;}
+  .devbar .bars{display:flex; gap:2px; height:22px; border-radius:2px; overflow:hidden;}
+  .devlegend{grid-column:1; display:flex; gap:26px; font-size:11.5px; color:var(--ink2); margin-top:5px;}
+  .devlegend i{display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:5px;}
+  .dhtabs{display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom:12px;}
+  .dhtab{padding:9px 16px; font-size:13px; color:var(--ink2); cursor:pointer; border-bottom:3px solid transparent;}
+  .dhtab.on{color:var(--blue-dark); border-bottom-color:var(--blue);}
+  .hgrid{display:flex; flex-direction:column; gap:2px;}
+  .hrow{display:flex; gap:2px; align-items:center;}
+  .hlab{width:14px; font-size:11px; color:var(--ink2);}
+  .hcell{flex:1; height:17px; border-radius:1px;}
+  .hcell.wide{height:17px;} .hcell.tall{height:60px;}
+  .haxis{display:flex; justify-content:space-between; font-size:11px; color:var(--ink2); padding:8px 0 0 16px;}
+  .chgrow{display:grid; grid-template-columns:12px 1fr 110px 90px; gap:12px; align-items:center; padding:9px 0; border-bottom:1px solid #f1f3f4; font-size:12.5px;}
+  .chgname{line-height:1.45; color:var(--ink2);}
+  .chgbar{display:flex; height:16px; background:#f8f9fa; border-radius:2px;}
+  .chgbar i{display:block; height:16px; border-radius:2px;}
+  .chgbar .pos{background:#1a73e8;} .chgbar .neg{background:#f9ab00;}
+  .chgval{text-align:right; line-height:1.35;}
+  .chgval small{color:var(--ink2);}
+  .up2{color:var(--ink);} .dn2{color:var(--ink);}
+  .ovtbl{width:100%; border-collapse:collapse; font-size:12.5px;}
+  .ovtbl th{font-size:11.5px; color:var(--ink2); font-weight:500; text-align:right; padding:8px 8px; border-bottom:1px solid var(--line);}
+  .ovtbl th.l{text-align:left;}
+  .ovtbl td{padding:10px 8px; text-align:right; border-bottom:1px solid #f1f3f4;}
+  .ovtbl td.l{text-align:left;}
+  .ovtbl td.heat{background:rgba(26,115,232,calc(var(--h)*0.22));}
+  .ovfoot{display:flex; align-items:center; margin-top:12px; font-size:12.5px;}
+  .ovfoot .pg{margin-left:auto; color:var(--ink2);}
+  .dgrow{display:flex; gap:3px; align-items:center; margin-bottom:3px;}
+  .dglab{width:52px; font-size:12px; color:#3c4043;}
+  .dgcell{flex:1; height:34px; border-radius:2px;}
+  .dgaxis{display:flex; gap:3px; padding-left:52px;}
+  .dgaxis span{flex:1; text-align:center; font-size:10.5px; color:var(--ink2);}
+  .attnrow{display:flex; gap:14px; align-items:stretch; position:relative;}
+  .attncard{flex:1; border:1px solid var(--line); border-radius:8px; padding:14px 16px; font-size:12.5px;}
+  .attnname{display:flex; gap:8px; align-items:flex-start; line-height:1.4;}
+  .attnst{color:var(--ink2); margin-top:8px;}
+  .attnmsg{color:#3c4043; margin-top:2px;}
+  .attnpg{position:absolute; right:-10px; top:50%; transform:translateY(-50%); width:28px; height:28px; border-radius:50%; background:#fff; box-shadow:0 1px 4px rgba(60,64,67,.3); display:flex; align-items:center; justify-content:center; color:var(--ink2); cursor:pointer;}
+  .pillscore{margin-left:auto; background:#e8f0fe; color:var(--blue-dark); border-radius:10px; padding:2px 9px; font-size:11.5px; font-weight:600;}
+  .optrow{display:flex; gap:14px; align-items:center; padding:11px 0; border-bottom:1px solid #f1f3f4; font-size:12.5px;}
+  @media (max-width:1100px){ .ovgrid{grid-template-columns:1fr;} .ovtiles{grid-template-columns:repeat(2,1fr);} }
   .setlist{margin-top:14px;}
   .setrow{border:1px solid var(--line); border-radius:8px; margin-bottom:10px; background:#fff;}
   .sethead{display:grid; grid-template-columns:270px 1fr 26px; gap:16px; padding:16px 18px; cursor:pointer; align-items:center;}
@@ -2426,24 +2495,6 @@ function tileRow(){
     <div class="mtile" style="flex:0 0 150px; display:flex; gap:22px; align-items:center; justify-content:center;">
       <span class="tbi" onclick="toast()"><b>▤</b>Metrics</span><span class="tbi" onclick="toast()"><b>⛶</b>Collapse</span></div></div>`;
 }
-function pageOverview(){
-  const w = SEG_WIN[segDays];
-  return tileRow() +
-    `<div class="chartcard" style="margin-top:14px; padding:16px 18px 8px;">
-       <div style="font-size:13px;color:var(--ink2);margin-bottom:6px;">${ovTiles[0]} · ${w.range}</div>
-       <svg id="chart3" width="100%" height="200"></svg></div>
-     <div class="cardrow">
-       <div class="ocard"><h4>Your campaigns</h4><div class="sub">Cost by campaign, ${w.lbl.toLowerCase()}</div>
-         ${SEG_CAMP.map(c=>`<div class="row"><span class="nm">${c[1]}</span><span>${money2(Math.round(c[4]*w.cost/SEG_WIN[90].cost))}</span></div>`).join("")}</div>
-       <div class="ocard"><h4>Searches</h4><div class="sub">What people searched for</div>
-         ${TERMS.slice(0,5).map(t=>`<div class="row"><span class="nm">${t[0]}</span><span>${num(t[6])}</span></div>`).join("")}</div>
-       <div class="ocard"><h4>Days &amp; hours</h4><div class="sub">When your ads showed</div>
-         <div class="row"><span class="nm">Best day</span><span>Tuesday</span></div>
-         <div class="row"><span class="nm">Best hour</span><span>10 AM – 11 AM</span></div>
-         <div class="row"><span class="nm">Weekend share of cost</span><span>13.7%</span></div>
-         <span class="lk" onclick="setSegTab('when');showView('segments')">See the full report →</span></div>
-     </div>`;
-}
 /* ---------- RECOMMENDATIONS ---------- */
 const RECS = [
  ["Add broad match keywords","+4.2%","Reach more customers by adding broad match versions of your existing keywords.","bad",
@@ -3338,6 +3389,222 @@ function pageAdmin(){
     <div class="segrec">✅ <b>What you'd say:</b> "Before I'd commit to an offline conversion tracking timeline, I'd check two things in Admin: that auto-tagging is on, and who actually has access to the account. Those take a minute and they decide whether the project is two weeks or two months."</div>
     <div class="ocard" style="margin-top:14px;"><h4>Account settings</h4>
       <table class="settbl">${S.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table></div>`;
+}
+
+/* ================= OVERVIEW (full Google Ads layout) ================= */
+const OV_METRICS = {
+  "Clicks":       w=>[num(w.clicks), w.clicks],
+  "Impressions":  w=>[num(w.impr), w.impr],
+  "CTR":          w=>[rate(w.clicks,w.impr), w.clicks/w.impr*100],
+  "Avg. CPC":     w=>[per(w.cost,w.clicks), w.cost/w.clicks],
+  "Cost":         w=>[(w.cost>=1000?"$"+(w.cost/1000).toFixed(1)+"K":money2(w.cost)), w.cost],
+  "Avg. Target CPA": w=>["—", 0],
+  "Avg. Target ROAS": w=>["—", 0],
+  "Interactions": w=>[num(w.clicks), w.clicks],
+  "Interaction rate": w=>[rate(w.clicks,w.impr), w.clicks/w.impr*100],
+  "Conversions":  w=>[w.conv.toFixed(2), w.conv],
+  "Phone calls":  w=>[num(Math.round(w.conv*0.34)), w.conv*0.34],
+  "Conv. value":  w=>["0.00", 0],
+  "Cost / conv.": w=>[per(w.cost,w.conv), w.cost/w.conv],
+  "Conv. rate":   w=>[rate(w.conv,w.clicks), w.conv/w.clicks*100],
+  "Conv. value / cost": w=>["0.00", 0],
+  "Actual ROAS":  w=>["—", 0],
+  "Search impr. share": w=>["62.4%", 62.4],
+  "Impression share": w=>["58.1%", 58.1]
+};
+const OV_COLORS = ["#1a73e8","#d93025","#f9ab00","#188038"];
+let ovSel = ["Conversions","Phone calls","Cost","Cost / conv."], ovMenu = -1, ovSubmenu = "";
+let dhTab = "dayhour";
+function ovOpenMenu(i){ ovMenu = ovMenu===i?-1:i; ovSubmenu=""; renderEntity(); }
+function ovPick(i,m){ ovSel[i]=m; ovMenu=-1; renderEntity(); }
+function setDH(t){ dhTab=t; renderEntity(); }
+function ovMetricMenu(i){
+  const sec = (title, items) => `<div class="mh2">${title}</div>` +
+    items.map(m=>`<div class="mi ${ovSel[i]===m?'sel':''}" onclick="event.stopPropagation();ovPick(${i},${JSON.stringify(m).replace(/"/g,"&quot;")})">${m}</div>`).join("");
+  return `<div class="gmenu ovmenu ${ovMenu===i?'open':''}" style="left:0;right:auto" onclick="event.stopPropagation()">
+    ${sec("Performance",["Clicks","Impressions","CTR","Avg. CPC","Cost","Avg. Target CPA","Avg. Target ROAS","Interactions","Interaction rate"])}
+    <div class="mh2">Conversions</div>
+    <div class="mi sub2">Conversions <span style="float:right">▸</span>
+      <div class="gmenu submenu" style="min-width:230px">
+        <div class="mi" onclick="event.stopPropagation();ovPick(${i},'Conversions')">All</div>
+        <div class="mh2">Conversion categories</div>
+        ${["Purchases/Sales","Sign-ups","Views of a key page","Phone call leads","Contacts","Submit lead forms","Downloads","Leads"]
+          .map(c=>`<div class="mi" onclick="event.stopPropagation();toast()">${c}</div>`).join("")}</div></div>
+    <div class="mi sub2">Conv. value <span style="float:right">▸</span>
+      <div class="gmenu submenu"><div class="mi" onclick="event.stopPropagation();ovPick(${i},'Conv. value')">All</div></div></div>
+    ${sec("",["Cost / conv.","Conv. rate","Conv. value / cost","Actual ROAS","Phone calls"])}
+    ${sec("Competitive Metrics",["Search impr. share","Impression share"])}
+  </div>`;
+}
+/* weekly series driven by the account curve: healthy May, damage after Jun 14 */
+function ovSeries(){
+  const n = 26, out=[];
+  for(let k=0;k<n;k++){
+    const t = k/(n-1);
+    const post = t > 0.48;
+    const wob = 1 + 0.16*Math.sin(k*1.7) + 0.09*Math.cos(k*2.9);
+    const convF = (post ? 1 - (t-0.48)*0.95 : 1.06 - t*0.10) * wob;
+    const costF = (post ? 1 + (t-0.48)*0.22 : 0.98 + t*0.05) * wob;
+    const w = SEG_WIN[90];
+    const clicks = w.clicks/n*costF, impr = w.impr/n*costF*0.98,
+          cost = w.cost/n*costF, conv = Math.max(1, w.conv/n*convF);
+    out.push({clicks,impr,cost,conv, label:"Week of "+["May 4","May 11","May 18","May 25","Jun 1","Jun 8","Jun 15","Jun 22","Jun 29","Jul 6","Jul 13","Jul 20","Jul 27"][Math.min(12,Math.floor(k/2))]+", 2026"});
+  }
+  return out;
+}
+function ovChart(){
+  const S = ovSeries(), W=1000, H=210, P=8;
+  const paths = ovSel.map((m,i)=>{
+    const vals = S.map(p=>OV_METRICS[m](p)[1]);
+    const mn=Math.min(...vals), mx=Math.max(...vals), rng=(mx-mn)||1;
+    const pts = vals.map((v,k)=>[P+k*(W-2*P)/(S.length-1), H-P-((v-mn)/rng)*(H-2*P)]);
+    return `<polyline fill="none" stroke="${OV_COLORS[i]}" stroke-width="2" points="${pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")}"/>`;
+  }).join("");
+  const hot = S.map((p,k)=>{
+    const x = P+k*(W-2*P)/(S.length-1);
+    const rows = ovSel.map((m,i)=>`<div class="ovtrow"><span class="dot" style="background:${OV_COLORS[i]}"></span><span>${m}</span><b>${OV_METRICS[m](p)[0]}</b></div>`).join("");
+    return `<rect x="${x-19}" y="0" width="38" height="${H}" fill="transparent"
+      onmouseenter="ovTip(event,${k},'${p.label}',\`${rows.replace(/`/g,"")}\`)" onmouseleave="ovTipOff()"/>`;
+  }).join("");
+  return `<div class="ovchartwrap"><svg viewBox="0 0 ${W} ${H}" width="100%" height="210" preserveAspectRatio="none">
+      <line x1="0" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="#edeff1"/>
+      ${paths}${hot}</svg>
+    <div class="ovtip" id="ovtip"></div>
+    <div class="ovaxis"><span>May 1, 2026</span><span>Jul 31, 2026</span></div></div>`;
+}
+function ovTip(e,k,label,rows){
+  const t=$("ovtip"), wrap=t.parentElement.getBoundingClientRect();
+  t.innerHTML = `<div class="ovtitle">${label}</div>${rows}`;
+  t.style.left = Math.min(wrap.width-230, Math.max(0, e.clientX-wrap.left+14))+"px";
+  t.classList.add('on');
+}
+function ovTipOff(){ $("ovtip").classList.remove('on'); }
+/* device split */
+function ovDevices(){
+  const w=SEG_WIN[segDays];
+  const mk=(lbl,shares)=>`<div class="devbar"><div class="bars">
+      ${shares.map((s,i)=>`<span style="flex:${s}; background:${["#1a73e8","#d93025","#f9ab00"][i]}"></span>`).join("")}</div>
+    <div class="devlegend">${shares.map((s,i)=>`<span><i style="background:${["#1a73e8","#d93025","#f9ab00"][i]}"></i>${s.toFixed(1)}%</span>`).join("")}</div>
+    <span class="msel sm">${lbl} <span class="car">▾</span></span></div>`;
+  return `<div class="ovcard"><div class="ovhead">▭ Devices <span class="dots">⋮</span></div>
+    <div class="ovbody"><div class="ovsub">Ad performance across devices</div>
+      <div class="devkey"><span>▯ Mobile phones</span><span>▭ Tablets</span><span>🖥 Computers</span></div>
+      ${mk("Cost",[43.0,5.0,52.0])}${mk("Impressions",[44.0,6.0,50.0])}${mk("Clicks",[47.0,5.0,48.0])}
+      <div class="lk" onclick="setSegTab('device');showView('segments')">Devices</div></div></div>`;
+}
+/* day & hour heat */
+function ovDayHour(){
+  const w=SEG_WIN[segDays];
+  const dW=SEG_DOW.map(d=>d.w), hW=SEG_HOD.map(h=>h.w);
+  const sD=dW.reduce((a,b)=>a+b,0), sH=hW.reduce((a,b)=>a+b,0);
+  const cell=(di,hi)=>Math.round(w.impr*(dW[di]/sD)*(hW[hi]/sH));
+  const mx=Math.max(...dW.map((_,di)=>Math.max(...hW.map((_,hi)=>cell(di,hi)))));
+  const order=[6,0,1,2,3,4,5], lbl=["S","M","T","W","T","F","S"];
+  let grid="";
+  if(dhTab==="dayhour"){
+    grid = order.map((di,r)=>`<div class="hrow"><span class="hlab">${lbl[r]}</span>
+      ${SEG_HOD.map((h,hi)=>{const v=cell(di,hi);
+        return `<span class="hcell" style="background:rgba(26,115,232,${(0.08+v/mx*0.92).toFixed(2)})" title="${SEG_DOW[di].n}, ${h.n} — ${num(v)} impressions"></span>`;}).join("")}</div>`).join("");
+  } else if(dhTab==="day"){
+    const dmx=Math.max(...dW);
+    grid = order.map((di,r)=>`<div class="hrow"><span class="hlab">${lbl[r]}</span>
+      <span class="hcell wide" style="background:rgba(26,115,232,${(0.12+dW[di]/dmx*0.88).toFixed(2)})" title="${SEG_DOW[di].n} — ${num(Math.round(w.impr*dW[di]/sD))} impressions"></span></div>`).join("");
+  } else {
+    const hmx=Math.max(...hW);
+    grid = `<div class="hrow"><span class="hlab"></span>${SEG_HOD.map((h,hi)=>
+      `<span class="hcell tall" style="background:rgba(26,115,232,${(0.10+hW[hi]/hmx*0.90).toFixed(2)})" title="${h.n} — ${num(Math.round(w.impr*hW[hi]/sH))} impressions"></span>`).join("")}</div>`;
+  }
+  return `<div class="ovcard"><div class="ovhead">🕐 Day &amp; hour <span class="msel sm" style="margin-left:auto">Impressions <span class="car">▾</span></span><span class="dots">⋮</span></div>
+    <div class="ovbody"><div class="ovsub">Your performance by day of week and time of day</div>
+      <div class="dhtabs">${[["day","Day"],["dayhour","Day &amp; Hour"],["hour","Hour"]].map(t=>`<span class="dhtab ${dhTab===t[0]?'on':''}" onclick="setDH('${t[0]}')">${t[1]}</span>`).join("")}</div>
+      <div class="hgrid">${grid}</div>
+      <div class="haxis"><span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>12 AM</span></div>
+      <div class="lk" onclick="showEntity('schedule')">Ad schedule</div></div></div>`;
+}
+function ovBiggestChanges(){
+  const rows=[["Search | Fall Protection Systems","fall protection systems",+4218,+118.4],
+    ["Search | Fall Protection Systems","osha fall protection requirements",+1602,+96.2],
+    ["Search | KeeGuard Rooftop Guardrails","KeeGuard Rooftop Guardrail",-914,-9.8],
+    ["Search | Kee Klamp Fittings & Railings","Kee Klamp Fittings (Brand)",-412,-6.1],
+    ["Search | Safety Gates & Roof Walkways","Roof Walkways (Kee Walk®)",+387,+11.4]];
+  const mx=Math.max(...rows.map(r=>Math.abs(r[2])));
+  return `<div class="ovcard"><div class="ovhead">🗓 Biggest changes <span class="msel sm" style="margin-left:auto">Cost <span class="car">▾</span></span><span class="dots">⋮</span></div>
+    <div class="ovbody"><div class="ovsub">Biggest changes to your campaigns and ad groups</div>
+      <div class="ovnote">May 1 – Jul 31, 2026 compared to Feb 1 – Apr 30, 2026 ⓘ</div>
+      ${rows.map(r=>`<div class="chgrow"><span class="statdot"></span>
+        <span class="chgname">${r[0]} ›<br><a class="lk2">${r[1]}</a></span>
+        <span class="chgbar">${r[2]>0?`<i class="pos" style="width:${Math.abs(r[2])/mx*70}%"></i>`:`<i class="neg" style="width:${Math.abs(r[2])/mx*70}%; margin-left:auto"></i>`}</span>
+        <span class="chgval ${r[2]>0?'up2':'dn2'}">${r[2]>0?"+":"-"}${money2(Math.abs(r[2]))}<br><small>${r[3]>0?"+":""}${r[3]}%</small></span></div>`).join("")}
+      <div class="lk" onclick="showView('changehistory')">Change history</div></div></div>`;
+}
+function ovCampaignsCard(){
+  const w=SEG_WIN[segDays], a=SEG_WIN[90];
+  const rows = SEG_CAMP.map(c=>({n:c[1], cost:Math.round(c[4]*w.cost/a.cost), clicks:Math.round(c[3]*w.clicks/a.clicks), impr:Math.round(c[2]*w.impr/a.impr), k:c[0]}))
+    .sort((x,y)=>y.cost-x.cost).slice(0,3);
+  const mx=Math.max(...rows.map(r=>r.cost));
+  return `<div class="ovcard"><div class="ovhead">📊 Campaigns <span class="dots">⋮</span></div>
+    <div class="ovbody"><div class="ovsub">Summary of how your campaigns are performing</div>
+      <table class="ovtbl"><thead><tr><th class="l"></th><th>Cost <span class="car">▾</span></th><th>Clicks <span class="car">▾</span></th><th>CTR <span class="car">▾</span></th></tr></thead><tbody>
+      ${rows.map(r=>`<tr><td class="l"><span class="statdot"></span> <a class="lk2" onclick="setEntCamp('${r.k}');showEntity('campaigns')">${r.n}</a></td>
+        <td class="heat" style="--h:${(r.cost/mx).toFixed(2)}">${money2(r.cost)}</td><td>${num(r.clicks)}</td><td>${rate(r.clicks,r.impr)}</td></tr>`).join("")}
+      </tbody></table>
+      <div class="ovfoot"><span class="lk" onclick="showEntity('campaigns')">All campaigns</span><span class="pg">‹ 1 / 2 ›</span></div></div></div>`;
+}
+function ovDemographics(){
+  const ages=["18-24","25-34","35-44","45-54","55-64","65+"];
+  const male=[0.10,0.26,0.52,0.78,0.92,0.71], female=[0.07,0.18,0.34,0.49,0.58,0.44];
+  const row=(lbl,arr)=>`<div class="dgrow"><span class="dglab">${lbl}</span>
+    ${arr.map((v,i)=>`<span class="dgcell" style="background:rgba(26,115,232,${(0.10+v*0.9).toFixed(2)})" title="${lbl}, ${ages[i]}"></span>`).join("")}</div>`;
+  return `<div class="ovcard"><div class="ovhead">👥 Demographics <span class="msel sm" style="margin-left:auto">Impressions <span class="car">▾</span></span><span class="dots">⋮</span></div>
+    <div class="ovbody"><div class="ovsub">Summary of the demographic groups your ads are reaching by age and gender</div>
+      <div class="dhtabs"><span class="dhtab on">Gender &amp; Age</span></div>
+      ${row("Male",male)}${row("Female",female)}
+      <div class="dgaxis">${ages.map(a=>`<span>${a}</span>`).join("")}</div>
+      <div class="ovnote">Based on the 74% of your impressions with known gender and age. ⓘ</div>
+      <div class="lk" onclick="showEntity('audiences')">Demographics</div></div></div>`;
+}
+function ovRecCard(){
+  return `<div class="ovcard"><div class="ovhead">💡 Recommendation <span class="dots">⋮</span></div>
+    <div class="ovbody"><div style="display:flex; align-items:center; gap:12px;"><span>🔍</span><b style="font-weight:500">Add broad match keywords</b>
+      <span class="pillscore">+4.2%</span></div>
+      <p class="ovp">Reach more customers by adding broad match versions of your existing keywords.</p>
+      <div class="hint" style="margin:10px 0;">💡 This is the recommendation that already cost this account. It was applied Jun 14 and cost per lead in Fall Protection – General went from about $130 to $296.</div>
+      <div style="display:flex; gap:18px; align-items:center;"><span class="recbtn" onclick="toast()">Apply</span><span class="lk" onclick="showEntity('recommendations')">View</span></div></div></div>`;
+}
+function ovAttention(){
+  const items=[["Search | Fall Protection Systems","Eligible","Cost per lead up 118% since Jun 14","fps"],
+               ["Search | KeeGuard Rooftop Guardrails","Limited by budget","Losing 38% of impressions to budget","kg"],
+               ["Performance Max | Lead Gen — US","Eligible","Converts at 2.5% vs 5.8% on Search","pmax"]];
+  return `<div class="ovcard"><div class="ovhead">🔎 Account diagnostics <span class="dots">⋮</span></div>
+    <div class="ovbody"><div class="ovsub">A few recent campaigns need attention</div>
+      <div class="attnrow">${items.map(i=>`<div class="attncard">
+        <div class="attnname"><span>🔍</span><a class="lk2" onclick="setEntCamp('${i[3]}');showEntity('campaigns')">${i[0]}</a></div>
+        <div class="attnst">${i[1]}</div><div class="attnmsg">${i[2]}</div>
+        <span class="lk" onclick="setEntCamp('${i[3]}');showEntity('campaigns')">View details</span></div>`).join("")}
+        <span class="attnpg">›</span></div></div></div>`;
+}
+function ovOptScore(){
+  return `<div class="ovcard"><div class="ovhead">💡 Optimization score <span class="dots">⋮</span></div>
+    <div class="ovbody"><div style="display:flex; align-items:baseline; gap:14px;"><div class="gnum">68.4%</div>
+      <div class="ovnote">Available: +24.4% across these campaigns</div></div>
+      <div class="optrow"><b>71.4%</b> <span class="lk2">Search | Fall Protection Systems</span> <span style="margin-left:auto">→</span></div>
+      <div class="optrow"><b>84.2%</b> <span class="lk2">Search | KeeGuard Rooftop Guardrails</span> <span style="margin-left:auto">→</span></div>
+      <div class="ovfoot"><span class="lk" onclick="showEntity('recommendations')">All recommendations</span><span class="pg">‹ 1 / 3 ›</span></div></div></div>`;
+}
+function pageOverview(){
+  const w = SEG_WIN[segDays];
+  const tiles = ovSel.map((m,i)=>`<div class="ovtile" style="background:${OV_COLORS[i]}">
+      <div class="ovtlbl" onclick="event.stopPropagation();ovOpenMenu(${i})">${m} <span class="car" style="color:#fff">▾</span></div>
+      <div class="ovtval">${OV_METRICS[m](w)[0]}</div>${ovMetricMenu(i)}</div>`).join("");
+  return `<div class="hint">💡 <b>Start the walkthrough here, and say why you're starting here.</b> Overview is a summarised copy of reports that live elsewhere, and treating it that way out loud is itself a signal: it tells the room you know the difference between a dashboard and a diagnosis. Four beats, about fifteen seconds. Name the screen and the date range. Give the headline numbers. Say what the tiles are set to and swap one to show they're switchable. Then name where you're going next and why. Every card below links to the report that actually answers the question.</div>
+    <div class="segrec">✅ <b>Your opening script, roughly fifteen seconds:</b> "So this is the Overview, last 90 days, May through July. Account level it's ${money2(SEG_WIN[90].cost)} for ${SEG_WIN[90].conv} conversions, about ${per(SEG_WIN[90].cost,SEG_WIN[90].conv)} a lead. These four tiles are switchable, so I'd usually put cost per conversion up here rather than raw conversions. I don't spend much time on this screen though. It's a summary of reports that live elsewhere, and the thing I actually want to know is which campaign is moving that blended number. So let me go to Campaigns."</div>
+    <div class="ovtiles">${tiles}</div>
+    ${ovChart()}
+    ${ovAttention()}
+    <div class="ovgrid">
+      <div class="ovcol">${ovRecCard()}${ovDevices()}${ovDayHour()}${ovBiggestChanges()}</div>
+      <div class="ovcol">${ovCampaignsCard()}${ovDemographics()}${ovOptScore()}</div>
+    </div>`;
 }
 
 /* ================= ROUTING ================= */
