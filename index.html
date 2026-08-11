@@ -384,6 +384,10 @@
   .ubadge.rare{background:#fef7e0; color:#a35b00;}
   .ubadge.avoid{background:#fce8e6; color:#c5221f;}
   .achip.avoidchip{border-style:dashed; color:#9aa0a6;}
+  body.clean .ubadge, body.clean .uselegend{display:none !important;}
+  body.clean .achip.avoidchip{border-style:solid; color:var(--ink);}
+  .assetname{color:var(--ink);}
+  .assetsub{font-size:12px; color:var(--ink2); line-height:1.45;}
   .uselegend{display:flex; gap:22px; flex-wrap:wrap; font-size:12px; color:var(--ink2); padding:0 4px 2px;}
   .recbtn{background:var(--blue); color:#fff; border-radius:18px; padding:8px 22px; font-size:13px; cursor:pointer; display:inline-block;}
   .recbtn:hover{background:var(--blue-dark);}
@@ -2337,22 +2341,28 @@ function pageAudiences(){
       <div class="showtab" onclick="toast()">˅ &nbsp;Show table <span class="edit">Edit exclusions</span></div></div>`;
 }
 /* ---------- ASSETS ---------- */
-const ASSET_TYPES = ["All","Image","Business name","Business logo","Sitelink","Headline","Description","Callout","Structured snippet","Call","Lead form","Message","Location","Price","App","Promotion"];
+/* Only the asset types this business would actually run. Lead form, Message,
+   Price, App and Promotion are deliberately not loaded. */
+const ASSET_TYPES = ["All","Image","Business name","Business logo","Sitelink","Headline","Description","Callout","Structured snippet","Call","Location"];
 const ASSET_ICON = {All:"✓",Image:"🖼",'Business name':"Tт",'Business logo':"🖼",Sitelink:"🔗",Headline:"Tт",Description:"Tт",Callout:"🗒",'Structured snippet':"🗒",Call:"📞",'Lead form':"🗒",Message:"💬",Location:"📍",Price:"💲",App:"📱",Promotion:"📣"};
 const ASSETX = [
- ["Kee Safety","Business name","Account","Eligible","Advertiser","Jan 24, 2026, 8:51 PM",0,24600,"acct"],
- ["Kee Safety logo","Business logo","Account","Eligible","Advertiser","Jan 24, 2026, 8:51 PM",0,24600,"acct"],
- ["Free Site Assessment","Sitelink","Account","Eligible","Advertiser","Jan 24, 2026, 8:53 PM",412,18400,"acct"],
- ["(734) 215-8890","Call","Campaign","Eligible","Advertiser","Jan 24, 2026, 8:29 PM",286,12900,"camp"],
- ["Buffalo, NY — Kee Safety Inc.","Location","Campaign","Eligible","Advertiser","Jan 24, 2026, 8:31 PM",64,9100,"camp"],
- ["OSHA Compliant","Callout","Campaign","Eligible","Advertiser","Jan 24, 2026, 8:29 PM",0,9800,"camp"],
- ["Made in the USA Since 1934","Callout","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:14 AM",0,9800,"camp"],
- ["Free Layout Design","Callout","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:15 AM",0,9800,"camp"],
- ["Request a Quote","Sitelink","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:16 AM",233,8600,"camp"],
- ["OSHA Compliance Guide","Sitelink","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:17 AM",151,8600,"camp"],
- ["Services: Design, Supply, Install","Structured snippet","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:18 AM",0,8600,"camp"],
- ["Rooftop guardrail install photo","Image","Campaign","Eligible","Advertiser","Mar 11, 2026, 9:02 AM",41,6300,"camp"],
- ["Kee Walk walkway photo","Image","Campaign","Eligible","Advertiser","Mar 11, 2026, 9:03 AM",28,5100,"camp"]
+ ["Free Site Assessment",["Book A No-Obligation Roof Survey","With One Of Our Engineers"],"Sitelink","Account","Eligible","Advertiser","Jan 24, 2026, 8:53 PM",412,18400,"acct"],
+ ["Kee Safety",[],"Business name","Account","Eligible","Advertiser","Jan 24, 2026, 8:51 PM",0,24600,"acct"],
+ ["Kee Safety logo",[],"Business logo","Account","Eligible","Advertiser","Jan 24, 2026, 8:51 PM",0,24600,"acct"],
+ ["(734) 215-8890",[],"Call","Campaign","Eligible","Advertiser","Jan 24, 2026, 8:29 PM",286,12900,"camp"],
+ ["Buffalo, NY — Kee Safety Inc.",["1 Hillside Ave, Buffalo NY 14210"],"Location","Campaign","Eligible","Advertiser","Jan 24, 2026, 8:31 PM",64,9100,"camp"],
+ ["Cleveland, OH — Distributor",["Authorised Kee Safety distributor"],"Location","Campaign","Eligible","Advertiser","Feb 2, 2026, 9:58 AM",38,6400,"camp"],
+ ["Request a Quote",["Send Us Your Roof Dimensions","And We'll Price It Up"],"Sitelink","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:16 AM",233,8600,"camp"],
+ ["OSHA Compliance Guide",["Free PDF: What 1910.28 Requires","On Flat Roofs"],"Sitelink","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:17 AM",151,8600,"camp"],
+ ["Our Products",["KeeGuard, Kee Line, Kee Walk","And Kee Gate Systems"],"Sitelink","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:17 AM",118,8600,"camp"],
+ ["OSHA Compliant",[],"Callout","Campaign","Eligible","Advertiser","Jan 24, 2026, 8:29 PM",0,9800,"camp"],
+ ["Made in the USA Since 1934",[],"Callout","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:14 AM",0,9800,"camp"],
+ ["Free Layout Design",[],"Callout","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:15 AM",0,9800,"camp"],
+ ["Ships From US Stock",[],"Callout","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:15 AM",0,9800,"camp"],
+ ["Services: Design, Supply, Install",[],"Structured snippet","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:18 AM",0,8600,"camp"],
+ ["Types: Guardrail, Lifeline, Walkway",[],"Structured snippet","Campaign","Eligible","Advertiser","Feb 2, 2026, 10:19 AM",0,8600,"camp"],
+ ["Rooftop guardrail install photo",[],"Image","Campaign","Eligible","Advertiser","Mar 11, 2026, 9:02 AM",41,6300,"camp"],
+ ["Kee Walk walkway photo",[],"Image","Campaign","Eligible","Advertiser","Mar 11, 2026, 9:03 AM",28,5100,"camp"]
 ];
 let assetTab="assoc", assetType="All";
 function setAssetTab(t){ assetTab=t; renderEntity(); }
@@ -2360,6 +2370,7 @@ function setAssetType(t){ assetType=t; renderEntity(); }
 function pageAssets(){
   const tabs=[["assoc","Associations"],["perf","Performance"],["url","Expanded final URL assets"]];
   const head=`<div class="gtabs2">${tabs.map(t=>`<span class="gtab2 ${assetTab===t[0]?'on':''}" onclick="setAssetTab('${t[0]}')">${t[1]}</span>`).join("")}</div>`;
+  /* chips read as the live UI; the use/avoid coaching is practice-mode only */
   const chips=`<div class="chipwrap">${ASSET_TYPES.map(t=>{
       const u = ASSET_USE[t];
       return `<span class="achip ${t===assetType?'on':''} ${u&&u[0]==='avoid'?'avoidchip':''}" title="${u?u[1]:''}"
@@ -2367,19 +2378,22 @@ function pageAssets(){
     <div class="uselegend"><span><span class="ubadge use">use</span> worth running</span>
       <span><span class="ubadge rare">rare</span> situational</span>
       <span><span class="ubadge avoid">avoid</span> not for this business</span></div></div>`;
-  const banner=`<div class="recbanner">🗒 <b>Add sitelinks to your ads:</b> Get more conversions at a similar or better ROI by adding at least 6 sitelinks to your campaigns.<span class="go">View</span><span class="tbi"><b>⋮</b></span></div>`;
-  const rows = ASSETX.filter(a=>assetType==="All"||a[1]===assetType);
-  const acct = rows.filter(a=>a[8]==="acct"), camp = rows.filter(a=>a[8]==="camp");
+  const banner=`<div class="recbanner">🗒 <b>Add sitelinks to your ads:</b> Get more conversions at a similar or better ROI by adding at least 6 sitelinks to your campaigns.<span class="go" onclick="toast()">View</span><span class="tbi" onclick="toast()"><b>⋮</b></span></div>`;
+  const rows = ASSETX.filter(a=>assetType==="All"||a[2]===assetType);
+  const acct = rows.filter(a=>a[9]==="acct"), camp = rows.filter(a=>a[9]==="camp");
   const rowHtml = a=>`<tr><td class="cb l"><input type="checkbox"></td><td class="l"><span class="statdot"></span></td>
-    <td class="l">${a[0]}</td><td class="l">${a[1]}</td><td class="l">${a[2]}</td><td class="l"><span class="ulink">${a[3]}</span></td>
-    <td class="l"><span class="ulink">${a[4]}</span></td><td class="l">${a[5]}</td><td>${num(a[6])}</td><td>${num(a[7])}</td></tr>`;
-  const body = (acct.length?`<tr class="grouprow"><td class="l"></td><td class="l"></td><td class="l" colspan="8">Account</td></tr>`+acct.map(rowHtml).join(""):"")
-             + (camp.length?`<tr class="grouprow"><td class="l"></td><td class="l"></td><td class="l" colspan="8">${CAMPMAP[entCamp]}</td></tr>`+camp.map(rowHtml).join(""):"")
+    <td class="l"><div class="assetname">${a[0]}</div>${a[1].map(l=>`<div class="assetsub">${l}</div>`).join("")}</td>
+    <td class="l">${a[2]}</td><td class="l">${a[3]}</td><td class="l"><span class="ulink">${a[4]}</span></td>
+    <td class="l"><span class="ulink">${a[5]}</span></td><td class="l">${a[6]}</td><td>${num(a[7])}</td><td>${num(a[8])}</td></tr>`;
+  const grp = (label,link)=>`<tr class="grouprow"><td class="l"></td><td class="l"></td>
+    <td class="l" colspan="8">${link?`<a class="lk2">${label}</a>`:`<span style="color:var(--ink)">${label}</span>`}</td></tr>`;
+  const body = (acct.length? grp("Account",false)+acct.map(rowHtml).join(""):"")
+             + (camp.length? grp(CAMPMAP[entCamp],true)+camp.map(rowHtml).join(""):"")
              || `<tr><td class="l" colspan="10" style="color:var(--ink2); padding:26px 14px;">No ${assetType.toLowerCase()} assets in this campaign.${
-                  ASSET_USE[assetType] && ASSET_USE[assetType][0]!=="use" ? ` <b style="color:${ASSET_USE[assetType][0]==="avoid"?"var(--red)":"var(--amber)"}">${ASSET_USE[assetType][1]}</b>` : ""
+                  ASSET_USE[assetType] && ASSET_USE[assetType][0]!=="use" ? ` <b class="practice-only" style="color:${ASSET_USE[assetType][0]==="avoid"?"var(--red)":"var(--amber)"}">${ASSET_USE[assetType][1]}</b>` : ""
                 }</td></tr>`;
-  const guide = `<div class="hint">💡 <b>Assets and extensions: pick, don't collect.</b> Run <b>sitelinks, callouts, structured snippets, call and location</b> first — call and location matter most here, because a phone lead from a facilities manager is worth more than a form fill. Images, business name and logo are set-and-forget. <b>Skip lead form</b> (the lead sits inside Google instead of your CRM, which breaks the offline conversion loop), and skip <b>message, price and app</b> entirely. Promotion is retail discounting, which isn't how engineered safety systems sell.</div>`;
-  return head + chips + guide + banner + entTools("Asset status: Enabled, Paused",`<span class="fchip2">Asset type: ${assetType}</span><span style="color:var(--blue);font-size:12.5px;cursor:pointer">+ 1 more</span>`)
+  const guide = `<div class="hint">💡 <b>The eight you'd actually run here.</b> <b>Sitelinks</b> (four live, Google wants six), <b>callouts</b>, <b>structured snippets</b>, <b>call</b> and <b>location</b> carry the work, plus <b>image</b>, <b>business name</b> and <b>business logo</b> as set-and-forget. <b>Location assets are the underrated one</b> for this business: a facilities manager who sees a real address in Buffalo or a distributor in Cleveland is being told you can actually service the site, which is the whole objection in industrial safety. Call matters for the same reason, because a phone lead from a facilities manager beats a form fill. The types that don't belong here (lead form, message, price, app, promotion) aren't loaded at all, which is the point: you pick a short list and run it properly rather than collecting every option Google offers.</div>`;
+  return head + chips + guide + banner + entTools("Asset status: Enabled, Paused",`<span class="fchip2">Asset type: ${assetType}</span><span style="color:var(--blue);font-size:12.5px;cursor:pointer" onclick="toast()">+ 1 more</span>`)
        + tbl(`<th class="cb l"><input type="checkbox" disabled></th><th class="l" style="width:20px"></th><th class="l">Asset</th>
           <th class="l">Asset type</th><th class="l">Level</th><th class="l">Status</th><th class="l">Added by</th><th class="l">Last updated</th><th>Clicks</th><th>Impr.</th>`,
           body, "1 - "+rows.length+" of "+rows.length);
