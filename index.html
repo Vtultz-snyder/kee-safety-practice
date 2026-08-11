@@ -229,6 +229,11 @@
   .adprev2 .u{color:var(--green); font-size:12.5px;}
   .adprev2 .d{color:#4d5156; font-size:12.5px;}
   .adprev2 .lk{color:var(--blue); font-size:12.5px; cursor:pointer;}
+  .mi.sub2{position:relative;}
+  .mi.sub2:hover > .submenu{display:block;}
+  .gmenu .submenu{position:absolute; left:100%; top:-8px; margin:0; display:none; min-width:260px;}
+  .tbi.segon{color:var(--blue-dark);}
+  .tbi.segon b{background:#e8f0fe; border-radius:4px;}
   .recbtn{background:var(--blue); color:#fff; border-radius:18px; padding:8px 22px; font-size:13px; cursor:pointer; display:inline-block;}
   .recbtn:hover{background:var(--blue-dark);}
   .grouprow td{background:#fff !important; color:var(--blue) !important; font-size:13px;}
@@ -382,7 +387,8 @@
     <a data-view="skip" class="sub" onclick="skipPage('Stores')">Stores</a>
     <a data-view="skip" class="sub" onclick="skipPage('Report editor')">Report editor</a>
     <a data-view="skip" class="sub" onclick="skipPage('Dashboards')">Dashboards</a>
-    <a data-view="campaigns" class="sel" onclick="showView('campaigns')">Campaigns</a>
+    <a data-view="campaigns" class="sel" onclick="showEntity('campaigns')">Campaigns</a>
+    <a data-view="campaigns" class="sub" onclick="showEntity('campaigns')">Campaigns</a>
     <a data-view="adgroups" class="sub" onclick="showView('adgroups')">Ad groups</a>
     <a data-view="ads" class="sub" onclick="showEntity('ads')">Ads</a>
     <a data-view="assetgroups" class="sub" onclick="showView('assetgroups')">Asset groups</a>
@@ -2258,11 +2264,13 @@ const ENTPAGE = {keywords:["Keywords",pageKeywords], audiences:["Audiences",page
                  assets:["Assets",pageAssets], ads:["Ads",pageAds],
                  overview:["Overview",()=>pageOverview(),1], recommendations:["Recommendations",()=>pageRecs(),1],
                  searchterms:["Search terms",()=>pageTerms()], auctioninsights:["Auction insights",()=>pageAuction()],
-                 insights:["Insights",()=>pageInsights(),1]};
+                 insights:["Insights",()=>pageInsights(),1],
+                 campaigns:["Campaigns",()=>pageCampaigns(),1]};
 let entView="keywords";
 function renderEntity(){
   const p = ENTPAGE[entView]; if(!p) return;
   const w = SEG_WIN[segDays];
+  const _redraw = entView;
   $("ent-body").innerHTML = (p[2] ? "" : ctxRow()) +
     `<div class="seg-head"><h1>${p[0]}</h1>
       <div class="dr"><span class="dr-lbl">${w.lbl}</span>
@@ -2274,10 +2282,14 @@ function renderEntity(){
         <span class="dr-arrow">‹</span><span class="dr-arrow">›</span>
         <a class="dr-link" onclick="setSegDays(30);renderEntity()">Show last 30 days</a></div></div>` +
     (entView==="auctioninsights" ? `<div class="hint">💡 ${AUCTION_HINT[0]}</div>` : "") +
+    (entView==="campaigns" ? `<div class="hint">💡 ${CAMP_HINT[0]}</div>` : "") +
     p[1]() +
     (entView==="auctioninsights" ? `<div class="segrec">✅ ${AUCTION_HINT[1]}</div>` : "") +
+    (entView==="campaigns" ? `<div class="segrec">✅ ${CAMP_HINT[1]}</div>` : "") +
     `<div class="gfoot"><a>Reporting is not real-time.</a> Time zone for all dates and times: (GMT-05:00) Eastern Time. <a>Learn more</a><br>
       Some inventory may be provided through third party intermediaries.<br>© Google, 2026.</div>`;
+  if(_redraw==='campaigns') requestAnimationFrame(()=>drawTrend('chart4',200));
+  if(_redraw==='overview')  requestAnimationFrame(()=>drawTrend('chart3',200));
 }
 function showEntity(v){ entView=v; renderEntity(); showView('entity'); }
 
@@ -2475,13 +2487,154 @@ function skipPage(name){
   showView('skip');
 }
 
+/* ================= CAMPAIGNS PAGE + SEGMENT ENGINE ================= */
+const CLICKTYPE = [
+  {n:"Headline", w:74, cw:79, im:0.98, cm:1.03, tt:0.99, ct:1.01},
+  {n:"Sitelink", w:11, cw:9,  im:1.14, cm:0.86, tt:1.02, ct:0.97},
+  {n:"Mobile clicks-to-call", w:6, cw:8, im:0.72, cm:0.94, tt:1.06, ct:1.08},
+  {n:"Get location details", w:4, cw:2, im:1.20, cm:0.78, tt:1.03, ct:0.92},
+  {n:"Driving direction", w:3, cw:1, im:1.26, cm:0.70, tt:1.03, ct:0.88},
+  {n:"Image", w:2, cw:1, im:1.34, cm:0.74, tt:1.05, ct:0.90}
+];
+const TOPOTHER = [
+  {n:"Google search: Top", w:58, cw:71, im:0.86, cm:1.22, tt:0.97, ct:1.03},
+  {n:"Google search: Other", w:35, cw:25, im:1.18, cm:0.74, tt:1.02, ct:0.96},
+  {n:"Search partners: Top", w:4, cw:3, im:1.06, cm:0.82, tt:1.04, ct:0.92},
+  {n:"Search partners: Other", w:3, cw:1, im:1.32, cm:0.62, tt:1.06, ct:0.86}
+];
+const CONVACTION = [
+  {n:"Lead — quote request form", w:100, cw:64, im:1, cm:1, tt:1, ct:1},
+  {n:"Phone call from ads", w:100, cw:26, im:1, cm:1, tt:1, ct:1.04},
+  {n:"Site assessment booked", w:100, cw:10, im:1, cm:1, tt:1, ct:0.94}
+];
+const ADDEST = [
+  {n:"Website", w:86, cw:78, im:0.99, cm:1.02, tt:1.0, ct:1.0},
+  {n:"Phone call", w:8, cw:16, im:0.74, cm:0.92, tt:1.04, ct:1.09},
+  {n:"Lead form", w:6, cw:6, im:1.10, cm:0.88, tt:1.02, ct:0.98}
+];
+const ADFORMAT = [
+  {n:"Responsive search ad", w:92, cw:95, im:0.98, cm:1.02, tt:0.99, ct:1.01},
+  {n:"Performance Max", w:8, cw:5, im:1.9, cm:0.62, tt:1.03, ct:0.95}
+];
+const MONTHS = [
+  {n:"May 2026", w:33.5, cw:44.2, im:0.97, cm:0.95, tt:0.55, ct:1.28},
+  {n:"June 2026", w:33.2, cw:31.4, im:1.00, cm:1.01, tt:1.00, ct:1.00},
+  {n:"July 2026", w:33.3, cw:24.4, im:1.03, cm:1.04, tt:1.42, ct:0.74}
+];
+const SEGMENUS = {
+  none:{label:"None", defs:null},
+  "time-month":{label:"Time > Month", defs:()=>MONTHS},
+  "time-dow":{label:"Time > Day of the week", defs:()=>SEG_DOW},
+  "time-hour":{label:"Time > Hour of the day", defs:()=>SEG_HOD},
+  clicktype:{label:"Click type", defs:()=>CLICKTYPE},
+  "conv-action":{label:"Conversions > Conversion action", defs:()=>CONVACTION},
+  device:{label:"Device", defs:()=>SEG_DEVICE},
+  network:{label:"Network (with search partners)", defs:c=>CHANNELS[c[0]==="pmax"?"pmax":"search"]},
+  topother:{label:"Top vs. Other", defs:()=>TOPOTHER},
+  addest:{label:"Ad destination", defs:()=>ADDEST},
+  adformat:{label:"Ad format", defs:c=>c[0]==="pmax"?[ADFORMAT[1]]:[ADFORMAT[0]]}
+};
+let campSeg="none", campStatus="Enabled", campTab="campaigns";
+function setCampSeg(k){ campSeg=k; renderEntity(); }
+function setCampStatus(s){ campStatus=s; renderEntity(); }
+function setCampTab(t){ campTab=t; renderEntity(); }
+const CAMPBUD = {fps:"$360.00", kg:"$220.00", kk:"$120.00", gw:"$115.00", pmax:"$75.00"};
+const CAMPSTAT = {fps:"Eligible", kg:"Limited by budget", kk:"Eligible", gw:"Eligible", pmax:"Eligible"};
+function segMenuHtml(){
+  const item=(k,extra)=>`<div class="mi ${campSeg===k?'sel':''}" onclick="setCampSeg('${k}')">${SEGMENUS[k].label.replace(/^.*> /,"")}${extra||""}</div>`;
+  return `<div class="gmenu" id="campsegmenu" style="min-width:280px" onclick="event.stopPropagation()">
+    <div class="mh">Segment</div>
+    ${item("none")}
+    <div class="mi sub2">Time <span style="float:right">▸</span>
+      <div class="gmenu submenu">${item("time-month")}${item("time-dow")}${item("time-hour")}</div></div>
+    ${item("clicktype")}
+    <div class="mi sub2">Conversions <span style="float:right">▸</span>
+      <div class="gmenu submenu" style="min-width:300px">${item("conv-action")}
+        ${["Conversion category","Conversion source","Ad event type","Conversion adjustment","Days to conversion","Days to conversion or adjustment","New vs. returning customers","Value rule adjustment"].map(x=>`<div class="mi" onclick="toast()">${x}</div>`).join("")}
+        <div class="mi" style="color:#bdc1c6; cursor:default">Custom variables</div></div></div>
+    ${item("device")}${item("network")}${item("topother")}${item("addest")}${item("adformat")}</div>`;
+}
+function pageCampaigns(){
+  const tabs=[["campaigns","Campaigns"],["drafts","Drafts"],["settings","Settings"]];
+  const head=`<div class="gtabs2">${tabs.map(t=>`<span class="gtab2 ${campTab===t[0]?'on':''}" onclick="setCampTab('${t[0]}')">${t[1]}</span>`).join("")}</div>`;
+  if(campTab==="drafts")
+    return head + `<div class="chartcard" style="margin-top:14px; padding:44px; text-align:center; color:var(--ink2); font-size:13.5px;">Drafts in progress: 0<br>No campaign drafts in this account.</div>`;
+  if(campTab==="settings")
+    return head + `<div class="hint" style="margin-top:14px;">💡 <b>Where the location option lives.</b> Campaign settings is where you'd change targeting from <i>Presence or interest</i> to <i>Presence</i>, set the bid strategy, and set the ad schedule. It's a settings surface, not an analysis surface, but you should know the path.</div>
+      ${tbl(`<th class="l">Setting</th><th class="l">Value</th><th class="l">Notes</th>`,
+        [["Networks","Google Search, Search partners","Display Network off on all Search campaigns"],
+         ["Locations","United States","<b style='color:var(--red)'>Presence or interest</b> — the leak"],
+         ["Languages","English",""],
+         ["Bid strategy","Maximize conversions","<b style='color:var(--red)'>Changed Jun 14</b>, no target CPA cap set"],
+         ["Budget",CAMPBUD[entCamp]+"/day",CAMPSTAT[entCamp]==="Limited by budget"?"<b style='color:var(--amber)'>Lost IS (budget): 38%</b>":""],
+         ["Ad rotation","Optimize: prefer best performing ads",""],
+         ["Ad schedule","All day, every day","No day-parting applied"],
+         ["Start date","Jan 8, 2024",""]]
+        .map(r=>`<tr><td class="l">${r[0]}</td><td class="l">${r[1]}</td><td class="l">${r[2]}</td></tr>`).join(""),"")}`;
+
+  const rows = SEG_CAMP.filter(c => campStatus==="Enabled" ? true : true);
+  const w = SEG_WIN[segDays], a = SEG_WIN[90];
+  const camps = rows.map(c=>({c, t:{impr:Math.round(c[2]*w.impr/a.impr), clicks:Math.round(c[3]*w.clicks/a.clicks),
+                                    cost:Math.round(c[4]*w.cost/a.cost), conv:Math.round(c[5]*w.conv/a.conv)}}));
+  const T = camps.reduce((x,r)=>({impr:x.impr+r.t.impr,clicks:x.clicks+r.t.clicks,cost:x.cost+r.t.cost,conv:x.conv+r.t.conv}),{impr:0,clicks:0,cost:0,conv:0});
+  const ref = T.cost/T.conv;
+  const cells = (r,ind)=>`<td>${money2(r.cost)}</td><td class="${cpaCls(r.cost,r.conv,ref)}">${per(r.cost,r.conv)}</td>
+    <td>${r.conv.toFixed(2)}</td><td>${rate(r.clicks,r.impr)}</td><td>${per(r.cost,r.clicks)}</td>
+    <td>0.00</td><td>0.00</td><td>${(r.conv*1.22).toFixed(2)}</td><td>${num(r.clicks)}</td><td>${num(r.impr)}</td>`;
+  const seg = SEGMENUS[campSeg].defs;
+  const body = camps.map(({c,t})=>{
+    const main = `<tr class="rrow"><td class="cb l"><input type="checkbox"></td>
+      <td class="l"><span class="statdot ${CAMPSTAT[c[0]]==="Limited by budget"?"":""}"></span></td>
+      <td class="l"><a class="lk2" onclick="setEntCamp('${c[0]}');showEntity('keywords')">${c[1]}</a>${c[0]==="fps"?'<br><span class="badge-alert">Broad match + Max. conversions applied Jun 14</span>':""}</td>
+      <td>${CAMPBUD[c[0]]}</td><td class="l"><span class="ulink">${CAMPSTAT[c[0]]}</span></td>${cells(t)}</tr>`;
+    if(!seg) return main;
+    const defs = seg(c);
+    const sub = rowsFor(c, defs).sort((x,y)=>y.cost-x.cost).map(r=>`<tr>
+      <td class="cb l"></td><td class="l"></td>
+      <td class="l" style="padding-left:38px; color:var(--ink2)">${r.n}</td><td></td><td class="l"></td>${cells(r)}</tr>`).join("");
+    return main + sub;
+  }).join("");
+  const totRow = (lbl)=>`<tr class="tot"><td class="cb l"></td><td class="l"></td><td class="l">${lbl}</td><td>$890.00</td><td class="l"></td>${cells(T)}</tr>`;
+  const segChip = campSeg==="none" ? "" : `<span class="fchip2 on" onclick="setCampSeg('none')">Segment: ${SEGMENUS[campSeg].label} ✕</span>`;
+  const tools = `<div class="gtb" style="border-top:1px solid var(--line); gap:14px;">
+    <span class="fab">+</span><span class="funnel">▽<i class="fbadge">2</i></span>
+    <span class="fchip2 on" onclick="event.stopPropagation();toggleMenu('campstatmenu')">Campaign status: ${campStatus}
+      <div class="gmenu" id="campstatmenu" style="left:0;right:auto" onclick="event.stopPropagation()">
+        <div class="mh">Campaign status</div>
+        ${["All","Enabled","Enabled, Paused"].map(s=>`<div class="mi ${campStatus===s?'sel':''}" onclick="setCampStatus('${s}')">${s}</div>`).join("")}</div></span>
+    <span class="fchip2">Ad group status: Enabled</span>${segChip}<span class="addf">Add filter</span>
+    <span class="spacer"></span>
+    <span class="tbi" onclick="toast()"><b>🔍</b>Search</span>
+    <span class="tbi ${campSeg!=="none"?"segon":""}" onclick="event.stopPropagation();toggleMenu('campsegmenu')"><b>≡</b>Segment${segMenuHtml()}</span>
+    <span class="tbi" onclick="event.stopPropagation();toggleMenu('colmenu3')"><b>▥</b>Columns
+      <div class="gmenu scroll" id="colmenu3" onclick="event.stopPropagation()"><div class="mh">Modify columns</div>
+        ${MKEYS.concat(["Conv. value / cost","Budget","Status","Impr. share","Lost IS (budget)","Lost IS (rank)"]).map(c=>`<div class="mi sel">✓ &nbsp;${c}</div>`).join("")}</div></span>
+    <span class="tbi" onclick="toast()"><b>▤</b>Reports</span><span class="tbi" onclick="toast()"><b>⭳</b>Download</span>
+    <span class="tbi" onclick="toast()"><b>⛶</b>Expand</span><span class="tbi" onclick="toast()"><b>⋮</b>More</span><span class="tbchev">˄</span></div>`;
+  return head + tileRow() +
+    `<div class="chartcard" style="margin-top:12px; padding:16px 18px 8px;">
+       <div style="font-size:13px;color:var(--ink2);margin-bottom:6px;">${ovTiles[0]} · ${w.range}</div>
+       <svg id="chart4" width="100%" height="200"></svg></div>` +
+    tools + tbl(
+    `<th class="cb l"><input type="checkbox" disabled></th><th class="l" style="width:20px"></th><th class="l">Campaign</th>
+     <th>Budget</th><th class="l">Status</th><th>↓ Cost</th><th>Cost / conv.</th><th>Conversions</th><th>CTR</th>
+     <th>Avg. CPC</th><th>Conv. value</th><th>Conv. value / cost</th><th>All conv.</th><th>Clicks</th><th>Impr.</th>`,
+    `<tr class="grouprow"><td class="l"></td><td class="l"></td><td class="l" colspan="13">˅ &nbsp;📁 Drafts in progress: 0</td></tr>`
+    + body + totRow("Total: All enabled campaigns in your current view ⓘ") + totRow("˅ &nbsp;Total: Account ⓘ"),
+    "1 - "+camps.length+" of "+camps.length);
+}
+const CAMP_HINT = ["<b>Two filters do most of the work here.</b> <i>Campaign status</i> is the first thing to set: Enabled shows what is actually running, Enabled + Paused shows what someone turned off and why. Then set the date range. Ninety days is the right default for a low-volume B2B account, because thirty days will not give you enough conversions to trust. <b>Segment is the advanced move</b>: it splits every campaign row by device, network, click type, conversion action, top vs. other, ad destination or time, without leaving the page.",
+ "<b>What you'd say when you open Segment:</b> \"This is where I'd normally start a diagnosis. Segmenting by network tells me whether Search partners or Display is quietly eating budget. By click type it tells me whether I'm paying for headline clicks or sitelink clicks. By Top vs. Other it tells me whether I'm actually appearing at the top of the page or scraping the bottom. It's the same spend cut four different ways, and the cut you choose is the hypothesis you're testing.\""];
+
 /* ================= ROUTING ================= */
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on', v.id==='v-'+id));
   const navId = (id==='adgroupdetail') ? 'adgroups' : (id==='entity' ? entView : id);
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('sel', a.dataset.view===navId));
   if(id==='segments')  renderSeg();
-  if(id==='entity'){ renderEntity(); if(entView==='overview') requestAnimationFrame(()=>drawTrend('chart3',200)); }
+  if(id==='entity'){ renderEntity();
+    if(entView==='overview')  requestAnimationFrame(()=>drawTrend('chart3',200));
+    if(entView==='campaigns') requestAnimationFrame(()=>drawTrend('chart4',200)); }
   if(id==='campaigns') requestAnimationFrame(()=>drawTrend('chart',230));
   if(id==='overview')  requestAnimationFrame(()=>drawTrend('chart2',190));
   window.scrollTo({top:0});
