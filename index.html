@@ -234,6 +234,11 @@
   .gmenu .submenu{position:absolute; left:100%; top:-8px; margin:0; display:none; min-width:260px;}
   .tbi.segon{color:var(--blue-dark);}
   .tbi.segon b{background:#e8f0fe; border-radius:4px;}
+  .pencil{opacity:0; color:var(--ink2); margin-left:8px; cursor:pointer; font-size:12px;}
+  .kwrow:hover .pencil{opacity:1;}
+  .statdot.rm{background:#c5221f;}
+  .scopebar{font-size:12.5px; color:var(--ink2); padding:10px 2px 0;}
+  .scopebar b{color:var(--ink); font-weight:500;}
   .ubadge{font-size:9.5px; border-radius:8px; padding:1px 6px; margin-left:7px; vertical-align:middle; font-weight:600;}
   .ubadge.use{background:#e6f4ea; color:#1e7e42;}
   .ubadge.rare{background:#fef7e0; color:#a35b00;}
@@ -2128,39 +2133,6 @@ function setKwTab(t){ kwTab=t; renderEntity(); }
 function kwRows(){
   return KWX.filter(k=>k[3]===entCamp && (entAG==="all"||k[4]===entAG));
 }
-function pageKeywords(){
-  const tabs = ["Keywords","Negative keywords","URL inclusions","URL exclusions"];
-  const keys = ["kw","neg","inc","exc"];
-  const head = `<div class="gtabs2">${tabs.map((t,i)=>`<span class="gtab2 ${kwTab===keys[i]?'on':''}" onclick="setKwTab('${keys[i]}')">${t}</span>`).join("")}</div>`;
-  if(kwTab==="neg"){
-    return head + entTools("Negative keyword list: All") + tbl(
-      `<th class="cb l"><input type="checkbox" disabled></th><th class="l">Negative keyword</th><th class="l">Match type</th><th class="l">Level</th><th class="l">Added</th>`,
-      NEGKW.map(n=>`<tr><td class="cb l"><input type="checkbox"></td><td class="l">${n[0]}</td><td class="l">${n[1]}</td><td class="l">${n[2]}</td><td class="l">${n[3]}</td></tr>`).join(""),
-      "1 - 3 of 3");
-  }
-  if(kwTab!=="kw"){
-    return head + entTools("Status: All") + tbl(`<th class="l">URL</th><th class="l">Level</th><th>Clicks</th><th>Impr.</th><th>Cost</th>`,
-      `<tr><td class="l" colspan="5" style="color:var(--ink2); padding:26px 14px;">No URL ${kwTab==="inc"?"inclusions":"exclusions"} in this campaign.</td></tr>`, "0 - 0 of 0");
-  }
-  const rows = kwRows();
-  const T = rows.reduce((a,k)=>({i:a.i+k[6],c:a.c+k[7],k:a.k+k[8],v:a.v+k[9]}),{i:0,c:0,k:0,v:0});
-  const body = rows.map(k=>{
-    const paused = k[2]==="Paused";
-    return `<tr><td class="cb l"><input type="checkbox"></td>
-    <td class="l"><span class="statdot ${paused?'pz':''}"></span></td>
-    <td class="l">${k[0]}</td><td class="l">${k[1]}</td><td class="l"><span class="ulink">${k[2]}</span></td>
-    <td>${k[9].toFixed(2)}</td><td>${k[9]?money2(k[8]/k[9]):"$0.00"}</td><td>${(k[9]*1.22).toFixed(2)}</td>
-    <td>${k[6]?rate(k[7],k[6]):"—"}</td><td>${money2(k[8])}</td><td>${k[10]}</td><td>${num(k[7])}</td>
-    <td>${k[5]?`<span class="qs ${k[5]>=8?'hi':(k[5]>=6?'md':'lo')}">${k[5]}/10</span>`:"—"}</td></tr>`;}).join("");
-  const tr = `<tr class="tot"><td class="cb l"></td><td class="l"></td><td class="l">Total: Keywords in your current view ⓘ</td><td class="l"></td><td class="l"></td>
-    <td>${T.v.toFixed(2)}</td><td>${T.v?money2(T.k/T.v):"$0.00"}</td><td>${(T.v*1.22).toFixed(2)}</td><td>${rate(T.c,T.i)}</td>
-    <td>${money2(T.k)}</td><td></td><td>${num(T.c)}</td><td></td></tr>`;
-  return head + entTools("Keyword status: Enabled, Paused") + tbl(
-    `<th class="cb l"><input type="checkbox" disabled></th><th class="l" style="width:20px"></th><th class="l">Keyword</th>
-     <th class="l">Match type</th><th class="l">Status</th><th>↓ Conversions</th><th>Cost / conv.</th><th>All conv.</th>
-     <th>CTR</th><th>Cost</th><th class="l">Final URL</th><th>Clicks</th><th>Quality Score</th>`,
-    tr+body, "1 - "+rows.length+" of "+rows.length);
-}
 /* ---------- AUDIENCES ---------- */
 const DEMO = {
   Age:{lbl:["18 - 24","25 - 34","35 - 44","45 - 54","55 - 64","65+","Unknown"], cost:[310,690,980,1180,1320,1240,610], cpa:[214,168,131,96,88,92,178]},
@@ -2306,10 +2278,12 @@ function renderEntity(){
     (entView==="auctioninsights" ? `<div class="hint">💡 ${AUCTION_HINT[0]}</div>` : "") +
     (entView==="campaigns" ? `<div class="hint">💡 ${CAMP_HINT[0]}</div>` : "") +
     (entView==="adgroups" ? `<div class="hint">💡 ${ADGROUP_HINT[0]}</div>` : "") +
+    (entView==="keywords" ? `<div class="hint">💡 ${KW_HINT[0]}</div>` : "") +
     p[1]() +
     (entView==="auctioninsights" ? `<div class="segrec">✅ ${AUCTION_HINT[1]}</div>` : "") +
     (entView==="campaigns" ? `<div class="segrec">✅ ${CAMP_HINT[1]}</div>` : "") +
     (entView==="adgroups" ? `<div class="segrec">✅ ${ADGROUP_HINT[1]}</div>` : "") +
+    (entView==="keywords" ? `<div class="segrec">✅ ${KW_HINT[1]}</div>` : "") +
     `<div class="gfoot"><a>Reporting is not real-time.</a> Time zone for all dates and times: (GMT-05:00) Eastern Time. <a>Learn more</a><br>
       Some inventory may be provided through third party intermediaries.<br>© Google, 2026.</div>`;
   if(_redraw==='campaigns') requestAnimationFrame(()=>drawTrend('chart4',200));
@@ -2706,6 +2680,97 @@ const ASSET_USE = {
  "App":["avoid","Never. There is no app."]
 };
 const ASSET_BADGE = {use:'<span class="ubadge use">use</span>', rare:'<span class="ubadge rare">rare</span>', avoid:'<span class="ubadge avoid">avoid</span>'};
+
+/* ================= KEYWORD SCOPE + STATUS FILTERING ================= */
+const KW_REMOVED = [
+ ["fall arrest harness","Broad match","Removed","fps","Fall Protection – General",4,0,0,0,0,"—"],
+ ["safety harness training","Broad match","Removed","fps","Fall Protection – General",3,0,0,0,0,"—"],
+ ["guardrail installation cost","Phrase match","Removed","kg","KeeGuard Rooftop Guardrail",6,0,0,0,0,"—"]
+];
+let kwStatus = "Enabled, Paused", kwFilterMode = false;
+function setKwStatus(s){ kwStatus = s; renderEntity(); }
+function toggleKwFilter(){ kwFilterMode = !kwFilterMode; renderEntity(); }
+function clearKwFilters(){ kwStatus = "All"; kwFilterMode = false; renderEntity(); }
+function kwStatusMatch(st){
+  if(kwStatus==="All") return true;
+  if(kwStatus==="Enabled") return st==="Eligible";
+  return st!=="Removed";                       // Enabled, Paused
+}
+function kwScopeRows(){
+  return KWX.concat(KW_REMOVED)
+    .filter(k => k[3]===entCamp)
+    .filter(k => entAG==="all" || k[4]===entAG)
+    .filter(k => kwStatusMatch(k[2]));
+}
+function kwToolbar(){
+  const right = kwFilterMode
+    ? `<span class="tbi" onclick="clearKwFilters()"><b>🗑</b>Clear filters</span>
+       <span class="tbi" onclick="toast()"><b>🖫</b>Save</span>
+       <span class="tbi" onclick="toggleKwFilter()"><b>✕</b>Close</span>`
+    : `<span class="tbi" onclick="toast()"><b>🔍</b>Search</span>
+       <span class="tbi" onclick="event.stopPropagation();toggleMenu('segmenu2')"><b>≡</b>Segment
+         <div class="gmenu" id="segmenu2" onclick="event.stopPropagation()">
+           <div class="mi" onclick="setSegTab('device');showView('segments')">Device</div>
+           <div class="mi" onclick="setSegTab('when');setWhen('day');showView('segments')">Day of week</div>
+           <div class="mi" onclick="setSegTab('when');setWhen('hour');showView('segments')">Hour of day</div>
+           <div class="mi" onclick="toast()">Click type</div><div class="mi" onclick="toast()">Network</div></div></span>
+       <span class="tbi" onclick="event.stopPropagation();toggleMenu('colmenu2')"><b>▥</b>Columns
+         <div class="gmenu scroll" id="colmenu2" onclick="event.stopPropagation()"><div class="mh">Modify columns</div>
+           ${["Clicks","Impr.","CTR","Avg. CPC","Cost","Conversions","Cost / conv.","All conv.","Conv. rate","Quality Score","Final URL","Match type","Status"].map(c=>`<div class="mi sel">✓ &nbsp;${c}</div>`).join("")}</div></span>
+       <span class="tbi" onclick="toast()"><b>▤</b>Reports</span><span class="tbi" onclick="toast()"><b>⭳</b>Download</span>
+       <span class="tbi" onclick="toast()"><b>⛶</b>Expand</span><span class="tbi" onclick="toast()"><b>⋮</b>More</span><span class="tbchev">˅</span>`;
+  return `<div class="gtb" style="border-top:1px solid var(--line); gap:14px;">
+    ${kwFilterMode?"":'<span class="fab">+</span>'}
+    <span class="funnel" onclick="toggleKwFilter()" style="cursor:pointer">▽<i class="fbadge">1</i></span>
+    <span class="fchip2 on" onclick="event.stopPropagation();toggleMenu('kwstatmenu')">Keyword status: ${kwStatus}
+      <div class="gmenu" id="kwstatmenu" style="left:0;right:auto;min-width:230px" onclick="event.stopPropagation()">
+        <div class="mh">Keyword status <span style="float:right;cursor:pointer" onclick="toggleMenu('kwstatmenu')">✕</span></div>
+        ${["All","Enabled","Enabled, Paused"].map(s=>`<div class="mi ${kwStatus===s?'sel':''}" onclick="setKwStatus('${s}')">${s}</div>`).join("")}</div></span>
+    <span class="addf">Add filter</span><span class="spacer"></span>${right}</div>`;
+}
+function pageKeywords(){
+  const tabs = ["Keywords","Negative keywords","URL inclusions","URL exclusions"];
+  const keys = ["kw","neg","inc","exc"];
+  const head = `<div class="gtabs2">${tabs.map((t,i)=>`<span class="gtab2 ${kwTab===keys[i]?'on':''}" onclick="setKwTab('${keys[i]}')">${t}</span>`).join("")}</div>`;
+  if(kwTab==="neg"){
+    return head + kwToolbar() + tbl(
+      `<th class="cb l"><input type="checkbox" disabled></th><th class="l">Negative keyword</th><th class="l">Match type</th><th class="l">Level</th><th class="l">Added</th>`,
+      NEGKW.map(n=>`<tr><td class="cb l"><input type="checkbox"></td><td class="l">${n[0]}</td><td class="l">${n[1]}</td><td class="l">${n[2]}</td><td class="l">${n[3]}</td></tr>`).join(""),
+      "1 - 3 of 3");
+  }
+  if(kwTab!=="kw"){
+    return head + kwToolbar() + tbl(`<th class="l">URL</th><th class="l">Level</th><th>Clicks</th><th>Impr.</th><th>Cost</th>`,
+      `<tr><td class="l" colspan="5" style="color:var(--ink2); padding:26px 14px;">No URL ${kwTab==="inc"?"inclusions":"exclusions"} in this campaign.</td></tr>`, "0 - 0 of 0");
+  }
+  const rows = kwScopeRows();
+  const T = rows.reduce((a,k)=>({i:a.i+k[6],c:a.c+k[7],k:a.k+k[8],v:a.v+k[9]}),{i:0,c:0,k:0,v:0});
+  const dot = st => st==="Eligible" ? "" : (st==="Paused" ? "pz" : "rm");
+  const body = rows.map(k=>`<tr class="kwrow">
+    <td class="cb l"><input type="checkbox"></td>
+    <td class="l"><span class="statdot ${dot(k[2])}"></span></td>
+    <td class="l">${k[0]}<span class="pencil">✎</span></td>
+    <td class="l">${k[1]}<span class="pencil">✎</span></td>
+    <td class="l"><span class="ulink">${k[2]}</span></td>
+    <td>${k[9].toFixed(2)}</td><td>${k[9]?money2(k[8]/k[9]):"$0.00"}</td><td>${(k[9]*1.22).toFixed(2)}</td>
+    <td>${k[6]?rate(k[7],k[6]):"—"}</td><td>${money2(k[8])}</td><td>${k[10]}</td><td>${num(k[7])}</td>
+    <td>${k[5]&&k[6]?`<span class="qs ${k[5]>=8?'hi':(k[5]>=6?'md':'lo')}">${k[5]}/10</span>`:"—"}</td></tr>`).join("");
+  const tr = `<tr class="tot"><td class="cb l"></td><td class="l"></td><td class="l">Total: Keywords in your current view ⓘ</td><td class="l"></td><td class="l"></td>
+    <td>${T.v.toFixed(2)}</td><td>${T.v?money2(T.k/T.v):"$0.00"}</td><td>${(T.v*1.22).toFixed(2)}</td><td>${T.i?rate(T.c,T.i):"—"}</td>
+    <td>${money2(T.k)}</td><td></td><td>${num(T.c)}</td><td></td></tr>`;
+  const banner = `<div class="recbanner" style="margin-top:12px;">🔍 <b>Add new keywords:</b> Show your ads more often to people searching for what your business offers ⓘ
+    <span style="margin-left:auto; color:var(--ink2); font-size:12.5px;">+0.5%</span>
+    <span class="lk" onclick="toast()">View</span><span class="go" onclick="toast()">Apply all</span><span class="tbi" onclick="toast()"><b>⋮</b></span></div>`;
+  const scopeNote = `<div class="scopebar">Viewing <b>${entAG==="all" ? "all keywords in "+CAMPMAP[entCamp] : "the "+entAG+" ad group"}</b>
+    ${entAG==="all" ? "" : `· <span class="lk" onclick="setEntAG('all')">View all keywords in this campaign →</span>`}
+    · <b>${rows.length}</b> keyword${rows.length===1?"":"s"} shown</div>`;
+  return head + banner + scopeNote + kwToolbar() + tbl(
+    `<th class="cb l"><input type="checkbox" disabled></th><th class="l" style="width:20px"></th><th class="l">Keyword</th>
+     <th class="l">Match type</th><th class="l">Status</th><th>↓ Conversions</th><th>Cost / conv.</th><th>All conv.</th>
+     <th>CTR</th><th>Cost</th><th class="l">Final URL</th><th>Clicks</th><th>Quality Score</th>`,
+    tr+body, "1 - "+rows.length+" of "+rows.length);
+}
+const KW_HINT = ["<b>Two controls decide what you're looking at, and mixing them up is how people misread an account.</b> The <b>ad group selector</b> at the top sets the scope: pick one ad group to see just its keywords, or choose <i>View all ad groups in this campaign</i> to see the whole campaign at once. The <b>Keyword status</b> filter sets what's included: <i>Enabled</i> shows only what is spending right now, <i>Enabled, Paused</i> adds what someone switched off, and <i>All</i> adds removed keywords too. Always know which two you have set before you draw a conclusion.",
+ "<b>What you'd say:</b> \"I usually work in Enabled only, because I want to see what's actually spending. But the first time I open an account I flip to All, because paused and removed keywords tell you what someone already tried. If the good exact-match terms are all paused and the broad ones are live, that's not a keyword problem, that's a decision somebody made, and I'd want to know why before I undo it.\""];
 
 /* ================= ROUTING ================= */
 function showView(id){
