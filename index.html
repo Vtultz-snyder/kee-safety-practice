@@ -377,8 +377,11 @@
     <a data-view="auctioninsights" class="sub" onclick="showEntity('auctioninsights')">Auction insights</a>
     <a data-view="searchterms" class="sub" onclick="showEntity('searchterms')">Search terms</a>
     <a data-view="segments" class="sub" onclick="showView('segments')">When and where ads showed</a>
-    <a data-view="insights" class="sub" onclick="showView('insights')">Landing pages</a>
-    <a data-view="insights" class="sub" onclick="showView('insights')">Report editor</a>
+    <a data-view="skip" class="sub" onclick="skipPage('Channel performance')">Channel performance</a>
+    <a data-view="skip" class="sub" onclick="skipPage('Landing pages')">Landing pages</a>
+    <a data-view="skip" class="sub" onclick="skipPage('Stores')">Stores</a>
+    <a data-view="skip" class="sub" onclick="skipPage('Report editor')">Report editor</a>
+    <a data-view="skip" class="sub" onclick="skipPage('Dashboards')">Dashboards</a>
     <a data-view="campaigns" class="sel" onclick="showView('campaigns')">Campaigns</a>
     <a data-view="adgroups" class="sub" onclick="showView('adgroups')">Ad groups</a>
     <a data-view="ads" class="sub" onclick="showEntity('ads')">Ads</a>
@@ -760,6 +763,7 @@
     <!-- ═══════════════ AD GROUP DETAIL (rendered by JS) ═══════════════ -->
     <section class="view" id="v-adgroupdetail"><div id="agd"></div></section>
     <section class="view" id="v-entity"><div id="ent-body"></div></section>
+    <section class="view" id="v-skip"><div id="skip-body"></div></section>
 
     <!-- ═══════════════ ADS ═══════════════ -->
     <section class="view" id="v-ads">
@@ -1802,7 +1806,7 @@ function tabDevices(){
     <td class="cb l"><input type="checkbox"></td>
     <td class="l">${r.n}</td><td class="l">Campaign</td>
     <td class="l"><a class="lk2" onclick="pickCampaign('${r.camp[0]}')">${r.camp[1]}</a></td>
-    <td>${BIDADJ[r.camp[0]][di(r.n)]}</td><td>None</td>
+    ${bidCell(r.camp[0], r.n)}<td>None</td>
     <td>${num(r.clicks)}</td><td>${num(r.impr)}</td><td>${rate(r.clicks,r.impr)}</td>
     <td>${per(r.cost,r.clicks)}</td><td>${money2(r.cost)}</td>
     <td>0.00</td><td>0.00</td>
@@ -1860,27 +1864,71 @@ function tabWhen(){
   return toolbar("", sel) + tbl(head, tr+body, P.foot);
 }
 
-/* ---------- tab 3: Where ads showed ---------- */
+/* ---------- device bid adjustments (editable) ---------- */
+let devBid = {}, bidOpen = "";
+function bidKey(c,d){ return c+"|"+d; }
+function curBid(c,d){
+  const k = bidKey(c,d);
+  if(k in devBid) return devBid[k];
+  return BIDADJ[c][SEG_DEVICE.findIndex(x=>x.n===d)];
+}
+function openBid(k){ bidOpen = bidOpen===k?"":k; renderSeg(); }
+function saveBid(k){
+  const dir = $("bd-dir").value, v = $("bd-val").value.trim();
+  devBid[k] = v==="" ? "—" : (dir==="Increase"?"+":"-") + v.replace(/[^0-9.]/g,"") + "%";
+  bidOpen = ""; renderSeg(); toast();
+}
+function bidCell(campKey, dev){
+  const k = bidKey(campKey,dev), v = curBid(campKey,dev);
+  return `<td style="position:relative; white-space:nowrap;">
+    <span onclick="event.stopPropagation();openBid('${k}')" style="cursor:pointer">${v}&nbsp;<span style="color:var(--ink2)">✎</span></span>
+    <div class="bidpop ${bidOpen===k?'open':''}" onclick="event.stopPropagation()">
+      <h5>Bid adjustment ⓘ</h5>
+      <div class="bidrow"><select id="bd-dir"><option>Increase</option><option>Decrease</option></select>
+        <input id="bd-val" placeholder="%"></div>
+      <div class="bidnote">Enter a number above to see an example.<br>To remove a bid adjustment, leave this field blank.</div>
+      <div class="bidact"><span onclick="openBid('')">Cancel</span><span onclick="saveBid('${k}')">Save</span></div>
+    </div></td>`;
+}
+/* ---------- WHERE ADS SHOWED = placements and channels ---------- */
+const CHANNELS = {
+  search: [
+    {n:"Google Search", w:93, cw:96, im:0.98, cm:1.02, tt:0.99, ct:1.01},
+    {n:"Search partners", w:7, cw:4, im:1.22, cm:0.72, tt:1.08, ct:0.86}
+  ],
+  pmax: [
+    {n:"Google Search", w:26, cw:47, im:0.55, cm:1.75, tt:0.97, ct:1.03},
+    {n:"Display Network", w:34, cw:21, im:1.62, cm:0.62, tt:1.05, ct:0.94},
+    {n:"YouTube", w:19, cw:12, im:1.35, cm:0.78, tt:1.04, ct:0.95},
+    {n:"Gmail", w:11, cw:9,  im:1.18, cm:0.82, tt:1.02, ct:0.97},
+    {n:"Discover", w:7, cw:6, im:1.24, cm:0.74, tt:1.03, ct:0.96},
+    {n:"Maps", w:3, cw:5,  im:0.88, cm:1.08, tt:0.99, ct:1.02}
+  ]
+};
 function tabWhere(){
-  const rows = allRows(SEG_GEO).sort((a,b)=>b.cost-a.cost);
-  const T = sumRows(rows), ref = T.cost/T.conv;
-  const P = pageOf(rows,50);
-  const head = `<th class="cb l"><input type="checkbox" disabled></th><th class="l">Location</th><th class="l">Location type</th>
-    <th class="l">Campaign</th><th>Bid adj.</th><th>Impr.</th><th>Interactions</th><th>Interaction rate</th>
-    <th>Avg. cost</th><th>↓ Cost</th><th>Conv. rate</th><th>Conversions</th><th>Cost / conv.</th>`;
-  const body = P.shown.map(r=>`<tr>
+  const rows = scope().flatMap(c => rowsFor(c, CHANNELS[c[0]==="pmax" ? "pmax" : "search"]));
+  const agg = {};
+  rows.forEach(r=>{ agg[r.n] = agg[r.n] || {n:r.n, impr:0, clicks:0, cost:0, conv:0};
+    ["impr","clicks","cost","conv"].forEach(m=>agg[r.n][m]+=r[m]); });
+  const list = Object.values(agg).sort((a,b)=>b.cost-a.cost);
+  const T = sumRows(list), ref = T.cost/T.conv;
+  const NET = {"Google Search":"Search","Search partners":"Search partners","Display Network":"Display","YouTube":"Video","Gmail":"Display","Discover":"Display","Maps":"Search"};
+  const body = list.map(r=>`<tr>
     <td class="cb l"><input type="checkbox"></td>
-    <td class="l"><a class="lk2" onclick="toast()">${r.n}</a></td><td class="l">State</td>
-    <td class="l"><a class="lk2" onclick="pickCampaign('${r.camp[0]}')">${r.camp[1]}</a></td><td>—</td>
+    <td class="l">${r.n}</td><td class="l">${NET[r.n]}</td>
     <td>${num(r.impr)}</td><td>${num(r.clicks)}<div style="font-size:11px;color:var(--ink2)">clicks</div></td>
     <td>${rate(r.clicks,r.impr)}</td><td>${per(r.cost,r.clicks)}</td><td>${money2(r.cost)}</td>
     <td>${rate(r.conv,r.clicks)}</td><td>${r.conv.toFixed(2)}</td>
     <td class="${cpaCls(r.cost,r.conv,ref)}">${per(r.cost,r.conv)}</td></tr>`).join("");
-  const tr = `<tr class="tot"><td class="cb l"></td><td class="l">Total: Locations ⓘ</td><td class="l"></td><td class="l"></td><td></td>
+  const tr = `<tr class="tot"><td class="cb l"></td><td class="l">Total: Networks ⓘ</td><td class="l"></td>
     <td>${num(T.impr)}</td><td>${num(T.clicks)}<div style="font-size:11px;color:var(--ink2)">clicks</div></td>
     <td>${rate(T.clicks,T.impr)}</td><td>${per(T.cost,T.clicks)}</td><td>${money2(T.cost)}</td>
     <td>${rate(T.conv,T.clicks)}</td><td>${T.conv.toFixed(2)}</td><td>${per(T.cost,T.conv)}</td></tr>`;
-  return toolbar("Level: Campaign") + tbl(head, body+tr, P.foot);
+  const av = `<span class="tbi" style="margin-right:6px" onclick="toast()"><b style="font-size:13px">Network view ▾</b></span>`;
+  return toolbar("Level: Campaign", av) + tbl(
+    `<th class="cb l"><input type="checkbox" disabled></th><th class="l">Placement / channel</th><th class="l">Network</th>
+     <th>Impr.</th><th>Interactions</th><th>Interaction rate</th><th>Avg. cost</th><th>↓ Cost</th>
+     <th>Conv. rate</th><th>Conversions</th><th>Cost / conv.</th>`, body+tr, "1 - "+list.length+" of "+list.length);
 }
 
 /* ---------- tab 4: Matched locations ---------- */
@@ -1931,13 +1979,13 @@ function tabMatched(){
 
 /* ---------- coaching ---------- */
 const SEG_HINT = {
- device:["<b>The trap on this tab:</b> mobile has the higher CTR and the cheaper CPC, so it reads as the efficient device. It isn't. Its cost per conversion is roughly 2.5× computers. Also note <b>Conv. value is 0.00 on every row</b>: the account has no revenue attached to any conversion, so Smart Bidding is optimizing to form count.",
+ device:["<b>Spend and cost per conversion by device, and the place you act on it.</b> Mobile has the higher CTR and the cheaper CPC, so it reads as the efficient device. It isn't: its cost per conversion is roughly 2.5× computers (Google's name for desktop). <b>The Bid adj. column is editable</b> — click any value to set a positive or negative adjustment, which is how you'd suppress a device entirely or lean into one that drives calls. Also note <b>Conv. value is 0.00 on every row</b>: no revenue is attached to any conversion, so Smart Bidding is optimizing to form count.",
    "<b>What you'd say:</b> \"I wouldn't cut mobile blind, because some of those are real people checking us from a roof. I'd put a negative bid adjustment on mobile in the damaged campaign. But the zero in the Conv. value column is the bigger finding: until closed revenue flows back in, we're asking Google to buy forms, and it's buying them.\""],
  when:["<b>Read this tab against Jun 14.</b> Broad match pulled in evening and overnight traffic, which is when job-seeker and OSHA-homework queries happen. Business hours still carry the conversions. Narrow the date range and the after-hours share grows, which is the fingerprint of the match-type change rather than a seasonal wobble.",
    "<b>What you'd say:</b> \"I'd trim bids between roughly 8 PM and 6 AM before I touch anything structural, because it's reversible and it doesn't disturb the bid strategy's learning. The overnight clicks aren't a bidding problem though. They're a match-type problem, so the negatives come first and this is the guardrail behind them.\""],
- where:["<b>Where this gets organizational.</b> California is the largest single line of spend and one of the worst cost per lead, with Florida close behind. Both are places where lead volume outruns the coverage that can service it. Ohio and Pennsylvania are the reverse.",
-   "<b>What you'd say:</b> \"Before I touch geo bids I'd want a conversation with sales about coverage, because a lead in a state we can't service well isn't a bad keyword, it's a routing problem. The fix is a bid adjustment plus a conversation, and the conversation is the harder half.\""],
- matched:["<b>The setting almost nobody checks.</b> Matched locations tells you who Google actually counted as being in your targeted area. Google's default location option is <i>Presence or interest</i>, which serves to people anywhere in the world merely searching <i>about</i> your targeted locations. Drill into United States and narrow by Cities to see where the money really lands.",
+ where:["<b>Placements and channels, and for a Search account most of it won't apply.</b> The Search campaigns only run on Google Search and Search partners, so there's little to see. Performance Max is the exception: it scatters spend across Display, YouTube, Gmail, Discover and Maps, and that spend converts far worse than the Search slice of the same campaign. Select the PMax campaign above to see it.",
+   "<b>What you'd say:</b> \"On the Search side this tab is nearly empty, which is how it should be. Where it earns its keep is Performance Max, because that's the one campaign where I can't choose the channel. Most of that budget is going to Display and YouTube at a much worse cost per lead than its own Search traffic, and that's the argument for either capping PMax or moving the money into Search where I control it.\""],
+ matched:["<b>The best report on this page, and the one to spend real time in.</b> It opens on the whole country. <b>Click the blue United States link</b> to drill in, then use the dimension picker to switch to Cities, States, Counties, Postal codes or DMA regions. Then just read the cost per conversion column down the list: the cheap rows are where you're efficient, the expensive rows are where money is leaking. This is also where <i>Presence or interest</i> targeting shows up, since Google's default serves your ads to people anywhere in the world merely searching <i>about</i> your locations.",
    "<b>What you'd say:</b> \"I'd switch location options from 'Presence or interest' to 'Presence' in every campaign. It takes about ninety seconds, it's the first thing I check in an account I inherit, and it usually pays for itself in a week.\""]
 };
 
@@ -2402,6 +2450,30 @@ function pageInsights(){
 }
 const AUCTION_HINT = ["<b>How to read this fast:</b> impression share is how often you showed when you were eligible. Overlap rate is how often that competitor showed in the same auction as you. Position above rate is how often they beat you when you both showed. <b>bluewatermfg.com is new</b>, and account CPCs rose about 11% at the same time, which is your explanation for rising click costs that has nothing to do with anything you did.",
  "<b>What you'd say:</b> \"A new entrant is bidding on our terms and pushing CPCs up about 11%. That's an auction problem, not an account problem, so the answer isn't to panic-bid. I'd protect the brand terms first, since that's where losing position actually costs us, and I'd fix Quality Score on the generic terms before I pay more per click.\""];
+
+
+/* ---------- pages that exist but aren't where the work happens ---------- */
+const SKIP_NOTE = {
+ "Channel performance":"Splits performance by channel for multi-channel campaigns. For a Search-led account it repeats what Where ads showed already told you.",
+ "Landing pages":"Clicks and conversions by final URL. Occasionally useful when you suspect a page is the problem rather than the traffic, but it won't diagnose an account.",
+ "Stores":"Local inventory and store visits. Only relevant to retailers with physical locations and a Merchant Center feed.",
+ "Report editor":"A pivot-table builder over the same data. Powerful, and worth knowing exists, but you'd never open it in front of someone in an interview.",
+ "Dashboards":"Saved report tiles. Presentation, not analysis."
+};
+function skipPage(name){
+  $("skip-body").innerHTML = `<div class="seg-head"><h1>${name}</h1>
+      <div class="dr"><span class="dr-lbl">${SEG_WIN[segDays].lbl}</span>
+        <span class="dr-box"><span>${SEG_WIN[segDays].range}</span><span class="car">&#9662;</span></span>
+        <span class="dr-arrow">&#8249;</span><span class="dr-arrow">&#8250;</span></div></div>
+    <div class="hint">&#128161; <b>You can skip this one.</b> ${SKIP_NOTE[name]}</div>
+    <div class="segrec">&#9989; <b>If they click it in front of you:</b> "I know it's there, I just don't work from it. My time goes to Search terms, the segment reports and Change history, because those are the three that tell me what to change."</div>
+    <div class="chartcard" style="margin-top:14px; padding:40px; text-align:center; color:var(--ink2); font-size:13.5px;">
+      This report is intentionally not built out in the practice account.<br>
+      Go to <span class="lk" onclick="setSegTab('matched');showView('segments')">Matched locations</span>,
+      <span class="lk" onclick="showEntity('searchterms')">Search terms</span> or
+      <span class="lk" onclick="showView('changehistory')">Change history</span> instead.</div>`;
+  showView('skip');
+}
 
 /* ================= ROUTING ================= */
 function showView(id){
