@@ -234,6 +234,16 @@
   .gmenu .submenu{position:absolute; left:100%; top:-8px; margin:0; display:none; min-width:260px;}
   .tbi.segon{color:var(--blue-dark);}
   .tbi.segon b{background:#e8f0fe; border-radius:4px;}
+  .rail .ric{cursor:pointer;}
+  .beta{font-size:9px; background:#e8f0fe; color:var(--blue-dark); border-radius:8px; padding:1px 5px; margin-left:6px; vertical-align:middle;}
+  .kwp-acct{font-size:13px; color:var(--ink2); margin:8px 0 18px; line-height:1.9;}
+  .kwpcards{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px;}
+  .kwpcard{position:relative; border:1px solid var(--line); border-radius:10px; padding:30px 24px 26px; text-align:center; cursor:pointer; background:#fff;}
+  .kwpcard:hover{box-shadow:0 1px 6px rgba(60,64,67,.22);}
+  .kwpicon{font-size:44px; line-height:1;}
+  .kwpcard h4{font-size:19px; font-weight:400; margin:18px 0 8px;}
+  .kwpcard p{font-size:13px; color:#3c4043; line-height:1.55;}
+  .newbadge{position:absolute; top:14px; right:16px; font-size:9.5px; background:#e8f0fe; color:var(--blue-dark); border-radius:8px; padding:2px 7px; font-weight:600;}
   .setlist{margin-top:14px;}
   .setrow{border:1px solid var(--line); border-radius:8px; margin-bottom:10px; background:#fff;}
   .sethead{display:grid; grid-template-columns:270px 1fr 26px; gap:16px; padding:16px 18px; cursor:pointer; align-items:center;}
@@ -437,12 +447,12 @@
 <div class="layout">
   <!-- ============ ICON RAIL ============ -->
   <div class="rail">
-    <div class="ric"><span class="i">＋</span>Create</div>
-    <div class="ric active"><span class="i">📣</span>Campaigns</div>
-    <div class="ric"><span class="i">🎯</span>Goals</div>
-    <div class="ric"><span class="i">🛠</span>Tools</div>
-    <div class="ric"><span class="i">💳</span>Billing</div>
-    <div class="ric"><span class="i">⚙️</span>Admin</div>
+    <div class="ric" onclick="toast()"><span class="i">＋</span>Create</div>
+    <div class="ric active" data-rail="campaigns" onclick="setRail('campaigns')"><span class="i">📣</span>Campaigns</div>
+    <div class="ric" data-rail="goals" onclick="setRail('goals')"><span class="i">🎯</span>Goals</div>
+    <div class="ric" data-rail="tools" onclick="setRail('tools')"><span class="i">🛠</span>Tools</div>
+    <div class="ric" data-rail="billing" onclick="setRail('billing')"><span class="i">💳</span>Billing</div>
+    <div class="ric" data-rail="admin" data-r="admin" onclick="setRail('admin')"><span class="i">⚙️</span>Admin</div>
   </div>
 
   <!-- ============ NAV ============ -->
@@ -2340,7 +2350,11 @@ const ENTPAGE = {keywords:["Keywords",pageKeywords], audiences:["Audiences",page
                  schedule:["Ad schedule",()=>pageSchedule()],
                  advbid:["Advanced bid adjustments",()=>pageAdvBid()],
                  goals:["Summary",()=>pageGoals(),1],
-                 convsettings:["Settings",()=>pageConvSettings(),1]};
+                 convsettings:["Settings",()=>pageConvSettings(),1],
+                 tools:["Tools",()=>pageTools(),1],
+                 kwplanner:["Keyword Planner",()=>pageKwPlanner(),1],
+                 billing:["Billing summary",()=>pageBilling(),1],
+                 admin:["Account settings",()=>pageAdmin(),1]};
 let entView="keywords";
 function renderEntity(){
   const p = ENTPAGE[entView]; if(!p) return;
@@ -2363,6 +2377,7 @@ function renderEntity(){
     (entView==="advbid" ? `<div class="hint">💡 ${ADVBID_HINT[0]}</div>` : "") +
     (entView==="schedule" ? `<div class="hint">💡 ${SCHED_HINT[0]}</div>` : "") +
     (entView==="locations" ? `<div class="hint">💡 ${LOC_HINT[0]}</div>` : "") +
+    (entView==="kwplanner" ? `<div class="hint">💡 ${KWP_HINT[0]}</div>` : "") +
     p[1]() +
     (entView==="auctioninsights" ? `<div class="segrec">✅ ${AUCTION_HINT[1]}</div>` : "") +
     (entView==="campaigns" ? `<div class="segrec">✅ ${CAMP_HINT[1]}</div>` : "") +
@@ -2371,6 +2386,7 @@ function renderEntity(){
     (entView==="advbid" ? `<div class="segrec">✅ ${ADVBID_HINT[1]}</div>` : "") +
     (entView==="schedule" ? `<div class="segrec">✅ ${SCHED_HINT[1]}</div>` : "") +
     (entView==="locations" ? `<div class="segrec">✅ ${LOC_HINT[1]}</div>` : "") +
+    (entView==="kwplanner" ? `<div class="segrec">✅ ${KWP_HINT[1]}</div>` : "") +
     `<div class="gfoot"><a>Reporting is not real-time.</a> Time zone for all dates and times: (GMT-05:00) Eastern Time. <a>Learn more</a><br>
       Some inventory may be provided through third party intermediaries.<br>© Google, 2026.</div>`;
   if(_redraw==='campaigns') requestAnimationFrame(()=>drawTrend('chart4',200));
@@ -2551,6 +2567,32 @@ const AUCTION_HINT = ["<b>How to read this fast:</b> impression share is how oft
 
 /* ---------- pages that exist but aren't where the work happens ---------- */
 const SKIP_NOTE = {
+ "Asset studio":"Newer creative-generation surface. Interesting, not load-bearing.",
+ "Performance Planner":"Forecasts what different budgets would return. Genuinely useful at annual planning time, and unreliable on low conversion volume.",
+ "Reach Planner":"Video and Display reach forecasting. Not relevant to a Search-led B2B account.",
+ "App advertising hub":"App campaigns only. There is no app.",
+ "Audience manager":"Where remarketing lists and customer lists live. Worth knowing for a customer-match upload later.",
+ "Exclusion lists":"Shared negative keyword and placement lists. Applying one shared negative list across campaigns beats fixing the same waste five times.",
+ "Brand lists":"Brand inclusion and exclusion sets, mostly for PMax and Display.",
+ "Location manager":"Shared location sets you can reuse across campaigns.",
+ "Creator partnerships":"Beta, YouTube creator collaborations. Not applicable.",
+ "Content suitability":"Placement and inventory-type brand safety. Matters for Display and Video, barely for Search.",
+ "Data manager":"Where first-party data connections and offline conversion imports get wired up. This is the door the offline conversion project eventually walks through.",
+ "Troubleshooting":"Contains Ad Preview and Diagnosis, which checks whether an ad serves for a query without burning impressions on your own searches. Genuinely useful.",
+ "Bulk actions":"Automated rules, scripts and bulk uploads. Powerful and easy to break things with.",
+ "Shared budgets":"One budget shared across campaigns. Useful at scale, unnecessary on five campaigns.",
+ "Bid strategies":"Portfolio bid strategies shared across campaigns.",
+ "Adjustments":"Account-level bid adjustments.",
+ "Business data":"Feeds and business data tables for dynamic ads.",
+ "Labs":"Experimental features. Fun, not for a demo.",
+ "Measurement":"Attribution and conversion measurement reporting.",
+ "Documents":"Invoices and statements.",
+ "Transactions":"Line-by-line charges and credits.",
+ "Billing settings":"Payment method, billing threshold and backup card. An account can stop serving because a card failed rather than because performance dropped.",
+ "Promotions":"Promotional credits and coupon codes.",
+ "Preferences":"Language, display and email preferences.",
+ "Notifications":"Which alerts Google sends you and where.",
+ "Access and security":"Who has access at what level, and 2-step enforcement. Worth checking on any account you inherit.",
  "Dynamic ad targets":"Only relevant to Dynamic Search Ads, which this account doesn't run. Nothing to see.",
  "Value rules":"Adjusts conversion value by device, location or audience at bid time. Powerless here, because no conversion has a value in the first place. Fix the values, then come back.",
  "Custom variables":"Custom parameters passed with a conversion. Useful once offline imports exist; premature before that.",
@@ -3175,6 +3217,128 @@ function setConvOpt(i, v){ convOverrides[i] = Object.assign({}, convOverrides[i]
 function setCallLen(i, v){ convOverrides[i] = Object.assign({}, convOverrides[i], {len:v}); renderEntity(); toast(); }
 function convOpt(i){ return (convOverrides[i]&&convOverrides[i].opt) || CONV_ACTIONS[i][2]; }
 function convLen(i){ return (convOverrides[i]&&convOverrides[i].len) || "1 second"; }
+
+/* ================= LEFT RAIL SECTIONS: TOOLS · BILLING · ADMIN ================= */
+const NAV_CAMPAIGNS = document.getElementById('nav').innerHTML;
+const NAV_GOALS = `
+  <div class="navsec">GOALS</div>
+  <a data-view="goals" onclick="showEntity('goals')">Conversions</a>
+  <a data-view="goals" class="sub" onclick="showEntity('goals')">Summary</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Value rules')">Value rules</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Custom variables')">Custom variables</a>
+  <a data-view="convsettings" class="sub" onclick="showEntity('convsettings')">Settings</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Uploads')">Uploads</a>
+  <a data-view="skip" onclick="skipPage('Measurement')">Measurement</a>`;
+const NAV_TOOLS = `
+  <a data-view="skip" onclick="skipPage('Asset studio')">Asset studio</a>
+  <a data-view="tools" onclick="showEntity('tools')">Planning</a>
+  <a data-view="kwplanner" class="sub" onclick="showEntity('kwplanner')">Keyword Planner</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Performance Planner')">Performance Planner</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Reach Planner')">Reach Planner</a>
+  <a data-view="skip" onclick="skipPage('App advertising hub')">App advertising hub</a>
+  <a data-view="tools" onclick="showEntity('tools')">Shared library</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Audience manager')">Audience manager</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Exclusion lists')">Exclusion lists</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Brand lists')">Brand lists</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Location manager')">Location manager</a>
+  <a data-view="skip" onclick="skipPage('Creator partnerships')">Creator partnerships <span class="beta">BETA</span></a>
+  <a data-view="skip" onclick="skipPage('Content suitability')">Content suitability</a>
+  <a data-view="skip" onclick="skipPage('Data manager')">Data manager</a>
+  <a data-view="skip" onclick="skipPage('Troubleshooting')">Troubleshooting</a>
+  <a data-view="skip" onclick="skipPage('Bulk actions')">Bulk actions</a>
+  <a data-view="tools" onclick="showEntity('tools')">Budgets and bidding</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Shared budgets')">Shared budgets</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Bid strategies')">Bid strategies</a>
+  <a data-view="skip" class="sub" onclick="skipPage('Adjustments')">Adjustments</a>
+  <a data-view="skip" onclick="skipPage('Business data')">Business data</a>
+  <a data-view="skip" onclick="skipPage('Labs')">Labs</a>`;
+const NAV_BILLING = `
+  <a data-view="billing" onclick="showEntity('billing')">Summary</a>
+  <a data-view="skip" onclick="skipPage('Documents')">Documents</a>
+  <a data-view="skip" onclick="skipPage('Transactions')">Transactions</a>
+  <a data-view="skip" onclick="skipPage('Billing settings')">Settings</a>
+  <a data-view="skip" onclick="skipPage('Promotions')">Promotions</a>`;
+const NAV_ADMIN = `
+  <a data-view="admin" onclick="showEntity('admin')">Account settings</a>
+  <a data-view="skip" onclick="skipPage('Preferences')">Preferences</a>
+  <a data-view="skip" onclick="skipPage('Notifications')">Notifications</a>
+  <a data-view="skip" onclick="skipPage('Access and security')">Access and security</a>`;
+const RAILS = {campaigns:NAV_CAMPAIGNS, goals:NAV_GOALS, tools:NAV_TOOLS, billing:NAV_BILLING, admin:NAV_ADMIN};
+const RAIL_HOME = {campaigns:()=>showEntity('campaigns'), goals:()=>showEntity('goals'),
+                   tools:()=>showEntity('tools'), billing:()=>showEntity('billing'), admin:()=>showEntity('admin')};
+let railSection = "campaigns";
+function setRail(s){
+  railSection = s;
+  $("nav").innerHTML = RAILS[s];
+  document.querySelectorAll('.rail .ric').forEach(r=>r.classList.toggle('active', r.dataset.rail===s));
+  RAIL_HOME[s]();
+}
+/* ---------- TOOLS landing ---------- */
+function pageTools(){
+  const groups = [
+    ["Planning","Keyword Planner, Performance Planner, Reach Planner","Keyword Planner is the only one here you'd open in a normal week. It gives search volume and forecasts, and it's where new keyword ideas come from.","use"],
+    ["Shared library","Audience manager, Exclusion lists, Brand lists, Location manager","Where shared negative keyword lists and audience segments live. Worth knowing: a shared negative list applied across campaigns is how you stop fixing the same waste five times.","use"],
+    ["Budgets and bidding","Shared budgets, Bid strategies, Adjustments","Portfolio bid strategies and shared budgets. Useful at scale, unnecessary on a five-campaign account.","rare"],
+    ["Data manager","Connect first-party data sources","This is where offline conversion imports and CRM connections are configured. On an account with an empty Group 3, this is the door you'd eventually walk through.","use"],
+    ["Bulk actions","Rules, scripts, uploads","Automated rules and scripts. Powerful and dangerous in equal measure; not something to demo cold.","rare"],
+    ["Troubleshooting","Ad preview and diagnosis, policy manager","Ad Preview and Diagnosis is genuinely useful: it checks whether your ad shows for a query without racking up impressions from your own searching.","use"],
+    ["Content suitability","Brand safety settings","Placement exclusions and inventory type. Matters for Display and Video, barely for Search.","rare"],
+    ["Asset studio · Labs · Creator partnerships","Newer and experimental","Interesting, not load-bearing. Skip in an interview.","rare"]
+  ];
+  return `<div class="hint">💡 <b>The honest framing for this whole section:</b> Tools is deep, and almost none of it is where the work happens. The bulk of real management is Campaigns and Goals. Knowing what's in here matters mostly so you're not surprised, and so you know where to go when you need one specific thing.</div>
+    <div class="segrec">✅ <b>What you'd say if asked:</b> "I use Keyword Planner for volume and forecasts, shared negative lists out of the Shared library, and Ad Preview and Diagnosis when I need to check whether an ad is serving. Data manager matters later, because that's where offline conversion imports get wired up. The rest I know exists and rarely open."</div>
+    <div class="cardrow">${groups.map(g=>`
+      <div class="ocard"><h4>${g[0]} ${ASSET_BADGE[g[3]]}</h4><div class="sub">${g[1]}</div>
+        <p style="font-size:13px;line-height:1.6;color:#3c4043;margin-top:8px;">${g[2]}</p></div>`).join("")}</div>`;
+}
+/* ---------- KEYWORD PLANNER ---------- */
+function pageKwPlanner(){
+  const cards = [
+    ["💡","Discover new keywords","Get keyword ideas that can help you reach people interested in your product or service",""],
+    ["📈","Get search volume and forecasts","Get search volume and other historical metrics, plus forecasts for how they could perform",""],
+    ["🗂","Organize keywords into ad groups","Save time by automatically organizing keywords into ad groups in your account","NEW"]
+  ];
+  const plans = [["Fall protection expansion Q3","Draft","Jul 22, 2026","Aug 2026 – Oct 2026"],
+                 ["Brand defense forecast","Complete","Jun 30, 2026","Jul 2026 – Sep 2026"]];
+  return `<div class="kwp-acct">Select an active account<br><a class="lk2">KEE Safety, Inc.</a> ✎</div>
+    <div class="kwpcards">${cards.map(c=>`<div class="kwpcard" onclick="toast()">
+      ${c[3]?`<span class="newbadge">${c[3]}</span>`:""}
+      <div class="kwpicon">${c[0]}</div><h4>${c[1]}</h4><p>${c[2]}</p></div>`).join("")}</div>
+    <div class="gtabs2" style="margin-top:22px;"><span class="gtab2 on">Plans created by you</span></div>
+    <div class="gtb" style="border-top:1px solid var(--line)"><span class="funnel">▽</span><span class="addf">Add filter</span>
+      <span class="spacer"></span><span class="tbi" onclick="toast()"><b>▥</b>Columns</span></div>
+    ${tbl(`<th class="cb l"><input type="checkbox" disabled></th><th class="l">Plan</th><th class="l">Status</th><th class="l">Last modified ↓</th><th class="l">Forecast period</th>`,
+      plans.map(p=>`<tr><td class="cb l"><input type="checkbox"></td><td class="l"><a class="lk2" onclick="toast()">${p[0]}</a></td>
+        <td class="l">${p[1]}</td><td class="l">${p[2]}</td><td class="l">${p[3]}</td></tr>`).join(""), "1 - 2 of 2")}`;
+}
+const KWP_HINT=["<b>The one tool worth opening in front of someone.</b> Discover new keywords gives you ideas and volume; Get search volume and forecasts tells you what a keyword list would cost and roughly return. For a low-volume B2B account the forecasts are directional at best, but the <i>volume</i> numbers are real and they settle arguments about whether demand exists.",
+ "<b>What you'd say:</b> \"I'd use this to size the opportunity before asking for budget. If someone wants to expand into a new product line, I want to know whether there are two hundred searches a month or twenty thousand, because that determines whether it's a campaign or a line item in an existing one.\""];
+/* ---------- BILLING ---------- */
+function pageBilling(){
+  const rows=[["Aug 1, 2026","Automatic payment","Visa •••• 4417","$4,812.66"],
+              ["Jul 24, 2026","Automatic payment","Visa •••• 4417","$5,000.00"],
+              ["Jul 16, 2026","Automatic payment","Visa •••• 4417","$5,000.00"],
+              ["Jul 8, 2026","Automatic payment","Visa •••• 4417","$5,000.00"],
+              ["Jun 29, 2026","Automatic payment","Visa •••• 4417","$5,000.00"]];
+  return `<div class="hint">💡 <b>You will not be asked about this, and that is the point.</b> Billing is where the payment method, the payment threshold and the invoices live. Know that it exists, know that an account can stop serving because a card failed rather than because performance dropped, and move on.</div>
+    <div class="metricrow"><div class="mtile"><div class="k">Balance</div><div class="v">$1,284.30</div><div class="d">Next automatic charge at $5,000.00</div></div>
+      <div class="mtile"><div class="k">Payment method</div><div class="v" style="font-size:19px">Visa •••• 4417</div><div class="d">Primary · expires 09/28</div></div>
+      <div class="mtile"><div class="k">Spend this month</div><div class="v">${money2(SEG_WIN[30].cost)}</div><div class="d">Aug 1 – Aug 10, 2026</div></div></div>
+    ${tbl(`<th class="l">Date ↓</th><th class="l">Description</th><th class="l">Payment method</th><th>Amount</th>`,
+      rows.map(r=>`<tr><td class="l">${r[0]}</td><td class="l">${r[1]}</td><td class="l">${r[2]}</td><td>${r[3]}</td></tr>`).join(""), "1 - 5 of 5")}`;
+}
+/* ---------- ADMIN ---------- */
+function pageAdmin(){
+  const S=[["Account name","KEE Safety, Inc."],["Customer ID","734-215-8890"],["Time zone","(GMT-05:00) Eastern Time"],
+   ["Currency","US Dollar (USD $)"],["Primary contact","victoria.snyder@keesafety.com"],
+   ["Auto-tagging","<b style='color:var(--green)'>On</b> — required for the GCLID to reach your CRM"],
+   ["Account access","4 users · 1 admin, 2 standard, 1 read-only"],["Linked accounts","Google Analytics 4, Search Console, Merchant Center (inactive)"],
+   ["Terms and conditions","Accepted Jan 8, 2024"]];
+  return `<div class="hint">💡 <b>One row here actually matters: auto-tagging.</b> If auto-tagging is off, no GCLID lands on your landing page, so the click ID never reaches the CRM and offline conversion imports cannot work at all. It is the first thing to verify before you promise anyone an offline conversion project. Everything else on this page is contact details and terms.</div>
+    <div class="segrec">✅ <b>What you'd say:</b> "Before I'd commit to an offline conversion tracking timeline, I'd check two things in Admin: that auto-tagging is on, and who actually has access to the account. Those take a minute and they decide whether the project is two weeks or two months."</div>
+    <div class="ocard" style="margin-top:14px;"><h4>Account settings</h4>
+      <table class="settbl">${S.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table></div>`;
+}
 
 /* ================= ROUTING ================= */
 function showView(id){
