@@ -2542,7 +2542,10 @@ function pageRecs(){
 /* ---------- SEARCH TERMS ---------- */
 function pageTerms(){
   const rows = TERMS;
-  const impOf = t => Math.round(t[6]*38);
+  /* per-term impression multiplier: brand and exact terms earn a high interaction
+     rate, the broad junk terms scrape the bottom. Keeps CTR varied and on-story. */
+  const IMP_MULT = [26,44,22,58,63,15,9,51,47,18];
+  const impOf = t => Math.round(t[6]*(IMP_MULT[TERMS.indexOf(t)] || 32));
   const kwFmt = t => {
     const k = t[1].replace(/ \(.*\)/,"");
     return /exact/.test(t[1]) ? "["+k+"]" : /phrase/.test(t[1]) ? '"'+k+'"' : k;
